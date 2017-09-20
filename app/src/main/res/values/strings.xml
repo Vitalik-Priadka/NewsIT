@@ -1,4 +1,5 @@
 <resources>
-    <string name="app_name">IT News (Beta)</string>
+    <string name="app_name">IT News</string>
     <string name="search_title">Search</string>
+    <string name="reload_title">Reload</string>
 </resources>

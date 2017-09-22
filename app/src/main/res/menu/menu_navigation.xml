@@ -2,22 +2,26 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/actionLogInItem"
         android:title="@string/menu_item_log_in"
         android:orderInCategory="1"
         android:icon="@drawable/login_variant"/>
 
     <item
+        android:id="@+id/actionNewsItem"
         android:title="@string/menu_item_news"
         android:orderInCategory="1"
         android:icon="@drawable/newspaper"/>
 
     <item
+        android:id="@+id/actionSettingItem"
         android:title="@string/menu_item_settings"
         android:orderInCategory="1"
         android:icon="@drawable/settings"/>
 
     <item
+        android:id="@+id/actionExitItem"
         android:title="@string/menu_item_exit"
         android:orderInCategory="1"
-        android:icon="@drawable/close_octagon_outline"/>
+        android:icon="@drawable/close_octagon_outline" />
 </menu>

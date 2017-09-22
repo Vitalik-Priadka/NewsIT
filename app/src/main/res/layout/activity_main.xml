@@ -11,16 +11,28 @@
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
             <android.support.design.widget.AppBarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-
-                <android.support.v7.widget.Toolbar
-                    android:id="@+id/toolbar"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="?attr/colorPrimary"/>
+                    android:layout_height="match_parent">
+
+                        <android.support.v7.widget.Toolbar
+                            android:id="@+id/toolbar"
+                            android:layout_width="match_parent"
+                            android:layout_height="?attr/actionBarSize"
+                            android:background="?attr/colorPrimary"/>
+
+                        <ImageView
+                            android:id="@+id/logo"
+                            android:src="@drawable/it_news_logo_black"
+                            android:layout_width="120dp"
+                            android:layout_height="40dp"
+                            android:layout_marginLeft="35dp"
+                            android:layout_marginTop="10dp"/>
+
+                </RelativeLayout>
             </android.support.design.widget.AppBarLayout>
     </android.support.design.widget.CoordinatorLayout>
 
@@ -29,6 +41,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="@color/mainBackground"
         app:menu="@menu/menu_navigation"
         app:headerLayout="@layout/navigation_header"/>
 </android.support.v4.widget.DrawerLayout>

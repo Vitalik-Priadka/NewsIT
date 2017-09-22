@@ -25,10 +25,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void initToolbar(){
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(R.string.app_tittle);
+        toolbar.setTitle(null);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener(){
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
+                switch (menuItem.getItemId()){
+                    case R.id.search: break;
+                    case R.id.reload: break;
+                }
                 return false;
             }
         });

@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">IT News</string>
     <string name="app_tittle"></string>
+    <string name="search_hint">Search...</string>
+    <string name="reload_toast">Reload page&#8230;</string>
     <string name="search_title">Search</string>
     <string name="reload_title">Reload</string>
 

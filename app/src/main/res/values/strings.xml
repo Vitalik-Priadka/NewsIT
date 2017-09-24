@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">IT News</string>
     <string name="app_tittle"></string>
-    <string name="search_hint">Search...</string>
+    <string name="search_hint">Search&#8230;</string>
+    <string name="logo_hint">logoImage</string>
     <string name="reload_toast">Reload page&#8230;</string>
     <string name="search_title">Search</string>
     <string name="reload_title">Reload</string>
@@ -13,4 +14,13 @@
 
     <string name="view_navigation_open">Open</string>
     <string name="view_navigation_close">Close</string>
+
+    <string name="state_image_description">"Main image"</string>
+    <string name="state_star_description">"Star image"</string>
+    <string name="state_comment_description">"Comment image"</string>
+
+    <string name="test_header">Тестовый заголовок!\n Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</string>
+    <string name="test_date">14:23  24.09.17</string>
+    <string name="test_rate">128</string>
+    <string name="test_number_comments">5</string>
 </resources>

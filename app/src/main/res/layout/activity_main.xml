@@ -7,7 +7,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/mainBackground">
-
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -16,7 +15,7 @@
                 android:layout_height="wrap_content">
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="wrap_content">
 
                         <android.support.v7.widget.Toolbar
                             android:id="@+id/toolbar"
@@ -29,13 +28,14 @@
                             <EditText
                                 android:id="@+id/search_text"
                                 android:layout_width="120dp"
-                                android:layout_height="40dp"
+                                android:layout_height="45dp"
                                 android:textColor="@color/toolbarItems"
                                 android:fontFamily="sans-serif-condensed"
                                 android:hint="@string/search_hint"
                                 android:layout_marginStart="100dp"
                                 android:layout_marginTop="5dp"
                                 android:scrollHorizontally="true"
+                                android:scrollbarAlwaysDrawHorizontalTrack="true"
                                 android:inputType="text"/>
                         </android.support.v7.widget.Toolbar>
 
@@ -44,14 +44,484 @@
                             android:src="@drawable/it_news_logo_black"
                             android:layout_width="120dp"
                             android:layout_height="40dp"
-                            android:contentDescription="logoImage"
+                            android:contentDescription="@string/logo_hint"
                             android:layout_marginStart="35dp"
                             android:layout_marginTop="11dp"/>
-
                 </RelativeLayout>
             </android.support.design.widget.AppBarLayout>
-    </android.support.design.widget.CoordinatorLayout>
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbarSize="8dp"
+                android:scrollbars="vertical"
+                android:scrollbarThumbVertical="@drawable/scrollbar"
+                android:fadeScrollbars="false"
+                android:layout_gravity="top"
+                android:layout_marginTop="58dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginEnd="8dp">
 
+                    <!-- Сюда реализовывать подгрузку контента -->
+                    <RelativeLayout
+                        android:id="@+id/state_1"
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:layout_margin="3dp"
+                        android:background="@color/colorPrimary">
+
+                        <ImageView
+                            android:id="@+id/state_image_1"
+                            android:layout_width="120dp"
+                            android:layout_height="120dp"
+                            android:src="@drawable/unload_image"
+                            android:contentDescription="@string/state_image_description"
+                            android:background="@color/colorWhite"
+                            android:layout_marginStart="0dp"/>
+
+                        <TextView
+                            android:id="@+id/state_header_1"
+                            android:layout_width="240dp"
+                            android:layout_height="80dp"
+                            android:text="@string/test_header"
+                            android:textSize="16sp"
+                            android:fontFamily="sans-serif"
+                            android:layout_marginStart="125dp"/>
+
+                        <LinearLayout
+                            android:layout_width="250dp"
+                            android:layout_height="20dp"
+                            android:layout_alignBottom="@id/state_image_1"
+                            android:layout_toEndOf="@id/state_image_1">
+
+                            <TextView
+                                android:id="@+id/state_date_1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="@string/test_date"/>
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:contentDescription="@string/state_star_description"
+                                android:src="@drawable/star"
+                                android:layout_marginStart="40dp"/>
+
+                            <TextView
+                                android:id="@+id/state_rate_1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="@string/test_rate"/>
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:contentDescription="@string/state_comment_description"
+                                android:src="@drawable/comment_multiple_outline"
+                                android:layout_marginStart="20dp"/>
+
+                            <TextView
+                                android:id="@+id/state_number_comments_1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="@string/test_number_comments" />
+                        </LinearLayout>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/state_2"
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:layout_margin="3dp"
+                        android:background="@color/colorPrimary">
+
+                        <ImageView
+                            android:id="@+id/state_image_2"
+                            android:layout_width="120dp"
+                            android:layout_height="120dp"
+                            android:src="@drawable/unload_image"
+                            android:contentDescription="@string/state_image_description"
+                            android:background="@color/colorWhite"
+                            android:layout_marginStart="0dp"/>
+
+                        <TextView
+                            android:id="@+id/state_header_2"
+                            android:layout_width="240dp"
+                            android:layout_height="80dp"
+                            android:text="@string/test_header"
+                            android:textSize="16sp"
+                            android:fontFamily="sans-serif"
+                            android:layout_marginStart="125dp"/>
+
+                        <LinearLayout
+                            android:layout_width="250dp"
+                            android:layout_height="20dp"
+                            android:layout_alignBottom="@id/state_image_2"
+                            android:layout_toEndOf="@id/state_image_2">
+
+                            <TextView
+                                android:id="@+id/state_date_2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="@string/test_date"/>
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:contentDescription="@string/state_star_description"
+                                android:src="@drawable/star"
+                                android:layout_marginStart="40dp"/>
+
+                            <TextView
+                                android:id="@+id/state_rate_2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="@string/test_rate"/>
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:contentDescription="@string/state_comment_description"
+                                android:src="@drawable/comment_multiple_outline"
+                                android:layout_marginStart="20dp"/>
+
+                            <TextView
+                                android:id="@+id/state_number_comments_2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="@string/test_number_comments" />
+                        </LinearLayout>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/state_3"
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:layout_margin="3dp"
+                        android:background="@color/colorPrimary">
+
+                        <ImageView
+                            android:id="@+id/state_image_3"
+                            android:layout_width="120dp"
+                            android:layout_height="120dp"
+                            android:src="@drawable/unload_image"
+                            android:contentDescription="@string/state_image_description"
+                            android:background="@color/colorWhite"
+                            android:layout_marginStart="0dp"/>
+
+                        <TextView
+                            android:id="@+id/state_header_3"
+                            android:layout_width="240dp"
+                            android:layout_height="80dp"
+                            android:text="@string/test_header"
+                            android:textSize="16sp"
+                            android:fontFamily="sans-serif"
+                            android:layout_marginStart="125dp"/>
+
+                        <LinearLayout
+                            android:layout_width="250dp"
+                            android:layout_height="20dp"
+                            android:layout_alignBottom="@id/state_image_3"
+                            android:layout_toEndOf="@id/state_image_3">
+
+                            <TextView
+                                android:id="@+id/state_date_3"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="@string/test_date"/>
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:contentDescription="@string/state_star_description"
+                                android:src="@drawable/star"
+                                android:layout_marginStart="40dp"/>
+
+                            <TextView
+                                android:id="@+id/state_rate_3"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="@string/test_rate"/>
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:contentDescription="@string/state_comment_description"
+                                android:src="@drawable/comment_multiple_outline"
+                                android:layout_marginStart="20dp"/>
+
+                            <TextView
+                                android:id="@+id/state_number_comments_3"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="@string/test_number_comments" />
+                        </LinearLayout>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/state_4"
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:layout_margin="3dp"
+                        android:background="@color/colorPrimary">
+
+                        <ImageView
+                            android:id="@+id/state_image_4"
+                            android:layout_width="120dp"
+                            android:layout_height="120dp"
+                            android:src="@drawable/unload_image"
+                            android:contentDescription="@string/state_image_description"
+                            android:background="@color/colorWhite"
+                            android:layout_marginStart="0dp"/>
+
+                        <TextView
+                            android:id="@+id/state_header_4"
+                            android:layout_width="240dp"
+                            android:layout_height="80dp"
+                            android:text="@string/test_header"
+                            android:textSize="16sp"
+                            android:fontFamily="sans-serif"
+                            android:layout_marginStart="125dp"/>
+
+                        <LinearLayout
+                            android:layout_width="250dp"
+                            android:layout_height="20dp"
+                            android:layout_alignBottom="@id/state_image_4"
+                            android:layout_toEndOf="@id/state_image_4">
+
+                            <TextView
+                                android:id="@+id/state_date_4"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="@string/test_date"/>
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:contentDescription="@string/state_star_description"
+                                android:src="@drawable/star"
+                                android:layout_marginStart="40dp"/>
+
+                            <TextView
+                                android:id="@+id/state_rate_4"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="@string/test_rate"/>
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:contentDescription="@string/state_comment_description"
+                                android:src="@drawable/comment_multiple_outline"
+                                android:layout_marginStart="20dp"/>
+
+                            <TextView
+                                android:id="@+id/state_number_comments_4"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="@string/test_number_comments" />
+                        </LinearLayout>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/state_5"
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:layout_margin="3dp"
+                        android:background="@color/colorPrimary">
+
+                        <ImageView
+                            android:id="@+id/state_image_5"
+                            android:layout_width="120dp"
+                            android:layout_height="120dp"
+                            android:src="@drawable/unload_image"
+                            android:contentDescription="@string/state_image_description"
+                            android:background="@color/colorWhite"
+                            android:layout_marginStart="0dp"/>
+
+                        <TextView
+                            android:id="@+id/state_header_5"
+                            android:layout_width="240dp"
+                            android:layout_height="80dp"
+                            android:text="@string/test_header"
+                            android:textSize="16sp"
+                            android:fontFamily="sans-serif"
+                            android:layout_marginStart="125dp"/>
+
+                        <LinearLayout
+                            android:layout_width="250dp"
+                            android:layout_height="20dp"
+                            android:layout_alignBottom="@id/state_image_5"
+                            android:layout_toEndOf="@id/state_image_5">
+
+                            <TextView
+                                android:id="@+id/state_date_5"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="@string/test_date"/>
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:contentDescription="@string/state_star_description"
+                                android:src="@drawable/star"
+                                android:layout_marginStart="40dp"/>
+
+                            <TextView
+                                android:id="@+id/state_rate_5"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="@string/test_rate"/>
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:contentDescription="@string/state_comment_description"
+                                android:src="@drawable/comment_multiple_outline"
+                                android:layout_marginStart="20dp"/>
+
+                            <TextView
+                                android:id="@+id/state_number_comments_5"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="@string/test_number_comments" />
+                        </LinearLayout>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/state_6"
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:layout_margin="3dp"
+                        android:background="@color/colorPrimary">
+
+                        <ImageView
+                            android:id="@+id/state_image_6"
+                            android:layout_width="120dp"
+                            android:layout_height="120dp"
+                            android:src="@drawable/unload_image"
+                            android:contentDescription="@string/state_image_description"
+                            android:background="@color/colorWhite"
+                            android:layout_marginStart="0dp"/>
+
+                        <TextView
+                            android:id="@+id/state_header_6"
+                            android:layout_width="240dp"
+                            android:layout_height="80dp"
+                            android:text="@string/test_header"
+                            android:textSize="16sp"
+                            android:fontFamily="sans-serif"
+                            android:layout_marginStart="125dp"/>
+
+                        <LinearLayout
+                            android:layout_width="250dp"
+                            android:layout_height="20dp"
+                            android:layout_alignBottom="@id/state_image_6"
+                            android:layout_toEndOf="@id/state_image_6">
+
+                            <TextView
+                                android:id="@+id/state_date_6"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="@string/test_date"/>
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:contentDescription="@string/state_star_description"
+                                android:src="@drawable/star"
+                                android:layout_marginStart="40dp"/>
+
+                            <TextView
+                                android:id="@+id/state_rate_6"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="@string/test_rate"/>
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:contentDescription="@string/state_comment_description"
+                                android:src="@drawable/comment_multiple_outline"
+                                android:layout_marginStart="20dp"/>
+
+                            <TextView
+                                android:id="@+id/state_number_comments_6"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="@string/test_number_comments" />
+                        </LinearLayout>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/state_7"
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:layout_margin="3dp"
+                        android:background="@color/colorPrimary">
+
+                        <ImageView
+                            android:id="@+id/state_image_7"
+                            android:layout_width="120dp"
+                            android:layout_height="120dp"
+                            android:src="@drawable/unload_image"
+                            android:contentDescription="@string/state_image_description"
+                            android:background="@color/colorWhite"
+                            android:layout_marginStart="0dp"/>
+
+                        <TextView
+                            android:id="@+id/state_header_7"
+                            android:layout_width="240dp"
+                            android:layout_height="80dp"
+                            android:text="@string/test_header"
+                            android:textSize="16sp"
+                            android:fontFamily="sans-serif"
+                            android:layout_marginStart="125dp"/>
+
+                        <LinearLayout
+                            android:layout_width="250dp"
+                            android:layout_height="20dp"
+                            android:layout_alignBottom="@id/state_image_7"
+                            android:layout_toEndOf="@id/state_image_7">
+
+                            <TextView
+                                android:id="@+id/state_date_7"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="@string/test_date"/>
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:contentDescription="@string/state_star_description"
+                                android:src="@drawable/star"
+                                android:layout_marginStart="40dp"/>
+
+                            <TextView
+                                android:id="@+id/state_rate_7"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="@string/test_rate"/>
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:contentDescription="@string/state_comment_description"
+                                android:src="@drawable/comment_multiple_outline"
+                                android:layout_marginStart="20dp"/>
+
+                            <TextView
+                                android:id="@+id/state_number_comments_7"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="@string/test_number_comments" />
+                        </LinearLayout>
+                    </RelativeLayout>
+                </LinearLayout>
+            </ScrollView>
+    </android.support.design.widget.CoordinatorLayout>
     <android.support.design.widget.NavigationView
         android:id="@+id/navigation"
         android:layout_width="wrap_content"
@@ -60,5 +530,5 @@
         android:background="@color/mainBackground"
         app:menu="@menu/menu_navigation"
         app:headerLayout="@layout/navigation_header"/>
-
 </android.support.v4.widget.DrawerLayout>
+

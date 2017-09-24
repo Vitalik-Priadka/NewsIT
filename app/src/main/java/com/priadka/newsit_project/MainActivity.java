@@ -71,9 +71,15 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 drawerLayout.closeDrawers(); hideKeyboard();
                 switch (menuItem.getItemId()){
-                    case R.id.actionLogInItem: break;
-                    case R.id.actionNewsItem: break;
-                    case R.id.actionSettingItem: break;
+                    case R.id.actionLogInItem:{
+                        break;
+                    }
+                    case R.id.actionNewsItem:{
+                        break;
+                    }
+                    case R.id.actionSettingItem:{
+                        break;
+                    }
                     case R.id.actionExitItem: {
                         finishAndRemoveTask (); break;}
                 }

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:clickable="true"
+        android:focusableInTouchMode="true">
+
+        <EditText
+            android:id="@+id/search_text"
+            android:layout_width="120dp"
+            android:layout_height="45dp"
+            android:textColor="@color/toolbarItems"
+            android:fontFamily="sans-serif-condensed"
+            android:hint="@string/search_hint"
+            android:layout_marginStart="100dp"
+            android:layout_marginTop="5dp"
+            android:scrollHorizontally="true"
+            android:scrollbarAlwaysDrawHorizontalTrack="true"
+            android:inputType="text"/>
+    </android.support.v7.widget.Toolbar>
+
+    <ImageView
+        android:id="@+id/logo"
+        android:src="@drawable/it_news_logo_black"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:contentDescription="@string/logo_hint"
+        android:layout_marginStart="35dp"
+        android:layout_marginTop="11dp"/>
+</RelativeLayout>

@@ -4,6 +4,7 @@
     <string name="search_hint">Search&#8230;</string>
     <string name="logo_hint">logoImage</string>
     <string name="reload_toast">Reload page&#8230;</string>
+    <string name="search_toast">Search start&#8230;</string>
     <string name="search_title">Search</string>
     <string name="reload_title">Reload</string>
 

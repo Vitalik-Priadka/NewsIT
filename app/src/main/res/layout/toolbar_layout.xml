@@ -23,6 +23,7 @@
             android:layout_marginTop="5dp"
             android:scrollHorizontally="true"
             android:scrollbarAlwaysDrawHorizontalTrack="true"
+            android:imeOptions="actionSearch"
             android:inputType="text"/>
     </android.support.v7.widget.Toolbar>
 

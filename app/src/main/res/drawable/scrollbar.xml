@@ -2,7 +2,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <gradient
         android:angle="0"
-        android:centerColor="@color/textColor"
+        android:centerColor="@color/textColorDark"
         android:endColor="@color/mainBackground"
         android:startColor="@color/mainBackground" />
     <corners android:radius="1dp" />

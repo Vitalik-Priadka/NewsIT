@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private EditText editText;
-    // TODO
+    // TODO REST API using retrofit
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,11 +97,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void ReloadPage(){
-        /* ImageView icon =(ImageView) findViewById(R.id.reload);;
+        /* ImageView drawable.icon =(ImageView) findViewById(R.id.reload);;
         RotateAnimation rotate = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         rotate.setDuration(5000);
         rotate.setInterpolator(new LinearInterpolator());
-        icon.startAnimation(rotate); */
+        drawable.icon.startAnimation(rotate); */
         Toast.makeText(MainActivity.this, R.string.reload_toast, Toast.LENGTH_SHORT).show();
     }
 

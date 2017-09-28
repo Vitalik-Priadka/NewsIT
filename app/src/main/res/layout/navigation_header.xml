@@ -1,7 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="142dp"
     android:background="@color/colorPrimary">
-</LinearLayout>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/navigation_header_description"
+            android:src="@drawable/menu_header_background_lite"
+            android:scaleX="1.6"
+            android:scaleType="centerCrop"/>
+
+        <ImageView
+            android:id="@+id/menu_avatar"
+            android:layout_width="70dp"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/navigation_avatar_description"
+            android:src="@drawable/avatar_1"
+            android:layout_marginStart="10dp"/>
+
+        <TextView
+            android:id="@+id/menu_nickname"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="SiriusDark"
+            android:textSize="20sp"
+            android:textColor="@color/textColorDark"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="50dp"
+            android:layout_toEndOf="@+id/menu_avatar"
+            style="@style/TextStyle"/>
+
+        <TextView
+            android:id="@+id/menu_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="vitalik.pryadka@gmail.com"
+            android:textSize="11sp"
+            android:textColor="@color/textColorDark"
+            android:layout_alignStart="@id/menu_nickname"
+            android:layout_toEndOf="@+id/menu_avatar"
+            android:layout_below="@+id/menu_nickname"
+            android:fontFamily="serif"/>
+</RelativeLayout>

@@ -1,6 +1,7 @@
 package com.priadka.newsit_project;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -22,7 +23,12 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private EditText editText;
-    // TODO REST API using retrofit
+    /*TODO Task
+        REST API using retrofit
+        Активити для статьи
+        Меню NavigationView
+        Реализовать добавление news_layout и затычку
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         KeyboardAction();
     }
 
-    private void initToolbar(){
+    public void initToolbar(){
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         editText = (EditText) findViewById(R.id.search_text);
         toolbar.setTitle(null);
@@ -65,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         toolbar.inflateMenu(R.menu.menu);
     }
 
-    private void initNavigationView() {
+    public void initNavigationView() {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout , toolbar, R.string.view_navigation_open, R.string.view_navigation_close);
         drawerLayout.addDrawerListener(toggle);
@@ -77,15 +83,15 @@ public class MainActivity extends AppCompatActivity {
                 drawerLayout.closeDrawers(); hideKeyboard();
                 switch (menuItem.getItemId()){
                     case R.id.actionLogInItem:{
-
+                        GoToPage(LoginActivity.class);
                         break;
                     }
                     case R.id.actionNewsItem:{
-
+                        GoToPage(MainActivity.class);
                         break;
                     }
                     case R.id.actionSettingItem:{
-
+                        GoToPage(SettingActivity.class);
                         break;
                     }
                     case R.id.actionExitItem: {
@@ -96,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void ReloadPage(){
+    public void ReloadPage(){
         /* ImageView drawable.icon =(ImageView) findViewById(R.id.reload);;
         RotateAnimation rotate = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         rotate.setDuration(5000);
@@ -104,14 +110,30 @@ public class MainActivity extends AppCompatActivity {
         drawable.icon.startAnimation(rotate); */
         Toast.makeText(MainActivity.this, R.string.reload_toast, Toast.LENGTH_SHORT).show();
     }
-
-    private  void Search(EditText text){
+    public  void Search(EditText text){
         if(text != null) {
             Toast.makeText(MainActivity.this, R.string.search_toast, Toast.LENGTH_SHORT).show();
             text.setText(null);
         }
     }
 
+    private void GoToPage(Class activity) {
+        if (activity != getClass()) {
+            Intent intent = new Intent(this, activity);
+            startActivity(intent);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        }
+        return;
+    }
+
+    public void ShortToolbar(int captionText){
+        findViewById(R.id.search_text).setVisibility(View.INVISIBLE);
+        findViewById(R.id.search).setVisibility(View.INVISIBLE);
+        findViewById(R.id.reload).setVisibility(View.INVISIBLE);
+        TextView caption = (TextView) findViewById(R.id.caption_page);
+        caption.setText(captionText);
+        caption.setVisibility(View.VISIBLE);
+    }
     private  void KeyboardAction() {
         editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId,
@@ -125,7 +147,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
     public void hideKeyboard() {
         View view = this.getCurrentFocus();
         if (view != null) {

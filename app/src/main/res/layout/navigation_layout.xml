@@ -7,5 +7,9 @@
     android:layout_height="match_parent"
     android:layout_gravity="start"
     android:background="@color/mainBackground"
+    app:itemIconTint="@color/textColorDark"
+    app:itemTextColor="@color/textColorDark"
     app:menu="@menu/menu_navigation"
-    app:headerLayout="@layout/navigation_header" />
+    app:headerLayout="@layout/navigation_header">
+
+</android.support.design.widget.NavigationView>

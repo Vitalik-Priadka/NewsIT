@@ -8,8 +8,8 @@
     <string name="search_title">Search</string>
     <string name="reload_title">Reload</string>
 
-    <string name="menu_item_log_in">Войти акк.</string>
-    <string name="menu_item_log_out">Выйти акк.</string>
+    <string name="menu_item_log_in">Log In</string>
+    <string name="menu_item_log_out">Log Out</string>
     <string name="menu_item_bookmarks">Закладки</string>
     <string name="menu_item_news">Новости</string>
     <string name="menu_item_settings">Настройки</string>

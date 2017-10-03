@@ -13,35 +13,44 @@
             android:scaleX="1.6"
             android:scaleType="centerCrop"/>
 
-        <ImageView
-            android:id="@+id/menu_avatar"
-            android:layout_width="70dp"
+        <RelativeLayout
+            android:id="@+id/navigation_header"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:contentDescription="@string/navigation_avatar_description"
-            android:src="@drawable/avatar_1"
-            android:layout_marginStart="10dp"/>
+            android:visibility="visible">
 
-        <TextView
-            android:id="@+id/menu_nickname"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:text="SiriusDark"
-            android:textSize="20sp"
-            android:textColor="@color/textColorDark"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="50dp"
-            android:layout_toEndOf="@+id/menu_avatar"
-            style="@style/TextStyle"/>
+                <ImageView
+                    android:id="@+id/menu_avatar"
+                    android:layout_width="70dp"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/navigation_avatar_description"
+                    android:src="@drawable/avatar_1"
+                    android:onClick="setImageAvatarNext"
+                    android:layout_marginStart="10dp"/>
 
-        <TextView
-            android:id="@+id/menu_email"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="vitalik.pryadka@gmail.com"
-            android:textSize="11sp"
-            android:textColor="@color/textColorDark"
-            android:layout_alignStart="@id/menu_nickname"
-            android:layout_toEndOf="@+id/menu_avatar"
-            android:layout_below="@+id/menu_nickname"
-            android:fontFamily="serif"/>
+                <TextView
+                    android:id="@+id/menu_nickname"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:text="SiriusDark"
+                    android:textSize="20sp"
+                    android:textColor="@color/textColorDark"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="50dp"
+                    android:layout_toEndOf="@+id/menu_avatar"
+                    style="@style/TextStyle"/>
+
+                <TextView
+                    android:id="@+id/menu_email"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignStart="@id/menu_nickname"
+                    android:layout_below="@+id/menu_nickname"
+                    android:layout_toEndOf="@+id/menu_avatar"
+                    android:fontFamily="serif"
+                    android:text="vitalik.pryadka@gmail.com"
+                    android:textColor="@color/textColorDark"
+                    android:textSize="11sp" />
+        </RelativeLayout>
+
 </RelativeLayout>

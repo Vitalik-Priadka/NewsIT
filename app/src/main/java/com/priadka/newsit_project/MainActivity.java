@@ -15,18 +15,24 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.lang.reflect.Field;
 
 public class MainActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private EditText editText;
+    private ImageView avatarImage;
+    private RelativeLayout navigationHeader;
+    private int currentAvatar = 1;
     /*TODO Task
         REST API using retrofit
         Активити для статьи
-        Меню NavigationView
         Реализовать добавление news_layout и затычку
      */
 
@@ -50,12 +56,12 @@ public class MainActivity extends AppCompatActivity {
                 switch (menuItem.getItemId()){
                     case R.id.search:{
                         hideKeyboard();
-                        Search(editText);
+                        search(editText);
                         break;
                     }
                     case R.id.reload:{
                         hideKeyboard();
-                        ReloadPage();
+                        reloadPage();
                         break;
                     }
                 }
@@ -73,9 +79,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void initNavigationView() {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        navigationHeader = (RelativeLayout) findViewById(R.id.navigation_header);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout , toolbar, R.string.view_navigation_open, R.string.view_navigation_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+        initNavigationHeader();
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -83,26 +91,34 @@ public class MainActivity extends AppCompatActivity {
                 drawerLayout.closeDrawers(); hideKeyboard();
                 switch (menuItem.getItemId()){
                     case R.id.actionLogInItem:{
-                        GoToPage(LoginActivity.class);
+
+                        goToPage(LoginActivity.class);
                         break;
                     }
                     case R.id.actionNewsItem:{
-                        GoToPage(MainActivity.class);
+                        goToPage(MainActivity.class);
                         break;
                     }
                     case R.id.actionSettingItem:{
-                        GoToPage(SettingActivity.class);
+                        goToPage(SettingActivity.class);
                         break;
                     }
                     case R.id.actionExitItem: {
-                        finishAndRemoveTask (); break;}
+                        finishAffinity();
+                        break;}
                 }
                 return true;
             }
         });
     }
+    public void initNavigationHeader() {
+        avatarImage  = (ImageView) findViewById(R.id.menu_avatar);
+        navigationHeader = (RelativeLayout) findViewById(R.id.navigation_header);
+        //navigationHeader.setVisibility(View.VISIBLE);
+        //avatarImage.setImageResource(getResId("avatar_" + currentAvatar, R.drawable.class));
+    }
 
-    public void ReloadPage(){
+    public void reloadPage(){
         /* ImageView drawable.icon =(ImageView) findViewById(R.id.reload);;
         RotateAnimation rotate = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         rotate.setDuration(5000);
@@ -110,20 +126,29 @@ public class MainActivity extends AppCompatActivity {
         drawable.icon.startAnimation(rotate); */
         Toast.makeText(MainActivity.this, R.string.reload_toast, Toast.LENGTH_SHORT).show();
     }
-    public  void Search(EditText text){
+    public  void search(EditText text){
         if(text != null) {
             Toast.makeText(MainActivity.this, R.string.search_toast, Toast.LENGTH_SHORT).show();
             text.setText(null);
         }
     }
 
-    private void GoToPage(Class activity) {
+    private void goToPage(Class activity) {
         if (activity != getClass()) {
             Intent intent = new Intent(this, activity);
             startActivity(intent);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         }
-        return;
+    }
+
+    public void setImageAvatarNext(View view){
+        avatarImage  = (ImageView) findViewById(R.id.menu_avatar);
+        if(currentAvatar < 0 || currentAvatar >= 12){
+            currentAvatar = 1;
+        }
+        else currentAvatar++;
+        String currentAvatarS = "avatar_" + currentAvatar;
+        avatarImage.setImageResource(getResId(currentAvatarS, R.drawable.class));
     }
 
     public void ShortToolbar(int captionText){
@@ -134,13 +159,22 @@ public class MainActivity extends AppCompatActivity {
         caption.setText(captionText);
         caption.setVisibility(View.VISIBLE);
     }
+    public static int getResId(String resName, Class<?> c) {
+        try {
+            Field idField = c.getDeclaredField(resName);
+            return idField.getInt(idField);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
     private  void KeyboardAction() {
         editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId,
                                           KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     hideKeyboard();
-                    Search(editText);
+                    search(editText);
                     return true;
                 }
                 return false;

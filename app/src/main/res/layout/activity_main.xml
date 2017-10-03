@@ -31,7 +31,12 @@
 
                     <!-- Сюда реализовывать подгрузку контента -->
                     <include layout="@layout/news_layout"/>
-
+                    <include layout="@layout/news_layout"/>
+                    <include layout="@layout/news_layout"/>
+                    <include layout="@layout/news_layout"/>
+                    <include layout="@layout/news_layout"/>
+                    <include layout="@layout/news_layout"/>
+                    <include layout="@layout/news_layout"/>
 
                 </LinearLayout>
             </ScrollView>

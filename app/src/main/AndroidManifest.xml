@@ -13,6 +13,7 @@
         <activity
             android:name=".SplashScreen"
             android:screenOrientation="portrait"
+            android:excludeFromRecents="true"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,12 +33,12 @@
 
         <!-- SettingScreen screen -->
         <activity
-        android:name=".SettingActivity"
-        android:screenOrientation="portrait">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.DEFAULT" />
-        </intent-filter>
+            android:name=".SettingActivity"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
 
         <!-- LoginScreen screen -->

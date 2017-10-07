@@ -7,6 +7,7 @@
     <string name="search_toast">Search start&#8230;</string>
     <string name="search_title">Search</string>
     <string name="reload_title">Reload</string>
+    <string name="error_text">Извените! Произошла ошибка!</string>
 
     <string name="menu_item_log_in">Log In</string>
     <string name="menu_item_log_out">Log Out</string>
@@ -28,4 +29,24 @@
     <string name="test_date">14:23  24.09.17</string>
     <string name="test_rate">128</string>
     <string name="test_number_comments">5</string>
+
+    <string name="setting_text_language">Язык приложения:</string>
+    <string-array name="languageList">
+        <item>Русский</item>
+        <item>Английский</item>
+        <item>Украинский</item>
+    </string-array>
+
+    <string name="setting_text_theme">Тема приложения:</string>
+    <string-array name="themeList">
+        <item>Светлая</item>
+        <item>Тёмная</item>
+        <item>Синяя</item>
+    </string-array>
+    <string name="setting_version">Текущая версия: 0.12 (Beta)</string>
+    <string name="setting_info_button">*Написать нам*</string>
+    <string name="setting_info_email_header">Сообщение от пользователя&#8230;</string>
+    <string name="setting_info_email_text">Здравствуйте тех. поддержка IT-News! Я пишу по поводу &#8230;</string>
+    <string name="setting_info">Данное пиложение было создано\n в рамках курсового проекта по дисциплине \"Компьютерные сети\".\n Студентами групы КИ-151:\n Прядка В. В. и Рожнятовская Д. Д.</string>
+
 </resources>

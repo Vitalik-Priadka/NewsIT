@@ -118,6 +118,8 @@ public class MainActivity extends AppCompatActivity {
         //avatarImage.setImageResource(getResId("avatar_" + currentAvatar, R.drawable.class));
     }
 
+
+
     public void reloadPage(){
         /* ImageView drawable.icon =(ImageView) findViewById(R.id.reload);;
         RotateAnimation rotate = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
@@ -130,14 +132,6 @@ public class MainActivity extends AppCompatActivity {
         if(text != null) {
             Toast.makeText(MainActivity.this, R.string.search_toast, Toast.LENGTH_SHORT).show();
             text.setText(null);
-        }
-    }
-
-    private void goToPage(Class activity) {
-        if (activity != getClass()) {
-            Intent intent = new Intent(this, activity);
-            startActivity(intent);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         }
     }
 
@@ -166,6 +160,13 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
             return 0;
+        }
+    }
+    private void goToPage(Class activity) {
+        if (activity != getClass()) {
+            Intent intent = new Intent(this, activity);
+            startActivity(intent);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         }
     }
     private  void KeyboardAction() {

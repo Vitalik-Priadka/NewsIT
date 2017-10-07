@@ -13,7 +13,6 @@
         <activity
             android:name=".SplashScreen"
             android:screenOrientation="portrait"
-            android:excludeFromRecents="true"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

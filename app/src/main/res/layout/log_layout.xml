@@ -9,7 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <include layout="@layout/toolbar_layout"/>
-        <RelativeLayout
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="top"
@@ -17,14 +18,89 @@
             android:clickable="true">
 
             <TextView
+                android:id="@+id/textView"
+                style="@style/TextStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/AppDefault"
-                android:textSize="20sp"
+                android:layout_gravity="center_horizontal"
                 android:padding="10dp"
-                android:text="Эмм ... Это страница для входа в аккаунт ..."/>
+                android:text="@string/log_info"
+                android:textSize="30sp" />
 
-        </RelativeLayout>
+            <RelativeLayout
+                android:layout_marginTop="20dp"
+                android:layout_width="300dp"
+                android:layout_height="400dp"
+                android:layout_gravity="center">
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="60dp"
+                    android:background="@color/colorPrimary">
+
+                    <EditText
+                        android:id="@+id/login_field"
+                        android:layout_width="250dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="80dp"
+                        android:hint="@string/log_login"
+                        android:drawableLeft="@drawable/user_icon"
+                        android:textColorHint="@color/textColorDark"
+                        android:backgroundTint="@color/textColorDark"
+                        android:textSize="18sp"
+                        android:scrollHorizontally="true"
+                        android:scrollbarAlwaysDrawHorizontalTrack="true"
+                        android:inputType="text"/>
+
+                    <EditText
+                        android:id="@+id/password_field"
+                        style="@style/TextStyle"
+                        android:layout_width="250dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="5dp"
+                        android:hint="@string/log_password"
+                        android:drawableLeft="@drawable/lock"
+                        android:textColorHint="@color/textColorDark"
+                        android:backgroundTint="@color/textColorDark"
+                        android:textSize="18sp"
+                        android:scrollHorizontally="true"
+                        android:scrollbarAlwaysDrawHorizontalTrack="true"
+                        android:imeOptions="actionGo"
+                        android:inputType="textPassword"/>
+
+                    <CheckBox
+                        android:id="@+id/checkBox_save"
+                        style="@style/TextStyle"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="5dp"
+                        android:layout_width="250dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/log_check" />
+
+                    <Button
+                        android:id="@+id/button_login"
+                        style="@style/TextStyle"
+                        android:textSize="20sp"
+                        android:layout_width="250dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="40dp"
+                        android:background="@drawable/button_default"
+                        android:text="@string/log_button" />
+                </LinearLayout>
+                <ImageView
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:foregroundGravity="center"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/question_mark_lite"/>
+            </RelativeLayout>
+        </LinearLayout>
     </android.support.design.widget.CoordinatorLayout>
     <include layout="@layout/navigation_layout"/>
 </android.support.v4.widget.DrawerLayout>

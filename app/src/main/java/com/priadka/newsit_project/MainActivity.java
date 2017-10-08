@@ -68,15 +68,8 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-        editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) hideKeyboard();
-            }
-        });
         toolbar.inflateMenu(R.menu.menu);
     }
-
     public void initNavigationView() {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationHeader = (RelativeLayout) findViewById(R.id.navigation_header);
@@ -91,7 +84,6 @@ public class MainActivity extends AppCompatActivity {
                 drawerLayout.closeDrawers(); hideKeyboard();
                 switch (menuItem.getItemId()){
                     case R.id.actionLogInItem:{
-
                         goToPage(LoginActivity.class);
                         break;
                     }
@@ -119,7 +111,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     public void reloadPage(){
         /* ImageView drawable.icon =(ImageView) findViewById(R.id.reload);;
         RotateAnimation rotate = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
@@ -128,11 +119,21 @@ public class MainActivity extends AppCompatActivity {
         drawable.icon.startAnimation(rotate); */
         Toast.makeText(MainActivity.this, R.string.reload_toast, Toast.LENGTH_SHORT).show();
     }
-    public  void search(EditText text){
+    public void search(EditText text){
         if(text != null) {
             Toast.makeText(MainActivity.this, R.string.search_toast, Toast.LENGTH_SHORT).show();
             text.setText(null);
         }
+    }
+    public void loginUser(String login, String password){
+        if (login.equals("Vitalik") && password.equals("12345")){
+            Toast.makeText(MainActivity.this, getString(R.string.log_success)+ " " + login + "!", Toast.LENGTH_SHORT).show();
+            try { synchronized(this){wait(200);}
+            } catch(InterruptedException ex){ }
+            goToPage(MainActivity.class);
+        }
+        else if(!login.equals("Vitalik")){Toast.makeText(MainActivity.this, getString(R.string.log_error_login), Toast.LENGTH_SHORT).show();}
+             else {Toast.makeText(MainActivity.this, getString(R.string.log_error_password), Toast.LENGTH_SHORT).show();}
     }
 
     public void setImageAvatarNext(View view){
@@ -169,6 +170,7 @@ public class MainActivity extends AppCompatActivity {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         }
     }
+
     private  void KeyboardAction() {
         editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId,

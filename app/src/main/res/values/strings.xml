@@ -9,8 +9,8 @@
     <string name="reload_title">Reload</string>
     <string name="error_text">Извените! Произошла ошибка!</string>
 
-    <string name="menu_item_log_in">Log In</string>
-    <string name="menu_item_log_out">Log Out</string>
+    <string name="menu_item_log_in">Войти</string>
+    <string name="menu_item_log_out">Выйти</string>
     <string name="menu_item_bookmarks">Закладки</string>
     <string name="menu_item_news">Новости</string>
     <string name="menu_item_settings">Настройки</string>
@@ -48,5 +48,14 @@
     <string name="setting_info_email_header">Сообщение от пользователя&#8230;</string>
     <string name="setting_info_email_text">Здравствуйте тех. поддержка IT-News! Я пишу по поводу &#8230;</string>
     <string name="setting_info">Данное пиложение было создано\n в рамках курсового проекта по дисциплине \"Компьютерные сети\".\n Студентами групы КИ-151:\n Прядка В. В. и Рожнятовская Д. Д.</string>
+
+    <string name="log_info">Вход в аккаунт</string>
+    <string name="log_login">Ваш Логин</string>
+    <string name="log_password">Ваш Пароль</string>
+    <string name="log_check">Сохранить ваш пароль?</string>
+    <string name="log_button">Войти</string>
+    <string name="log_success">Добро пожаловать</string>
+    <string name="log_error_login">Не правильный логин!</string>
+    <string name="log_error_password">Не правильный пароль!</string>
 
 </resources>

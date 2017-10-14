@@ -98,6 +98,7 @@
 
             <TextView
                 style="@style/TextStyle"
+                android:textSize="14sp"
                 android:layout_width="match_parent"
                 android:layout_height="25dp"
                 android:text="@string/setting_version"

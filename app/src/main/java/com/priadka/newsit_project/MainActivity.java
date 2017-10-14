@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.AppDefault);
+        setTheme(R.style.AppThemeLight);
         super.onCreate(savedInstanceState);
         setContentView(Constant.LAYOUT);
         initToolbar();

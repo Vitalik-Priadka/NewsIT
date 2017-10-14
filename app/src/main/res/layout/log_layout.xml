@@ -43,14 +43,15 @@
                     <EditText
                         android:id="@+id/login_field"
                         android:layout_width="250dp"
-                        android:layout_height="40dp"
+                        android:layout_height="45dp"
                         android:layout_gravity="center"
                         android:layout_marginTop="80dp"
                         android:hint="@string/log_login"
+                        android:fontFamily="sans-serif"
                         android:drawableLeft="@drawable/user_icon"
                         android:textColorHint="@color/textColorDark"
                         android:backgroundTint="@color/textColorDark"
-                        android:textSize="18sp"
+                        android:textSize="20sp"
                         android:scrollHorizontally="true"
                         android:scrollbarAlwaysDrawHorizontalTrack="true"
                         android:inputType="text"/>
@@ -59,14 +60,15 @@
                         android:id="@+id/password_field"
                         style="@style/TextStyle"
                         android:layout_width="250dp"
-                        android:layout_height="40dp"
+                        android:layout_height="45dp"
                         android:layout_gravity="center"
                         android:layout_marginTop="5dp"
                         android:hint="@string/log_password"
+                        android:fontFamily="sans-serif"
                         android:drawableLeft="@drawable/lock"
                         android:textColorHint="@color/textColorDark"
                         android:backgroundTint="@color/textColorDark"
-                        android:textSize="18sp"
+                        android:textSize="20sp"
                         android:scrollHorizontally="true"
                         android:scrollbarAlwaysDrawHorizontalTrack="true"
                         android:imeOptions="actionGo"
@@ -79,6 +81,7 @@
                         android:layout_marginTop="5dp"
                         android:layout_width="250dp"
                         android:layout_height="wrap_content"
+                        android:textSize="15sp"
                         android:text="@string/log_check" />
 
                     <Button

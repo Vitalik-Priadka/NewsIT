@@ -1,44 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/colorPrimary">
-
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
             <include layout="@layout/toolbar_layout"/>
-
-            <ScrollView
+        <LinearLayout
+            android:id="@+id/container"
+            android:layout_marginTop="58dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/mainBackground"
+            android:orientation="vertical">
+            <!--
+            <fragment
+                android:name="com.priadka.newsit_project.fragment.NewsFragment"
+                android:id="@+id/news_fragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbarSize="5dp"
-                android:scrollbars="vertical"
-                android:scrollbarThumbVertical="@drawable/scrollbar"
-                android:fadeScrollbars="false"
-                android:layout_gravity="top"
-                android:layout_marginTop="58dp"
-                android:clickable="true">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="4dp"
-                    android:layout_marginLeft="4dp"
-                    android:orientation="vertical">
+                android:layout_gravity="center_horizontal"
+                tools:layout="@layout/news_layout"/>
 
-                    <!-- Сюда реализовывать подгрузку контента -->
-                    <include layout="@layout/news_layout"/>
-                    <include layout="@layout/news_layout"/>
-                    <include layout="@layout/news_layout"/>
-                    <include layout="@layout/news_layout"/>
-                    <include layout="@layout/news_layout"/>
-                    <include layout="@layout/news_layout"/>
-                    <include layout="@layout/news_layout"/>
+            <fragment
+                android:name="com.priadka.newsit_project.fragment.LoginFragment"
+                android:id="@+id/login_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                tools:layout="@layout/log_layout"/>
 
-                </LinearLayout>
-            </ScrollView>
+            <fragment
+                android:name="com.priadka.newsit_project.fragment.SettingFragment"
+                android:id="@+id/setting_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                tools:layout="@layout/setting_layout"/>
+             -->
+        </LinearLayout>
     </android.support.design.widget.CoordinatorLayout>
     <include layout="@layout/navigation_layout"/>
 </android.support.v4.widget.DrawerLayout>

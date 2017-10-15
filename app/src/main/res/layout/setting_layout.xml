@@ -1,19 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/drawer_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/mainBackground">
-    <android.support.design.widget.CoordinatorLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <include layout="@layout/toolbar_layout"/>
 
         <RelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="top"
-            android:layout_marginTop="58dp"
             android:clickable="true">
 
             <LinearLayout
@@ -38,7 +28,7 @@
                     style="@style/TextStyle"
                     android:layout_width="140dp"
                     android:layout_height="35dp"
-                    android:textSize="12sp"
+                    android:textSize="15sp"
                     android:layout_gravity="center"
                     android:text="@string/setting_info_button"
                     android:background="@drawable/button_default"
@@ -106,6 +96,3 @@
                 android:layout_alignParentBottom="true"
                 android:background="@color/colorPrimary" />
         </RelativeLayout>
-    </android.support.design.widget.CoordinatorLayout>
-    <include layout="@layout/navigation_layout"/>
-</android.support.v4.widget.DrawerLayout>

@@ -50,6 +50,7 @@
     <string name="setting_info">Данное пиложение было создано\n в рамках курсового проекта по дисциплине \"Компьютерные сети\".\n Студентами групы КИ-151:\n Прядка В. В. и Рожнятовская Д. Д.</string>
 
     <string name="log_info">Вход в аккаунт</string>
+    <string name="log_image_description">"Таинственный знак"</string>
     <string name="log_login">Ваш Логин</string>
     <string name="log_password">Ваш Пароль</string>
     <string name="log_check">Сохранить ваш пароль?</string>
@@ -58,7 +59,7 @@
     <string name="log_error_login">Не правильный логин!</string>
     <string name="log_error_password">Не правильный пароль!</string>
 
-    <!--            Отступы и размеры           -->
+    <!--            Отступы и размеры     Not Try      -->
     <string name="top_margin">58dp</string>
 
     <string name="text_size_small">12sp</string>

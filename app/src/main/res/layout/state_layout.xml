@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/state"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_margin="2dp"
+        android:focusableInTouchMode="true"
+        android:background="@color/mainBackgroundState">
+
+        <ImageView
+            android:id="@+id/state_image"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginStart="0dp"
+            android:background="@color/colorWhite"
+            android:contentDescription="@string/state_image_description"
+            android:src="@drawable/unload_image" />
+
+        <TextView
+            android:id="@+id/state_header"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:layout_marginStart="125dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="10dp"
+            android:textSize="14sp"
+            style="@style/TextStyle"
+            android:text="@string/test_header" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignBottom="@id/state_header"
+            android:background="@color/textColorDark"
+            android:layout_marginBottom="3dp"
+            android:layout_alignStart="@+id/state_header"
+            android:layout_alignEnd="@+id/state_header" />
+
+        <LinearLayout
+            android:layout_width="250dp"
+            android:layout_height="20dp"
+            android:layout_alignBottom="@id/state_image"
+            android:layout_alignEnd="@+id/state_header"
+            android:layout_alignStart="@+id/state_header">
+
+            <TextView
+                android:id="@+id/state_date"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                style="@style/TextStyle"
+                android:textSize="13sp"
+                android:text="@string/test_date" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="25dp"
+                android:contentDescription="@string/state_star_description"
+                android:src="@drawable/star" />
+
+            <TextView
+                android:id="@+id/state_rate"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                style="@style/TextStyle"
+                android:textSize="13sp"
+                android:text="@string/test_rate" />
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="20dp"
+                android:contentDescription="@string/state_comment_description"
+                android:src="@drawable/comment_multiple_outline" />
+
+            <TextView
+                android:id="@+id/state_number_comments"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                style="@style/TextStyle"
+                android:textSize="13sp"
+                android:text="@string/test_number_comments" />
+        </LinearLayout>
+    </RelativeLayout>

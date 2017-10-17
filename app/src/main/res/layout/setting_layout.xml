@@ -11,26 +11,26 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:background="@color/mainBackgroundState"
+                android:background="?attr/colorMainBackgroundState"
                 android:layout_alignParentTop="true"
                 android:layout_marginTop="5dp">
                 <TextView
                     android:id="@+id/setting_info_text"
-                    style="@style/TextStyle"
+                    style="@style/TextStyleMedium"
+                    android:textColor="?attr/colorText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
-                    android:textSize="15sp"
                     android:gravity="center"
                     android:text="@string/setting_info"/>
 
                 <Button
-                    style="@style/TextStyle"
                     android:layout_width="140dp"
                     android:layout_height="35dp"
-                    android:textSize="15sp"
+                    android:textSize="14sp"
                     android:layout_gravity="center"
                     android:text="@string/setting_info_button"
+                    android:textColor="?attr/colorText"
                     android:background="@drawable/button_default"
                     android:layout_marginBottom="10dp"
                     android:onClick="submitToEmail"/>
@@ -41,22 +41,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:orientation="horizontal"
-                android:background="@color/mainBackgroundState"
+                android:background="?attr/colorMainBackgroundState"
                 android:layout_below="@+id/setting_info"
                 android:layout_marginTop="5dp">
                 <TextView
-                    style="@style/TextStyle"
+                    style="@style/TextStyleBig"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginStart="10dp"
                     android:gravity="center"
-                    android:text="@string/setting_text_language"
-                    android:textSize="20sp"/>
+                    android:textColor="?attr/colorText"
+                    android:text="@string/setting_text_language" />
                 <Spinner
                     android:id="@+id/spinner_language"
                     android:layout_width="match_parent"
                     android:textAlignment="center"
                     android:spinnerMode="dropdown"
+
                     android:entries="@array/languageList"
                     android:layout_height="match_parent"/>
             </LinearLayout>
@@ -66,17 +67,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:orientation="horizontal"
-                android:background="@color/mainBackgroundState"
+                android:background="?attr/colorMainBackgroundState"
                 android:layout_below="@+id/setting_language"
                 android:layout_marginTop="5dp">
                 <TextView
-                    style="@style/TextStyle"
+                    style="@style/TextStyleBig"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginStart="10dp"
                     android:gravity="center"
-                    android:text="@string/setting_text_theme"
-                    android:textSize="20sp"/>
+                    android:textColor="?attr/colorText"
+                    android:text="@string/setting_text_theme" />
                 <Spinner
                     android:id="@+id/spinner_theme"
                     android:layout_width="match_parent"
@@ -87,12 +88,12 @@
             </LinearLayout>
 
             <TextView
-                style="@style/TextStyle"
                 android:textSize="14sp"
+                android:textColor="?attr/colorText"
                 android:layout_width="match_parent"
                 android:layout_height="25dp"
                 android:text="@string/setting_version"
                 android:gravity="center"
                 android:layout_alignParentBottom="true"
-                android:background="@color/colorPrimary" />
+                android:background="?attr/colorPrimary" />
         </RelativeLayout>

@@ -2,8 +2,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <gradient
         android:angle="0"
-        android:centerColor="@color/textColorDark"
-        android:endColor="@color/mainBackground"
-        android:startColor="@color/mainBackground" />
+        android:centerColor="?attr/colorAccent"
+        android:endColor="?attr/colorMainBackground"
+        android:startColor="?attr/colorMainBackground"/>
     <corners android:radius="1dp" />
 </shape>

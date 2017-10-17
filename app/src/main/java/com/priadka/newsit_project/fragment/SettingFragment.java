@@ -12,6 +12,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.priadka.newsit_project.Constant;
+import com.priadka.newsit_project.MainActivity;
 import com.priadka.newsit_project.R;
 
 public class SettingFragment extends Fragment {
@@ -49,8 +50,9 @@ public class SettingFragment extends Fragment {
         spinnerTheme.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedTheme = parent.getItemAtPosition(position).toString();
-                Toast.makeText(getActivity(), "Value is " + selectedTheme + "! Position:"+ position, Toast.LENGTH_SHORT).show();
+                //String selectedTheme = parent.getItemAtPosition(position).toString();
+                int Theme = ((MainActivity)getActivity()).getCurrentTheme();
+                spinnerTheme.setSelection(Theme-1);
             }
 
             @Override

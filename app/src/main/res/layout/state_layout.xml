@@ -6,13 +6,13 @@
         android:layout_height="100dp"
         android:layout_margin="2dp"
         android:focusableInTouchMode="true"
-        android:background="@color/mainBackgroundState">
+        android:background="?attr/colorMainBackgroundState">
 
         <ImageView
             android:id="@+id/state_image"
-            android:layout_width="120dp"
+            android:layout_width="110dp"
             android:layout_height="120dp"
-            android:layout_marginStart="0dp"
+            android:layout_margin="1dp"
             android:background="@color/colorWhite"
             android:contentDescription="@string/state_image_description"
             android:src="@drawable/unload_image" />
@@ -24,15 +24,15 @@
             android:layout_marginStart="125dp"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="10dp"
-            android:textSize="14sp"
-            style="@style/TextStyle"
+            android:textColor="?attr/colorText"
+            style="@style/TextStyleMedium"
             android:text="@string/test_header" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_alignBottom="@id/state_header"
-            android:background="@color/textColorDark"
+            android:background="?attr/colorText"
             android:layout_marginBottom="3dp"
             android:layout_alignStart="@+id/state_header"
             android:layout_alignEnd="@+id/state_header" />
@@ -48,8 +48,8 @@
                 android:id="@+id/state_date"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                style="@style/TextStyle"
-                android:textSize="13sp"
+                android:textColor="?attr/colorText"
+                style="@style/TextStyleSmall"
                 android:text="@string/test_date" />
 
             <ImageView
@@ -63,7 +63,8 @@
                 android:id="@+id/state_rate"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                style="@style/TextStyle"
+                android:textColor="?attr/colorText"
+                style="@style/TextStyleSmall"
                 android:textSize="13sp"
                 android:text="@string/test_rate" />
 
@@ -79,7 +80,8 @@
                 android:id="@+id/state_number_comments"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                style="@style/TextStyle"
+                android:textColor="?attr/colorText"
+                style="@style/TextStyleSmall"
                 android:textSize="13sp"
                 android:text="@string/test_number_comments" />
         </LinearLayout>

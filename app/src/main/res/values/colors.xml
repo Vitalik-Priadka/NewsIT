@@ -1,13 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#BDBDBD</color>
-    <color name="colorPrimaryDark">#9E9E9E</color>
-    <color name="mainBackground">#EEEEEE</color>
-    <color name="mainBackgroundState">#E0E0E0</color>
-    <color name="colorAccent">#000000</color>
-    <color name="toolbarItems">#3e3e3e</color>
+    <!--    Цвета для первой темы   -->
+    <color name="colorPrimary_First">#BDBDBD</color>
+    <color name="colorPrimaryDark_First">#9E9E9E</color>
+    <color name="mainBackground_First">#EEEEEE</color>
+    <color name="mainBackgroundState_First">#E0E0E0</color>
+    <color name="colorAccent_First">#000000</color>
+    <color name="toolbarItems_First">#3e3e3e</color>
 
+    <!--    Цвета для второй темы   -->
+    <color name="colorPrimary_Second">#393939</color>
+    <color name="colorPrimaryDark_Second">#232323</color>
+    <color name="mainBackground_Second">#232323</color>
+    <color name="mainBackgroundState_Second">#393939</color>
+    <color name="colorAccent_Second">#E3E3D9</color>
+    <color name="toolbarItems_Second">#E3E3D9</color>
+
+    <!--    Цвета для третей темы   -->
+    <color name="colorPrimary_Third">#BDBDBD</color>
+    <color name="colorPrimaryDark_Third">#9E9E9E</color>
+    <color name="mainBackground_Third">#EEEEEE</color>
+    <color name="mainBackgroundState_Third">#E0E0E0</color>
+    <color name="colorAccent_Third">#000000</color>
+    <color name="toolbarItems_Third">#3e3e3e</color>
+
+    <!--    Цвета Общие   -->
     <color name="textColorDark">#050505</color>
-    <color name="textColorLite">#dadada</color>
+    <color name="textColorLite">#E3E3D9</color>
     <color name="colorWhite">#ffffff</color>
 </resources>

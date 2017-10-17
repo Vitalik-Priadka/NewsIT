@@ -2,6 +2,7 @@ package com.priadka.newsit_project;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -36,7 +37,7 @@ public class MainActivity extends FragmentActivity {
     private RelativeLayout navigationHeader;
     private LoginFragment loginFragment;  private  SettingFragment settingFragment; private NewsFragment newsFragment;
     private FragmentManager manager;    private FragmentTransaction transaction;
-    public boolean isLogin = false; private int currentAvatar = 9; private static long back_pressed;
+    public boolean isLogin = false; private int currentAvatar = 9, currentTheme = 2; private static long back_pressed;
     /*TODO TaskList:
         - REST API используя retrofit (парсин данных);
         - Фрагмент для статьи;
@@ -53,7 +54,6 @@ public class MainActivity extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.AppThemeLight);
         super.onCreate(savedInstanceState);
         setContentView(Constant.LAYOUT);
 
@@ -70,6 +70,24 @@ public class MainActivity extends FragmentActivity {
         settingFragment = new SettingFragment();
         newsFragment = new NewsFragment();
         FragmentDo(newsFragment);
+    }
+    @Override
+    public Resources.Theme getTheme() {
+        Resources.Theme theme = super.getTheme();
+            if (currentTheme < 4 && currentTheme > 0){
+                switch (currentTheme){
+                    case 1:{
+                        theme.applyStyle(Constant.THEME_1, true); break;
+                    }
+                    case 2:{
+                        theme.applyStyle(Constant.THEME_2, true); break;
+                    }
+                    case 3:{
+                        theme.applyStyle(Constant.THEME_3, true); break;
+                    }
+                }
+            }
+        return theme;
     }
 
     public void initToolbar(){
@@ -137,7 +155,6 @@ public class MainActivity extends FragmentActivity {
                 return true;
             }
         });
-
     }
     public void initNavigationOnLogin() {
         ImageView avatarImage  = (ImageView) findViewById(R.id.menu_avatar);
@@ -265,5 +282,8 @@ public class MainActivity extends FragmentActivity {
                 return false;
             }
         });
+    }
+    public int getCurrentTheme(){
+        return currentTheme;
     }
 }

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="colorMainBackground" format="reference" />
+    <attr name="colorTextHint" format="reference" />
+    <attr name="colorMainBackgroundState" format="reference" />
+    <attr name="colorToolbarItems" format="reference" />
+    <attr name="colorText" format="reference" />
+    <attr name="colorTextNegative" format="reference" />
+
+    <attr name="imageItNews" format="reference" />
+    <attr name="imageQuestionMark" format="reference" />
+    <attr name="imageMenuHeader" format="reference" />
+
+
+    <!--
+    <attr name="colorPrimaryDark" format="reference" />
+    <attr name="colorAccent" format="reference" />
+    <attr name="colorAccent" format="reference" />
+    <attr name="colorAccent" format="reference" />
+    <attr name="colorAccent" format="reference" />
+    <attr name="colorAccent" format="reference" />
+    -->
+</resources>

@@ -6,9 +6,10 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:layout_gravity="start"
-    android:background="@color/mainBackground"
-    app:itemIconTint="@color/textColorDark"
-    app:itemTextColor="@color/textColorDark"
+    android:background="?attr/colorMainBackground"
+    app:itemTextAppearance="@style/TextStyleBig"
+    app:itemIconTint="?attr/colorText"
+    app:itemTextColor="?attr/colorText"
     app:menu="@menu/menu_navigation"
     app:headerLayout="@layout/navigation_header">
 

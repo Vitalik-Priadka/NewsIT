@@ -12,11 +12,4 @@
         android:src="@drawable/it_news_logo_black"
         android:layout_gravity="center_vertical|center_horizontal"/>
 
-    <!--
-    <TextView
-        style="@style/TestStyle"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Hello World!" />
-    -->
 </LinearLayout>

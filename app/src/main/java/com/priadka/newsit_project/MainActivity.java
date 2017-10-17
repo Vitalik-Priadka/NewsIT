@@ -37,11 +37,18 @@ public class MainActivity extends FragmentActivity {
     private LoginFragment loginFragment;  private  SettingFragment settingFragment; private NewsFragment newsFragment;
     private FragmentManager manager;    private FragmentTransaction transaction;
     public boolean isLogin = false; private int currentAvatar = 9; private static long back_pressed;
-    /*TODO Task
-        REST API using retrofit
-        Активити для статьи
-        Реализовать добавление state_layout и затычку
-        Логин пользователя
+    /*TODO TaskList:
+        - REST API используя retrofit (парсин данных);
+        - Фрагмент для статьи;
+        - Динамическая подгрузка фрагментов (статей);
+        - Просморт фрагмента статьи;
+        - Изменение темы и языка (без статей);
+        - Реализовать алгоритм поиска (желательно по частичному совпадению);
+        - Реализовать алгоритм обновления (по дате добавления);
+        - Комментирование статей и добавление в "Закладки";
+        - Работа с кешом (сохранение темы, языка, логина, пароля);
+        - "Настройки" Очистка кеша;
+        + Логин пользователя;
      */
 
     @Override

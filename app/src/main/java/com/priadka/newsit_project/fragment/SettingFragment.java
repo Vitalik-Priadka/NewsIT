@@ -27,6 +27,8 @@ public class SettingFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         spinnerLanguage = (Spinner)  getView().findViewById(R.id.spinner_language);
         spinnerTheme = (Spinner)  getView().findViewById(R.id.spinner_theme);
+        int Theme = ((MainActivity)getActivity()).getCurrentTheme();
+        spinnerTheme.setSelection(Theme,false);
         initSpinnerLanguage(); initSpinnerTheme();
     }
 
@@ -51,10 +53,10 @@ public class SettingFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 //String selectedTheme = parent.getItemAtPosition(position).toString();
-                int Theme = ((MainActivity)getActivity()).getCurrentTheme();
-                spinnerTheme.setSelection(Theme-1);
+                ((MainActivity)getActivity()).getTheme(position);
+                ((MainActivity)getActivity()).setCurrentTheme(position);
+                getActivity().recreate();
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 

@@ -2,6 +2,7 @@ package com.priadka.newsit_project;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
@@ -31,13 +32,19 @@ import com.priadka.newsit_project.fragment.SettingFragment;
 
 import java.lang.reflect.Field;
 
+import static com.priadka.newsit_project.Constant.APP_PREFERENCES;
+
 public class MainActivity extends FragmentActivity {
 
     private Toolbar toolbar;    private DrawerLayout drawerLayout;  private EditText searchField;
-    private RelativeLayout navigationHeader;
+    private NavigationView navigationView;
     private LoginFragment loginFragment;  private  SettingFragment settingFragment; private NewsFragment newsFragment;
-    private FragmentManager manager;    private FragmentTransaction transaction;
-    public boolean isLogin = false; private int currentAvatar = 9, currentTheme = 2; private static long back_pressed;
+    private FragmentManager manager;
+    private SharedPreferences mSettings;    SharedPreferences.Editor editor;
+    private boolean isLogin, savePassword;
+    private String Login, Password;
+    private int currentAvatar, currentTheme;
+    private static long back_pressed;
     /*TODO TaskList:
         - REST API используя retrofit (парсин данных);
         - Фрагмент для статьи;
@@ -54,42 +61,74 @@ public class MainActivity extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+        doPreferences(false);
+        getTheme(currentTheme);
         super.onCreate(savedInstanceState);
         setContentView(Constant.LAYOUT);
-
-        initToolbar();
-        initNavigationView();
     }
     @Override
     protected void onStart() {
         super.onStart();
+        initToolbar();
+        initNavigationView();
         KeyboardAction();
-        reloadPage();
+        editor = mSettings.edit();
         manager = getSupportFragmentManager();
         loginFragment = new LoginFragment();
         settingFragment = new SettingFragment();
         newsFragment = new NewsFragment();
         FragmentDo(newsFragment);
+        //SystemClock.sleep(5000);
     }
     @Override
-    public Resources.Theme getTheme() {
+    protected void onPause() {
+        super.onPause();
+        doPreferences(true);
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        doPreferences(false);
+        initNavigationOnLogin();
+    }
+
+    public Resources.Theme getTheme(int currentTheme) {
         Resources.Theme theme = super.getTheme();
-            if (currentTheme < 4 && currentTheme > 0){
+            if (currentTheme < 3 && currentTheme >= 0){
                 switch (currentTheme){
+                    case 0:{
+                        theme.applyStyle(Constant.THEME_1, true);break;
+                    }
                     case 1:{
-                        theme.applyStyle(Constant.THEME_1, true); break;
+                        theme.applyStyle(Constant.THEME_2, true);break;
                     }
                     case 2:{
-                        theme.applyStyle(Constant.THEME_2, true); break;
-                    }
-                    case 3:{
-                        theme.applyStyle(Constant.THEME_3, true); break;
+                        theme.applyStyle(Constant.THEME_3, true);break;
                     }
                 }
             }
         return theme;
     }
-
+    public void doPreferences(boolean save){
+        if (save) {
+            editor.putBoolean("Value_isLogin", isLogin);
+            editor.putBoolean("Value_savePassword", savePassword);
+            editor.putInt("Value_Theme", currentTheme);
+            editor.putInt("Value_Avatar", currentAvatar);
+            editor.putString("Value_Login", Login);
+            editor.putString("Value_Password", Password);
+            editor.apply();
+        }
+        else {
+            isLogin = mSettings.getBoolean("Value_isLogin", false);
+            savePassword = mSettings.getBoolean("Value_savePassword", false);
+            currentTheme = mSettings.getInt("Value_Theme",1);
+            currentAvatar = mSettings.getInt("Value_Avatar",9);
+            Login = mSettings.getString("Value_Login", "");
+            Password = mSettings.getString("Value_Password", "");
+        }
+    }
     public void initToolbar(){
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         searchField = (EditText) findViewById(R.id.search_text);
@@ -116,15 +155,14 @@ public class MainActivity extends FragmentActivity {
     }
     public void initNavigationView() {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        navigationHeader = (RelativeLayout) findViewById(R.id.navigation_header);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout , toolbar, R.string.view_navigation_open, R.string.view_navigation_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
-        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
+        navigationView = (NavigationView) findViewById(R.id.navigation);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                drawerLayout.closeDrawers(); hideKeyboard();
+                drawerLayout.closeDrawers(); hideKeyboard(); doPreferences(true);
                 switch (menuItem.getItemId()){
                     case R.id.actionLogInItem:{
                         FragmentDo(loginFragment);
@@ -157,11 +195,11 @@ public class MainActivity extends FragmentActivity {
         });
     }
     public void initNavigationOnLogin() {
-        ImageView avatarImage  = (ImageView) findViewById(R.id.menu_avatar);
-        TextView fieldUserName = (TextView) findViewById(R.id.menu_nickname);
-        TextView fieldUserMail = (TextView) findViewById(R.id.menu_email);
-        navigationHeader = (RelativeLayout) findViewById(R.id.navigation_header);
-        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
+        View hView =  navigationView.getHeaderView(0);
+        ImageView avatarImage  = (ImageView)hView.findViewById(R.id.menu_avatar);
+        TextView fieldUserName = (TextView)hView.findViewById(R.id.menu_nickname);
+        TextView fieldUserMail = (TextView)hView.findViewById(R.id.menu_email);
+        RelativeLayout headerImage = (RelativeLayout) hView.findViewById(R.id.navigation_header);
         if(isLogin){
             MenuItem LogOutButton = navigationView.getMenu().findItem(R.id.actionLogOutItem);   LogOutButton.setVisible(true);
             MenuItem BookmarksButton = navigationView.getMenu().findItem(R.id.actionBookmarks); BookmarksButton.setVisible(true);
@@ -169,18 +207,19 @@ public class MainActivity extends FragmentActivity {
             this.invalidateOptionsMenu();
 
             // Чтение профиля и установка
-            fieldUserName.setText("Vitalik");
+            fieldUserName.setText(Login);
+            fieldUserName.setText(Login);
             fieldUserMail.setText("vitalik.pryadka@gmail.com");
             String currentAvatarS = "avatar_" + currentAvatar;
             avatarImage.setImageResource(getResId(currentAvatarS, R.drawable.class));
-            navigationHeader.setVisibility(View.VISIBLE);
+            headerImage.setVisibility(View.VISIBLE);
         }
         else {
             MenuItem LogOutButton = navigationView.getMenu().findItem(R.id.actionLogOutItem);   LogOutButton.setVisible(false);
             MenuItem BookmarksButton = navigationView.getMenu().findItem(R.id.actionBookmarks); BookmarksButton.setVisible(false);
             MenuItem LogInButton = navigationView.getMenu().findItem(R.id.actionLogInItem);     LogInButton.setVisible(true);
             this.invalidateOptionsMenu();
-            navigationHeader.setVisibility(View.INVISIBLE);
+            headerImage.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -217,7 +256,8 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
-    private void FragmentDo(Fragment thisFragment){
+    public void FragmentDo(Fragment thisFragment){
+        FragmentTransaction transaction;
         if (thisFragment != null && !thisFragment.isVisible()) {
             transaction = manager.beginTransaction();
             transaction.replace(R.id.container, thisFragment);
@@ -227,17 +267,18 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
-    public void loginUser(String login, String password){
-        if (login.equals("Vitalik") && password.equals("12345")){
-            Toast.makeText(MainActivity.this, getString(R.string.log_success)+ " " + login + "!", Toast.LENGTH_SHORT).show();
+    public void loginUser(String password){
+        if (Login.equals("Vitalik") && password.equals("12345")){
+            Toast.makeText(MainActivity.this, getString(R.string.log_success)+ " " + Login + "!", Toast.LENGTH_SHORT).show();
             try { synchronized(this){wait(200);}
             } catch(InterruptedException ex){ }
             // Получили информацию о пользователе и записали
             isLogin = true;
+            doPreferences(true);
             initNavigationOnLogin();
             FragmentDo(newsFragment);
         }
-        else if(!login.equals("Vitalik")){Toast.makeText(MainActivity.this, getString(R.string.log_error_login), Toast.LENGTH_SHORT).show();}
+        else if(!Login.equals("Vitalik")){Toast.makeText(MainActivity.this, getString(R.string.log_error_login), Toast.LENGTH_SHORT).show();}
         else {Toast.makeText(MainActivity.this, getString(R.string.log_error_password), Toast.LENGTH_SHORT).show();}
     }
     public void submitToEmail(View view) {
@@ -253,7 +294,6 @@ public class MainActivity extends FragmentActivity {
             Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT);
             toast.show();
         }
-        return;
     }
 
     @Override
@@ -283,7 +323,14 @@ public class MainActivity extends FragmentActivity {
             }
         });
     }
-    public int getCurrentTheme(){
-        return currentTheme;
-    }
+
+    // Getter and Setter
+    public int getCurrentTheme(){return currentTheme;}
+    public void setCurrentTheme(int value){currentTheme = value;}
+    public String getLogin(){return Login;}
+    public void setLogin(String value){Login = value;}
+    public String getPassword(){return Password;}
+    public void setPassword(String value){Password = value;}
+    public boolean getSavePassword(){return savePassword;}
+    public void setSavePassword(boolean values){savePassword = values;}
 }

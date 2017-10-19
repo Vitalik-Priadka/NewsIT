@@ -11,6 +11,4 @@
     app:itemIconTint="?attr/colorText"
     app:itemTextColor="?attr/colorText"
     app:menu="@menu/menu_navigation"
-    app:headerLayout="@layout/navigation_header">
-
-</android.support.design.widget.NavigationView>
+    app:headerLayout="@layout/navigation_header"/>

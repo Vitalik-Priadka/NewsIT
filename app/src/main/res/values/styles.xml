@@ -16,6 +16,7 @@
         <item name="android:textColor">@color/textColorDark</item>
         <item name="android:colorControlNormal">@color/colorWhite</item>
         <item name="android:typeface">serif</item>
+
     </style>
 
     <style name="AppTheme_Dark" parent="Theme.AppCompat.NoActionBar">
@@ -37,17 +38,17 @@
     </style>
 
     <style name="AppTheme_DeepBlue" parent="Theme.AppCompat.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimary_Second</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark_Second</item>
-        <item name="colorAccent">@color/colorAccent_Second</item>
-        <item name="colorMainBackground">@color/mainBackground_Second</item>
-        <item name="colorMainBackgroundState">@color/mainBackgroundState_Second</item>
-        <item name="colorToolbarItems">@color/toolbarItems_Second</item>
+        <item name="colorPrimary">@color/colorPrimary_Third</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark_Third</item>
+        <item name="colorAccent">@color/colorAccent_Third</item>
+        <item name="colorMainBackground">@color/mainBackground_Third</item>
+        <item name="colorMainBackgroundState">@color/mainBackgroundState_Third</item>
+        <item name="colorToolbarItems">@color/toolbarItems_Third</item>
         <item name="colorText">@color/textColorLite</item>
         <item name="colorTextNegative">@color/textColorDark</item>
-        <item name="imageItNews">@drawable/it_news_logo_black</item>
-        <item name="imageQuestionMark">@drawable/question_mark_black</item>
-        <item name="imageMenuHeader">@drawable/menu_header_background_dark</item>
+        <item name="imageItNews">@drawable/it_news_logo_blue</item>
+        <item name="imageQuestionMark">@drawable/question_mark_blue</item>
+        <item name="imageMenuHeader">@drawable/menu_header_background_blue</item>
 
         <item name="android:textColor">@color/textColorLite</item>
         <item name="android:colorControlNormal">@color/textColorDark</item>

@@ -32,6 +32,9 @@ public class LoginFragment extends Fragment {
         loginField = (EditText)  getView().findViewById(R.id.login_field);
         loginButton = (Button) getView().findViewById(R.id.button_login);
         saveOrNotBox = (CheckBox) getView().findViewById(R.id.checkBox_save);
+        loginField.setText(((MainActivity)getActivity()).getLogin());
+        passwordField.setText(((MainActivity)getActivity()).getPassword());
+        saveOrNotBox.setChecked(((MainActivity)getActivity()).getSavePassword());
         ListenerAction();
     }
 
@@ -58,15 +61,17 @@ public class LoginFragment extends Fragment {
     }
 
     private void checkLogin(){
-        String login = loginField.getText().toString();
+        ((MainActivity)getActivity()).setLogin(loginField.getText().toString());
         String password = passwordField.getText().toString();
         Boolean save = saveOrNotBox.isChecked();
-        if (save){
-            //Сохрание в кеш
+        if (!save){
+            ((MainActivity)getActivity()).setSavePassword(false);
+            passwordField.setText("");
         }
-        if(login.length() >= 5 && password.length() >= 5){
-            loginField.setText(null); passwordField.setText(null);
-            ((MainActivity)getActivity()).loginUser(login,password);
+        else {((MainActivity)getActivity()).setSavePassword(true);}
+        if(((MainActivity)getActivity()).getLogin().length() >= 5){
+            ((MainActivity)getActivity()).setPassword(password);
+            ((MainActivity)getActivity()).loginUser(password);
         }
     }
 }

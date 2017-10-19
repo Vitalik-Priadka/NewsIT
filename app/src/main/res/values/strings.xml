@@ -43,7 +43,7 @@
         <item>Тёмная</item>
         <item>Синяя</item>
     </string-array>
-    <string name="setting_version">Текущая версия: 0.12 (Beta)</string>
+    <string name="setting_version">Текущая версия: 0.2 (Beta)</string>
     <string name="setting_info_button">*Написать нам*</string>
     <string name="setting_info_email_header">Сообщение от пользователя&#8230;</string>
     <string name="setting_info_email_text">Здравствуйте тех. поддержка IT-News! Я пишу по поводу &#8230;</string>

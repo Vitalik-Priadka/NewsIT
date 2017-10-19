@@ -10,6 +10,8 @@ public class Constant {
     public static  final int THEME_1 = R.style.AppTheme_Light;
     public static  final int THEME_2 = R.style.AppTheme_Dark;
     public static  final int THEME_3 = R.style.AppTheme_DeepBlue;
+
+    public static final String APP_PREFERENCES = "mysettings";
     public static final int SPLASH_DISPLAY_LENGTH = 1000;
     public static final int textSize = 16;
 }

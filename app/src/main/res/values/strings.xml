@@ -24,11 +24,7 @@
     <string name="state_image_description">"Main image"</string>
     <string name="state_star_description">"Star image"</string>
     <string name="state_comment_description">"Comment image"</string>
-
-    <string name="test_header">Тестовый заголовок!\n Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</string>
-    <string name="test_date">14:23  24.09.17</string>
-    <string name="test_rate">128</string>
-    <string name="test_number_comments">5</string>
+    <string name="state_comment">Текст комментария&#8230;</string>
 
     <string name="setting_text_language">Язык приложения:</string>
     <string-array name="languageList">
@@ -58,6 +54,14 @@
     <string name="log_success">Добро пожаловать</string>
     <string name="log_error_login">Не правильный логин!</string>
     <string name="log_error_password">Не правильный пароль!</string>
+
+    <string name="test_header"><u>Тестовый заголовок! Lorem ipsum dolor adipiscing elit.</u></string>
+    <string name="test_text">Проснувшись однажды утром после беспокойного сна, Грегор Замза обнаружил, что он у себя в постели превратился в страшное насекомое. Лежа на панцирнотвердой спине, он видел, стоило ему приподнять голову.  Над столом, где были разложены распакованные образцы сукон – Замза был коммивояжером, – висел портрет, который он недавно вырезал из иллюстрированного журнала и вставил в красивую золоченую рамку.</string>
+    <string name="test_date">14:23  24.09.17</string>
+    <string name="test_rate">128</string>
+    <string name="test_number_comments">5</string>
+    <string name="test_user_name">Langipard</string>
+    <string name="test_user_comment">Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. nascetur ridiculus mus.</string>
 
     <!--            Отступы и размеры     Not Try      -->
     <string name="top_margin">58dp</string>

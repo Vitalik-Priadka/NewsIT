@@ -26,6 +26,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.priadka.newsit_project.fragment.FullStateFragment;
 import com.priadka.newsit_project.fragment.LoginFragment;
 import com.priadka.newsit_project.fragment.NewsFragment;
 import com.priadka.newsit_project.fragment.SettingFragment;
@@ -39,6 +40,7 @@ public class MainActivity extends FragmentActivity {
     private Toolbar toolbar;    private DrawerLayout drawerLayout;  private EditText searchField;
     private NavigationView navigationView;
     private LoginFragment loginFragment;  private  SettingFragment settingFragment; private NewsFragment newsFragment;
+    private FullStateFragment fullStateFragment;
     private FragmentManager manager;
     private SharedPreferences mSettings;    SharedPreferences.Editor editor;
     private boolean isLogin, savePassword;
@@ -78,6 +80,7 @@ public class MainActivity extends FragmentActivity {
         loginFragment = new LoginFragment();
         settingFragment = new SettingFragment();
         newsFragment = new NewsFragment();
+        fullStateFragment = new FullStateFragment();
         FragmentDo(newsFragment);
         //SystemClock.sleep(5000);
     }
@@ -175,7 +178,7 @@ public class MainActivity extends FragmentActivity {
                         break;
                     }
                     case R.id.actionBookmarks:{
-                        //FragmentDo(bookmarksFragment);
+                        FragmentDo(fullStateFragment);
                         break;
                     }
                     case R.id.actionNewsItem:{

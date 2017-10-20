@@ -26,6 +26,6 @@
 
     <!--    Цвета Общие   -->
     <color name="textColorDark">#050505</color>
-    <color name="textColorLite">#E3E3D9</color>
+    <color name="textColorLite">#ffffff</color>
     <color name="colorWhite">#ffffff</color>
 </resources>

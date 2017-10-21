@@ -1,99 +1,93 @@
-
-        <RelativeLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="top"
+    android:clickable="true">
+    <LinearLayout
+        android:id="@+id/setting_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="?attr/colorMainBackgroundState"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="5dp">
+        <TextView
+            android:id="@+id/setting_info_text"
+            style="@style/TextStyleMedium"
+            android:textColor="?attr/colorText"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:gravity="center"
+            android:text="@string/setting_info"/>
+        <Button
+            android:layout_width="140dp"
+            android:layout_height="35dp"
+            android:textSize="14sp"
+            android:layout_gravity="center"
+            android:text="@string/setting_info_button"
+            android:textColor="?attr/colorText"
+            android:background="@drawable/button_default"
+            android:layout_marginBottom="10dp"
+            android:onClick="submitToEmail"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/setting_language"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:background="?attr/colorMainBackgroundState"
+        android:layout_below="@+id/setting_info"
+        android:layout_marginTop="5dp">
+        <TextView
+            style="@style/TextStyleBig"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_gravity="top"
-            android:clickable="true">
-
-            <LinearLayout
-                android:id="@+id/setting_info"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="?attr/colorMainBackgroundState"
-                android:layout_alignParentTop="true"
-                android:layout_marginTop="5dp">
-                <TextView
-                    android:id="@+id/setting_info_text"
-                    style="@style/TextStyleMedium"
-                    android:textColor="?attr/colorText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="5dp"
-                    android:gravity="center"
-                    android:text="@string/setting_info"/>
-
-                <Button
-                    android:layout_width="140dp"
-                    android:layout_height="35dp"
-                    android:textSize="14sp"
-                    android:layout_gravity="center"
-                    android:text="@string/setting_info_button"
-                    android:textColor="?attr/colorText"
-                    android:background="@drawable/button_default"
-                    android:layout_marginBottom="10dp"
-                    android:onClick="submitToEmail"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/setting_language"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:orientation="horizontal"
-                android:background="?attr/colorMainBackgroundState"
-                android:layout_below="@+id/setting_info"
-                android:layout_marginTop="5dp">
-                <TextView
-                    style="@style/TextStyleBig"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="10dp"
-                    android:gravity="center"
-                    android:textColor="?attr/colorText"
-                    android:text="@string/setting_text_language" />
-                <Spinner
-                    android:id="@+id/spinner_language"
-                    android:layout_width="match_parent"
-                    android:textAlignment="center"
-                    android:spinnerMode="dropdown"
-
-                    android:entries="@array/languageList"
-                    android:layout_height="match_parent"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/setting_theme"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:orientation="horizontal"
-                android:background="?attr/colorMainBackgroundState"
-                android:layout_below="@+id/setting_language"
-                android:layout_marginTop="5dp">
-                <TextView
-                    style="@style/TextStyleBig"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="10dp"
-                    android:gravity="center"
-                    android:textColor="?attr/colorText"
-                    android:text="@string/setting_text_theme" />
-                <Spinner
-                    android:id="@+id/spinner_theme"
-                    android:layout_width="match_parent"
-                    android:textAlignment="center"
-                    android:spinnerMode="dropdown"
-                    android:entries="@array/themeList"
-                    android:layout_height="match_parent"/>
-            </LinearLayout>
-
-            <TextView
-                android:textSize="14sp"
-                android:textColor="?attr/colorText"
-                android:layout_width="match_parent"
-                android:layout_height="25dp"
-                android:text="@string/setting_version"
-                android:gravity="center"
-                android:layout_alignParentBottom="true"
-                android:background="?attr/colorPrimary" />
-        </RelativeLayout>
+            android:layout_marginStart="10dp"
+            android:gravity="center"
+            android:textColor="?attr/colorText"
+            android:text="@string/setting_text_language" />
+        <Spinner
+            android:id="@+id/spinner_language"
+            android:layout_width="match_parent"
+            android:textAlignment="center"
+            android:spinnerMode="dropdown"
+            android:entries="@array/languageList"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/setting_theme"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:background="?attr/colorMainBackgroundState"
+        android:layout_below="@+id/setting_language"
+        android:layout_marginTop="5dp">
+        <TextView
+            style="@style/TextStyleBig"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="10dp"
+            android:gravity="center"
+            android:textColor="?attr/colorText"
+            android:text="@string/setting_text_theme" />
+        <Spinner
+            android:id="@+id/spinner_theme"
+            android:layout_width="match_parent"
+            android:textAlignment="center"
+            android:spinnerMode="dropdown"
+            android:entries="@array/themeList"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+    <TextView
+        android:textSize="14sp"
+        android:textColor="?attr/colorText"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:text="@string/setting_version"
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:background="?attr/colorPrimary" />
+</RelativeLayout>

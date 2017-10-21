@@ -7,7 +7,7 @@
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-            <include layout="@layout/toolbar_layout"/>
+        <include layout="@layout/toolbar_layout"/>
         <LinearLayout
             android:id="@+id/container"
             android:layout_marginTop="58dp"
@@ -15,31 +15,7 @@
             android:layout_height="match_parent"
             android:background="?attr/colorMainBackground"
             android:orientation="vertical">
-            <!--
-            <fragment
-                android:name="com.priadka.newsit_project.fragment.NewsFragment"
-                android:id="@+id/news_fragment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                tools:layout="@layout/news_layout"/>
 
-            <fragment
-                android:name="com.priadka.newsit_project.fragment.LoginFragment"
-                android:id="@+id/login_fragment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                tools:layout="@layout/log_layout"/>
-
-            <fragment
-                android:name="com.priadka.newsit_project.fragment.SettingFragment"
-                android:id="@+id/setting_fragment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                tools:layout="@layout/setting_layout"/>
-             -->
         </LinearLayout>
     </android.support.design.widget.CoordinatorLayout>
     <include layout="@layout/navigation_layout"/>

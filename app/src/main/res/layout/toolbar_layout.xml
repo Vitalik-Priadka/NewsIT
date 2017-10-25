@@ -6,7 +6,6 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
@@ -14,7 +13,6 @@
             android:background="?attr/colorPrimary"
             android:clickable="true"
             android:focusableInTouchMode="true">
-
             <EditText
                 android:id="@+id/search_text"
                 android:layout_width="120dp"
@@ -31,7 +29,6 @@
                 android:imeOptions="actionSearch"
                 android:inputType="text"/>
         </android.support.v7.widget.Toolbar>
-
         <ImageView
             android:id="@+id/logo"
             android:src="?attr/imageItNews"

@@ -41,16 +41,16 @@ public class MainActivity extends FragmentActivity {
     private NavigationView navigationView;
     private LoginFragment loginFragment;  private  SettingFragment settingFragment; private NewsFragment newsFragment;
     private FullStateFragment fullStateFragment;
-    private FragmentManager manager;
+    public static FragmentManager manager;
     private SharedPreferences mSettings;    SharedPreferences.Editor editor;
     private boolean isLogin, savePassword;
     private String Login, Password;
-    private int currentAvatar, currentTheme;
+    private int currentAvatar, currentTheme, resumeCount = 0;
     private static long back_pressed;
     /*TODO TaskList:
         - REST API используя retrofit (парсин данных);
         + Фрагмент для статьи;
-        - Динамическая подгрузка фрагментов (статей);
+        + Динамическая подгрузка фрагментов (статей);
         - Просморт фрагмента статьи;
         - Изменение темы и языка (без статей);
         - Реализовать алгоритм поиска (желательно по частичному совпадению);
@@ -71,17 +71,18 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        initToolbar();
-        initNavigationView();
-        KeyboardAction();
-        editor = mSettings.edit();
-        manager = getSupportFragmentManager();
-        loginFragment = new LoginFragment();
-        settingFragment = new SettingFragment();
-        newsFragment = new NewsFragment();
-        fullStateFragment = new FullStateFragment();
-        FragmentDo(newsFragment);
-        //SystemClock.sleep(5000);
+        if (resumeCount == 0) {
+            initToolbar();
+            initNavigationView();
+            KeyboardAction();
+            manager = getSupportFragmentManager();
+            loginFragment = new LoginFragment();
+            settingFragment = new SettingFragment();
+            newsFragment = new NewsFragment();
+            fullStateFragment = new FullStateFragment();
+            FragmentDo(newsFragment);
+            resumeCount++;
+        }
     }
     @Override
     protected void onPause() {
@@ -113,6 +114,7 @@ public class MainActivity extends FragmentActivity {
         return theme;
     }
     public void doPreferences(boolean save){
+        editor = mSettings.edit();
         if (save) {
             editor.putBoolean("Value_isLogin", isLogin);
             editor.putBoolean("Value_savePassword", savePassword);
@@ -153,6 +155,7 @@ public class MainActivity extends FragmentActivity {
                 return false;
             }
         });
+
         toolbar.inflateMenu(R.menu.menu);
     }
     public void initNavigationView() {
@@ -177,7 +180,7 @@ public class MainActivity extends FragmentActivity {
                         break;
                     }
                     case R.id.actionBookmarks:{
-                        FragmentDo(fullStateFragment);
+
                         break;
                     }
                     case R.id.actionNewsItem:{
@@ -273,7 +276,7 @@ public class MainActivity extends FragmentActivity {
         if (Login.equals("Vitalik") && password.equals("12345")){
             Toast.makeText(MainActivity.this, getString(R.string.log_success)+ " " + Login + "!", Toast.LENGTH_SHORT).show();
             try { synchronized(this){wait(200);}
-            } catch(InterruptedException ex){ }
+            } catch(InterruptedException ex){ return; }
             // Получили информацию о пользователе и записали
             isLogin = true;
             doPreferences(true);
@@ -325,6 +328,7 @@ public class MainActivity extends FragmentActivity {
             }
         });
     }
+
 
     // Getter and Setter
     public int getCurrentTheme(){return currentTheme;}

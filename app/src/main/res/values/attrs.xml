@@ -10,6 +10,7 @@
     <attr name="imageItNews" format="reference" />
     <attr name="imageQuestionMark" format="reference" />
     <attr name="imageMenuHeader" format="reference" />
+    <attr name="imageDefaultImage" format="reference" />
 
 
     <!--

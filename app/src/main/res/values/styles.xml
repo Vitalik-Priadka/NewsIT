@@ -12,6 +12,7 @@
         <item name="imageItNews">@drawable/it_news_logo_lite</item>
         <item name="imageQuestionMark">@drawable/question_mark_lite</item>
         <item name="imageMenuHeader">@drawable/menu_header_background_lite</item>
+        <item name="imageDefaultImage">@drawable/unload_image_dark</item>
 
         <item name="android:textColor">@color/textColorDark</item>
         <item name="android:colorControlNormal">@color/colorWhite</item>
@@ -31,6 +32,7 @@
         <item name="imageItNews">@drawable/it_news_logo_black</item>
         <item name="imageQuestionMark">@drawable/question_mark_black</item>
         <item name="imageMenuHeader">@drawable/menu_header_background_dark</item>
+        <item name="imageDefaultImage">@drawable/unload_image_lite</item>
 
         <item name="android:textColor">@color/textColorLite</item>
         <item name="android:colorControlNormal">@color/textColorDark</item>
@@ -49,6 +51,7 @@
         <item name="imageItNews">@drawable/it_news_logo_blue</item>
         <item name="imageQuestionMark">@drawable/question_mark_blue</item>
         <item name="imageMenuHeader">@drawable/menu_header_background_blue</item>
+        <item name="imageDefaultImage">@drawable/unload_image_lite</item>
 
         <item name="android:textColor">@color/textColorLite</item>
         <item name="android:colorControlNormal">@color/textColorDark</item>

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -31,6 +32,13 @@ public class NewsFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        NestedScrollView scrollViewNews = (NestedScrollView) getActivity().findViewById(R.id.scrollViewNews);
+        int y = scrollViewNews.getScrollY();
+        scrollViewNews.smoothScrollTo(0, y);
+    }
 
     // Временная заглушка
     private List<NewsDTO> createMockListNews() {

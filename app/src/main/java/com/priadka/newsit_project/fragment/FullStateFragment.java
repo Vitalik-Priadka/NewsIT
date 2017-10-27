@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.priadka.newsit_project.Constant;
@@ -18,6 +19,8 @@ public class FullStateFragment extends Fragment {
     private ImageView image;
     private ImageButton starButton;
     private TextView title, text, date, rating;
+    private LinearLayout commentBlock;
+
     private String state_title, state_text, state_date, state_rating;
     private int state_id, state_image;
     private boolean isLiked = false;
@@ -51,13 +54,22 @@ public class FullStateFragment extends Fragment {
         date = (TextView) getActivity().findViewById(R.id.state_date);
         rating = (TextView) getActivity().findViewById(R.id.state_rating);
         starButton  = (ImageButton) getActivity().findViewById(R.id.state_star_like);
+        commentBlock = (LinearLayout) getActivity().findViewById(R.id.commentBlock);
 
         title.setText(state_title);
-        text.setText(state_text + getString(R.string.test_text));
+        text.setText(state_text+ " " + getString(R.string.test_text));
         image.setImageResource( MainActivity.getResId("avatar_" + state_image, R.drawable.class) );
         date.setText(state_date);
         rating.setText(state_rating);
+        commentVisible();
         ListenerAction();
+    }
+
+    private void commentVisible(){
+        if (((MainActivity)getActivity()).getIsLogin()){
+            commentBlock.setVisibility(View.VISIBLE);
+        }
+        else commentBlock.setVisibility(View.GONE);
     }
 
     private void ListenerAction() {

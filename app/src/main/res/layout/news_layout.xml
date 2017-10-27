@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollViewNews"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:scrollbarSize="4dp"
@@ -13,8 +14,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:nestedScrollingEnabled="false"
-            android:layout_marginRight="6dp"
-            android:layout_marginLeft="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="6dp"
             android:paddingTop="4dp"
             android:paddingBottom="3dp"/>
 </android.support.v4.widget.NestedScrollView>

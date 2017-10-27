@@ -49,76 +49,79 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbarSize="5dp"
-        android:scrollbars="vertical"
-        android:scrollbarThumbVertical="@drawable/scrollbar"
-        android:fadeScrollbars="false"
         android:layout_gravity="top"
-        android:clickable="true">
+        android:clickable="true"
+        android:fadeScrollbars="false"
+        android:scrollbarSize="4dp"
+        android:scrollbarThumbVertical="@drawable/scrollbar"
+        android:scrollbars="vertical">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="4dp"
             android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
             android:orientation="vertical">
             <TextView
                 android:id="@+id/state_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="24sp"
+                android:text="@string/test_header"
                 android:textColor="?attr/colorText"
-                android:text="@string/test_header"/>
+                android:textSize="24sp" />
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp">
+                android:layout_margin="5dp"
+                android:orientation="horizontal"
+                android:paddingBottom="3dp">
                 <View
                     android:layout_width="2dp"
                     android:layout_height="match_parent"
-                    android:background="?attr/colorText"
-                    android:layout_marginBottom="3dp"/>
+                    android:layout_marginBottom="3dp"
+                    android:background="?attr/colorText" />
                 <TextView
                     android:id="@+id/state_text"
+                    style="@style/TextStyleMedium"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
-                    style="@style/TextStyleMedium"
                     android:text="@string/test_text"
-                    android:textColor="?attr/colorText"/>
+                    android:textColor="?attr/colorText" />
             </LinearLayout>
             <LinearLayout
-                android:orientation="horizontal"
+                android:id="@+id/commentBlock"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?attr/colorMainBackgroundState"
-                android:layout_marginStart="5dp"
                 android:layout_marginBottom="5dp"
-                android:layout_marginEnd="5dp">
+                android:layout_marginEnd="5dp"
+                android:layout_marginStart="5dp"
+                android:background="?attr/colorMainBackgroundState"
+                android:orientation="horizontal"
+                android:visibility="visible">
                 <EditText
                     android:id="@+id/state_comment_field"
+                    style="@style/TextStyleBig"
                     android:layout_width="300dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:fontFamily="sans-serif"
-                    style="@style/TextStyleBig"
                     android:drawableStart="@drawable/comment_multiple_outline"
+                    android:fontFamily="sans-serif"
                     android:hint="@string/state_comment"
+                    android:inputType="text"
                     android:textColorHighlight="?attr/colorText"
-                    android:textColorHint="?attr/colorText"
-                    android:inputType="text"/>
+                    android:textColorHint="?attr/colorText" />
                 <ImageButton
+                    android:id="@+id/sendComment"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_margin="5dp"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"
-                    android:contentDescription="@string/state_comment_description"
                     android:background="@null"
-                    android:src="@drawable/send"/>
+                    android:contentDescription="@string/state_comment_description"
+                    android:src="@drawable/send" />
             </LinearLayout>
-            <include layout="@layout/comment_layout"/>
-            <include layout="@layout/comment_layout"/>
+            <include layout="@layout/comment_layout" />
+            <include layout="@layout/comment_layout" />
+            <include layout="@layout/comment_layout" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

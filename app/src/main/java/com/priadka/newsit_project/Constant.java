@@ -14,5 +14,7 @@ public class Constant {
 
     public static final String APP_PREFERENCES = "mysettings";
     public static final int SPLASH_DISPLAY_LENGTH = 1000;
+    public static final int DEFAULT_THEME = 2;
+    public static final int DEFAULT_AVATAR = 1;
     public static final int textSize = 16;
 }

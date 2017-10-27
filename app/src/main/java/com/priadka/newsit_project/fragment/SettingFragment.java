@@ -55,6 +55,7 @@ public class SettingFragment extends Fragment {
                 //String selectedTheme = parent.getItemAtPosition(position).toString();
                 ((MainActivity)getActivity()).getTheme(position);
                 ((MainActivity)getActivity()).setCurrentTheme(position);
+                ((MainActivity)getActivity()).doPreferences(true);
                 getActivity().recreate();
             }
             @Override

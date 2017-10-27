@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.priadka.newsit_project.DTO.NewsDTO;
 import com.priadka.newsit_project.MainActivity;
@@ -33,18 +32,15 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
     public void onBindViewHolder(final NewsViewHolder holder, int position) {
         final NewsDTO item = data.get(position);
         holder.id = item.getId();
-        holder.title.setText(item.getTitle() + " ID:" + item.getId());
+        holder.title.setText(item.getTitle() + "\nID:" + item.getId());
         holder.image.setImageResource( MainActivity.getResId("avatar_" + item.getImage(), R.drawable.class) );
         holder.date.setText(item.getDate());
-        holder.rating.setText(item.getRating().toString());
-        holder.num_comment.setText(item.getNumberComment().toString());
+        holder.rating.setText(String.format(item.getRating().toString()) );
+        holder.num_comment.setText(String.format(item.getNumberComment().toString()) );
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(), "You have clicked! ID:" + holder.id, Toast.LENGTH_SHORT).show();
-                FragmentTransaction transaction;
-                transaction = MainActivity.manager.beginTransaction();
                 Bundle bundle = new Bundle();
                 bundle.putInt("state_id", item.getId());
                 bundle.putString("state_title", item.getTitle());
@@ -52,8 +48,12 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
                 bundle.putInt("state_image", item.getImage());
                 bundle.putString("state_date", item.getDate());
                 bundle.putString("state_rating", item.getRating().toString());
+
+                FragmentTransaction transaction;
+                transaction = MainActivity.manager.beginTransaction();
                 FullStateFragment fullStateFragment = new FullStateFragment();
                 fullStateFragment.setArguments(bundle);
+                transaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                 transaction.replace(R.id.container, fullStateFragment);
                 transaction.addToBackStack(null);
                 transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);

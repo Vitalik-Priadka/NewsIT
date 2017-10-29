@@ -3,6 +3,7 @@ package com.priadka.newsit_project;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
@@ -33,6 +34,7 @@ import com.priadka.newsit_project.fragment.NewsFragment;
 import com.priadka.newsit_project.fragment.SettingFragment;
 
 import java.lang.reflect.Field;
+import java.util.Locale;
 
 import static com.priadka.newsit_project.Constant.APP_PREFERENCES;
 import static com.priadka.newsit_project.Constant.DEFAULT_AVATAR;
@@ -49,7 +51,7 @@ public class MainActivity extends FragmentActivity {
 
     private boolean isLogin, savePassword;
     private String Login, Password;
-    private int currentTheme, resumeCount = 0;
+    private int currentTheme,currentLanguage, resumeCount = 0;
 
     /*TODO TaskList:
         - REST API используя retrofit (парсин данных);
@@ -63,14 +65,26 @@ public class MainActivity extends FragmentActivity {
         - Добавление в "Закладки"
         + Работа с кешом (сохранение темы, языка, логина, пароля);
         + Логин пользователя;
+        - Установка соединения с сервером
+
+        Запросы на сервер:
+        - Логин: отправка (логин, пароль), жду ответа если все норм получаю данные пользователя
+        - Запросы для изменения (автарки позольвателя и ArrayList "закладок")
+
+        - Получение всех новостей (при обновлении newsFragment)
+        - Получение данных одной новости по id (для обновления конктретной статьи)
+        - Коментарий: Отправка на сервер (id статьи , имя пользователя, текст коммента)
+        - Получение всех новостей которые сожержат "ключ" поиска
+        - Получение всех новостей которые находяться ArrayList пользователя (массив id)
      */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
-        initMockUser();
+        user = myServer.getUser();
         doPreferences(false);
         getTheme(currentTheme);
+        getLanguage(currentLanguage);
         super.onCreate(savedInstanceState);
         setContentView(Constant.LAYOUT);
         manager = getSupportFragmentManager();
@@ -87,6 +101,7 @@ public class MainActivity extends FragmentActivity {
             initToolbar();
             initNavigationView();
             KeyboardAction();
+            reloadPage();
         }
     }
     @Override
@@ -97,15 +112,12 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        resumeCount++;
         doPreferences(false);
         if (isLogin) loginUser(Password);
         initNavigationOnLogin();
+        resumeCount++;
     }
 
-    private void initMockUser() {
-        user = new UserDTO("Vitalik","vitalik.pryadka@gmail.com", "12345", 3 ,"105,108");
-    }
     public Resources.Theme getTheme(int currentTheme) {
         Resources.Theme theme = super.getTheme();
             if (currentTheme < 3 && currentTheme >= 0){
@@ -123,13 +135,35 @@ public class MainActivity extends FragmentActivity {
             }
         return theme;
     }
+    public void getLanguage(int currentLanguage){
+        String languageToLoad; Locale locale;
+        Configuration configuration = new Configuration();
+        switch (currentLanguage){
+            case 0:
+                languageToLoad = "ru";
+                locale = new Locale(languageToLoad);
+                Locale.setDefault(locale);
+                configuration.setLocale(locale);
+                getBaseContext().getResources().updateConfiguration(configuration,
+                        getBaseContext().getResources().getDisplayMetrics());
+                break;
+            case 1:
+                languageToLoad = "en";
+                locale = new Locale(languageToLoad);
+                Locale.setDefault(locale);
+                configuration.setLocale(locale);
+                getBaseContext().getResources().updateConfiguration(configuration,
+                        getBaseContext().getResources().getDisplayMetrics());
+                break;
+        }
+    }
     public void doPreferences(boolean save){
         SharedPreferences.Editor editor = mSettings.edit();
         if (save) {
             editor.putBoolean("Value_savePassword", savePassword);
             editor.putBoolean("Value_isLogin", isLogin);
             editor.putInt("Value_Theme", currentTheme);
-            editor.putInt("Value_Avatar", user.getUser_image());
+            editor.putInt("Value_Language", currentLanguage);
             editor.putString("Value_Login", Login);
             editor.putString("Value_Password", Password);
             editor.apply();
@@ -138,19 +172,19 @@ public class MainActivity extends FragmentActivity {
             savePassword = mSettings.getBoolean("Value_savePassword", false);
             isLogin = mSettings.getBoolean("Value_isLogin", false);
             currentTheme = mSettings.getInt("Value_Theme",DEFAULT_THEME);
-            user.setUser_image(mSettings.getInt("Value_Avatar",DEFAULT_AVATAR));
+            currentLanguage = mSettings.getInt("Value_Language", 0);
             Login = mSettings.getString("Value_Login", "");
             Password = mSettings.getString("Value_Password", "");
         }
     }
     public void loginUser(String password){
+        // Запрос на сервер с отправкой Login и password
         if (Login.equals(user.getUser_login()) && password.equals(user.getUser_password())){
             if (resumeCount <= 1){
                 Toast.makeText(MainActivity.this, getString(R.string.log_success)+ " " + user.getUser_login() + "!", Toast.LENGTH_SHORT).show();
             }
             isLogin = true;
             doPreferences(true);
-            FragmentDo(newsFragment);
         }
         else {
             isLogin = false;
@@ -181,7 +215,6 @@ public class MainActivity extends FragmentActivity {
                 return false;
             }
         });
-
         toolbar.inflateMenu(R.menu.menu);
     }
     public void initNavigationView() {
@@ -201,13 +234,18 @@ public class MainActivity extends FragmentActivity {
                     }
                     case R.id.actionLogOutItem:{
                         isLogin = false;
+                        resumeCount = 0;
                         initNavigationOnLogin();
                         reloadPage();
                         doPreferences(true);
                         break;
                     }
                     case R.id.actionBookmarks:{
-
+                        String booksID = "";
+                        for (Object name : user.getUser_bookmarksList()) {
+                            booksID = booksID + name + " ";
+                        }
+                        Toast.makeText(MainActivity.this, booksID, Toast.LENGTH_SHORT).show();
                         break;
                     }
                     case R.id.actionNewsItem:{
@@ -278,15 +316,22 @@ public class MainActivity extends FragmentActivity {
         rotate.setDuration(5000);
         rotate.setInterpolator(new LinearInterpolator());
         drawable.icon.startAnimation(rotate); */
-        Toast.makeText(MainActivity.this, R.string.reload_toast, Toast.LENGTH_SHORT).show();
+
+        if (newsFragment.isVisible()){
+            // Пере-получаем статьи с сервера
+            // Перезагружаем содержимое recycleView
+        }
+        if (fullStateFragment.isVisible()){
+            // Пере-получаем статю с сервера и устанавливаем значения для fullStateFragment
+            // Перезагружаем содержимое fullState
+        }
         resumeCount++;
-        if (isLogin) loginUser(Password);
-        initNavigationOnLogin();
     }
     public void search(String request){
         if(request.length() > 0) {
-            Toast.makeText(MainActivity.this, R.string.search_toast, Toast.LENGTH_SHORT).show();
+            // Выполняем запрос поиска на сервер и вставляем полученные статьи в newsFragment
             searchField.setText(null);
+            searchField.clearFocus();
         }
     }
     public void FragmentDo(Fragment thisFragment){
@@ -319,6 +364,7 @@ public class MainActivity extends FragmentActivity {
         if (back_pressed + 1200 > System.currentTimeMillis())
             finishAffinity();
         else {
+            getCurrentFocus().clearFocus();
             FragmentDo(newsFragment);
         }
         back_pressed = System.currentTimeMillis();
@@ -346,6 +392,9 @@ public class MainActivity extends FragmentActivity {
     // Getter and Setter
     public int getCurrentTheme(){return currentTheme;}
     public void setCurrentTheme(int value){currentTheme = value;}
+    public int getCurrentLanguage() {return currentLanguage;}
+    public void setCurrentLanguage(int currentLanguage) {this.currentLanguage = currentLanguage;}
+
     public boolean getIsLogin(){return isLogin;}
     public void setIsLogin(boolean value){isLogin = value;}
     public String getLogin(){return Login;}

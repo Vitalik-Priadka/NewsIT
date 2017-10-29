@@ -60,6 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="4dp"
             android:layout_marginRight="4dp"
+            android:paddingBottom="4dp"
             android:orientation="vertical">
             <TextView
                 android:id="@+id/state_header"
@@ -109,7 +110,8 @@
                     android:hint="@string/state_comment"
                     android:inputType="text"
                     android:textColorHighlight="?attr/colorText"
-                    android:textColorHint="?attr/colorText" />
+                    android:textColorHint="?attr/colorText"
+                    android:imeOptions="actionSend"/>
                 <ImageButton
                     android:id="@+id/sendComment"
                     android:layout_width="wrap_content"
@@ -119,9 +121,19 @@
                     android:contentDescription="@string/state_comment_description"
                     android:src="@drawable/send" />
             </LinearLayout>
-            <include layout="@layout/comment_layout" />
-            <include layout="@layout/comment_layout" />
-            <include layout="@layout/comment_layout" />
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycleViewComment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="6dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="3dp"
+                android:visibility="gone"/>
+
+            <include layout="@layout/comment_layout"/>
+            <include layout="@layout/comment_layout"/>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

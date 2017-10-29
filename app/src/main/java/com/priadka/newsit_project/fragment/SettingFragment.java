@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.priadka.newsit_project.Constant;
 import com.priadka.newsit_project.MainActivity;
@@ -28,7 +27,9 @@ public class SettingFragment extends Fragment {
         spinnerLanguage = (Spinner)  getView().findViewById(R.id.spinner_language);
         spinnerTheme = (Spinner)  getView().findViewById(R.id.spinner_theme);
         int Theme = ((MainActivity)getActivity()).getCurrentTheme();
+        int Language = ((MainActivity)getActivity()).getCurrentLanguage();
         spinnerTheme.setSelection(Theme,false);
+        spinnerLanguage.setSelection(Language,false);
         initSpinnerLanguage(); initSpinnerTheme();
     }
 
@@ -37,8 +38,9 @@ public class SettingFragment extends Fragment {
         spinnerLanguage.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedLanguage = parent.getItemAtPosition(position).toString();
-                Toast.makeText(getActivity(), "Value is " + selectedLanguage + "! Position:"+ position, Toast.LENGTH_SHORT).show();
+                ((MainActivity)getActivity()).setCurrentLanguage(position);
+                ((MainActivity)getActivity()).doPreferences(true);
+                getActivity().recreate();
             }
 
             @Override
@@ -52,8 +54,6 @@ public class SettingFragment extends Fragment {
         spinnerTheme.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                //String selectedTheme = parent.getItemAtPosition(position).toString();
-                ((MainActivity)getActivity()).getTheme(position);
                 ((MainActivity)getActivity()).setCurrentTheme(position);
                 ((MainActivity)getActivity()).doPreferences(true);
                 getActivity().recreate();

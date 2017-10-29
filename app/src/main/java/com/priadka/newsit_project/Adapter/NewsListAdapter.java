@@ -47,7 +47,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
                 bundle.putString("state_text", item.getText());
                 bundle.putInt("state_image", item.getImage());
                 bundle.putString("state_date", item.getDate());
-                bundle.putString("state_rating", item.getRating().toString());
+                bundle.putInt("state_rating", item.getRating());
 
                 FragmentTransaction transaction;
                 transaction = MainActivity.manager.beginTransaction();

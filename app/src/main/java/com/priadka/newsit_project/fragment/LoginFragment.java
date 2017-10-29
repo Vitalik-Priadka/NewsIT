@@ -72,6 +72,8 @@ public class LoginFragment extends Fragment {
         if(((MainActivity)getActivity()).getLogin().length() >= 5){
             ((MainActivity)getActivity()).setPassword(password);
             ((MainActivity)getActivity()).loginUser(password);
+            NewsFragment newsFragment = new NewsFragment();
+            if(((MainActivity)getActivity()).getIsLogin()) ((MainActivity)getActivity()).FragmentDo(newsFragment);
         }
     }
 }

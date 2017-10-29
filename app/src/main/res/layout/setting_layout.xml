@@ -54,6 +54,7 @@
             android:layout_width="match_parent"
             android:textAlignment="center"
             android:spinnerMode="dropdown"
+            android:popupBackground="?attr/colorMainBackgroundState"
             android:entries="@array/languageList"
             android:layout_height="match_parent"/>
     </LinearLayout>
@@ -78,6 +79,7 @@
             android:layout_width="match_parent"
             android:textAlignment="center"
             android:spinnerMode="dropdown"
+            android:popupBackground="?attr/colorMainBackgroundState"
             android:entries="@array/themeList"
             android:layout_height="match_parent"/>
     </LinearLayout>
@@ -89,5 +91,5 @@
         android:text="@string/setting_version"
         android:gravity="center"
         android:layout_alignParentBottom="true"
-        android:background="?attr/colorPrimary" />
+        android:background="?attr/colorPrimary"/>
 </RelativeLayout>

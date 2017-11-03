@@ -111,6 +111,7 @@
                     android:inputType="text"
                     android:textColorHighlight="?attr/colorText"
                     android:textColorHint="?attr/colorText"
+                    android:backgroundTint="?attr/colorText"
                     android:imeOptions="actionSend"/>
                 <ImageButton
                     android:id="@+id/sendComment"

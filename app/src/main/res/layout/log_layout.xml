@@ -41,6 +41,7 @@
                         android:scrollHorizontally="true"
                         android:scrollbarAlwaysDrawHorizontalTrack="true"
                         android:textColorHighlight="?attr/colorText"
+                        android:backgroundTint="?attr/colorText"
                         android:textColorHint="?attr/colorText"
                         android:inputType="text"/>
 
@@ -57,6 +58,7 @@
                         android:scrollHorizontally="true"
                         android:textColorHighlight="?attr/colorText"
                         android:textColorHint="?attr/colorText"
+                        android:backgroundTint="?attr/colorText"
                         android:scrollbarAlwaysDrawHorizontalTrack="true"
                         android:imeOptions="actionGo"
                         android:inputType="textPassword"/>

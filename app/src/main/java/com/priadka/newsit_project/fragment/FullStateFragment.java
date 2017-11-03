@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.priadka.newsit_project.Constant;
 import com.priadka.newsit_project.DTO.UserDTO;
 import com.priadka.newsit_project.MainActivity;
@@ -28,6 +29,7 @@ public class FullStateFragment extends Fragment {
     private EditText commentField;
     private LinearLayout commentBlock;
     private UserDTO user;
+    private FirebaseAuth mAuth;
 
     private String state_title, state_text, state_date;
     private int state_id, state_image,state_rating ;
@@ -55,7 +57,7 @@ public class FullStateFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        user = myServer.getUser();
+        user = myServer.getUser();  mAuth = FirebaseAuth.getInstance();
         image = (ImageView) getActivity().findViewById(R.id.state_image);
         title = (TextView) getActivity().findViewById(R.id.state_header);
         title = (TextView) getActivity().findViewById(R.id.state_header);
@@ -71,7 +73,7 @@ public class FullStateFragment extends Fragment {
         date.setText(state_date);
         rating.setText(String.valueOf(state_rating));
 
-        if(((MainActivity)getActivity()).getIsLogin()){
+        if(mAuth.getCurrentUser() != null){
             commentField = (EditText) getActivity().findViewById(R.id.state_comment_field);
             sendComment = (ImageButton) getActivity().findViewById(R.id.sendComment);
             isLiked = user.getUser_bookmarksList().contains(state_id);
@@ -100,7 +102,7 @@ public class FullStateFragment extends Fragment {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (((MainActivity)getActivity()).getIsLogin()){
+                        if (mAuth.getCurrentUser() != null){
                             isLiked = !isLiked;
                             if (isLiked) {
                                 if (!user.getUser_bookmarksList().contains(state_id)){
@@ -116,7 +118,6 @@ public class FullStateFragment extends Fragment {
                                 starButton.setImageResource(R.drawable.star_outline);
                             }
                         }
-                        else return;
                     }}
         );
         sendComment.setOnClickListener(
@@ -124,7 +125,6 @@ public class FullStateFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         enterComment();
-                        return;
                     }}
         );
         commentField.setOnEditorActionListener(new TextView.OnEditorActionListener() {

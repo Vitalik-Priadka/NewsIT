@@ -27,6 +27,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.FirebaseUser;
 import com.priadka.newsit_project.DTO.UserDTO;
 import com.priadka.newsit_project.fragment.FullStateFragment;
 import com.priadka.newsit_project.fragment.LoginFragment;
@@ -36,6 +42,7 @@ import com.priadka.newsit_project.fragment.SettingFragment;
 import java.lang.reflect.Field;
 import java.util.Locale;
 
+import static android.widget.Toast.makeText;
 import static com.priadka.newsit_project.Constant.APP_PREFERENCES;
 import static com.priadka.newsit_project.Constant.DEFAULT_AVATAR;
 import static com.priadka.newsit_project.Constant.DEFAULT_THEME;
@@ -49,16 +56,20 @@ public class MainActivity extends FragmentActivity {
     private static long back_pressed;       private NewsFragment newsFragment;
     private UserDTO user;                   private FullStateFragment fullStateFragment;
 
-    private boolean isLogin, savePassword;
-    private String Login, Password;
-    private int currentTheme,currentLanguage, resumeCount = 0;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    private FirebaseUser userFire;
+
+    private boolean savePassword, wantLogin;
+    private String localEmail, localPassword;
+    private int currentTheme,currentLanguage, recreateCount = 0;
 
     /*TODO TaskList:
         - REST API используя retrofit (парсин данных);
         + Фрагмент для статьи;
         + Динамическая подгрузка фрагментов (статей);
         + Просморт фрагмента статьи;
-        - Изменение темы и языка (без статей);
+        + Изменение темы и языка (без статей);
         - Реализовать алгоритм поиска (желательно по частичному совпадению);
         - Реализовать алгоритм обновления (по дате добавления);
         - Комментирование статей;
@@ -87,17 +98,35 @@ public class MainActivity extends FragmentActivity {
         getLanguage(currentLanguage);
         super.onCreate(savedInstanceState);
         setContentView(Constant.LAYOUT);
+
         manager = getSupportFragmentManager();
         loginFragment = new LoginFragment();
         settingFragment = new SettingFragment();
         newsFragment = new NewsFragment();
         fullStateFragment = new FullStateFragment();
         FragmentDo(newsFragment);
+
+        mAuth = FirebaseAuth.getInstance();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    wantLogin = true;
+                    FragmentDo(newsFragment);
+
+                } else {
+                    wantLogin = false;
+                    FragmentDo(newsFragment);
+                }
+                Toast.makeText(MainActivity.this,"onAuthStateChanged!", Toast.LENGTH_SHORT).show();
+                initNavigationOnLogin();
+            }};
     }
     @Override
     protected void onStart() {
         super.onStart();
-        if (resumeCount == 0) {
+        if (recreateCount == 0){
             initToolbar();
             initNavigationView();
             KeyboardAction();
@@ -113,9 +142,9 @@ public class MainActivity extends FragmentActivity {
     protected void onResume() {
         super.onResume();
         doPreferences(false);
-        if (isLogin) loginUser(Password);
+        if (wantLogin) loginUser(localPassword);
         initNavigationOnLogin();
-        resumeCount++;
+        recreateCount++;
     }
 
     public Resources.Theme getTheme(int currentTheme) {
@@ -157,40 +186,58 @@ public class MainActivity extends FragmentActivity {
                 break;
         }
     }
+
     public void doPreferences(boolean save){
         SharedPreferences.Editor editor = mSettings.edit();
         if (save) {
             editor.putBoolean("Value_savePassword", savePassword);
-            editor.putBoolean("Value_isLogin", isLogin);
+            editor.putBoolean("Value_wantLogin", wantLogin);
             editor.putInt("Value_Theme", currentTheme);
             editor.putInt("Value_Language", currentLanguage);
-            editor.putString("Value_Login", Login);
-            editor.putString("Value_Password", Password);
+            editor.putString("Value_Login", localEmail);
+            editor.putString("Value_Password", localPassword);
             editor.apply();
         }
         else {
             savePassword = mSettings.getBoolean("Value_savePassword", false);
-            isLogin = mSettings.getBoolean("Value_isLogin", false);
+            wantLogin = mSettings.getBoolean("Value_wantLogin", false);
             currentTheme = mSettings.getInt("Value_Theme",DEFAULT_THEME);
             currentLanguage = mSettings.getInt("Value_Language", 0);
-            Login = mSettings.getString("Value_Login", "");
-            Password = mSettings.getString("Value_Password", "");
+            localEmail = mSettings.getString("Value_Login", "");
+            localPassword = mSettings.getString("Value_Password", "");
         }
     }
     public void loginUser(String password){
-        // Запрос на сервер с отправкой Login и password
-        if (Login.equals(user.getUser_login()) && password.equals(user.getUser_password())){
-            if (resumeCount <= 1){
-                Toast.makeText(MainActivity.this, getString(R.string.log_success)+ " " + user.getUser_login() + "!", Toast.LENGTH_SHORT).show();
-            }
-            isLogin = true;
-            doPreferences(true);
+        userFire = mAuth.getCurrentUser();
+        if (userFire != null){
+            //Toast.makeText(MainActivity.this,"Уже в сети!", Toast.LENGTH_SHORT).show();
+            initNavigationOnLogin();
         }
-        else {
-            isLogin = false;
-            Toast.makeText(MainActivity.this, getString(R.string.log_error_password), Toast.LENGTH_SHORT).show();
+        else{
+            mAuth.signInWithEmailAndPassword(localEmail, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (task.isSuccessful()){
+
+                    }
+                    else{
+                        String stateOfWrong = "";
+                        try {
+                            throw task.getException();
+                        } catch(FirebaseAuthException e) {
+                            switch (e.getErrorCode()){
+                                case "ERROR_USER_NOT_FOUND":stateOfWrong = getString(R.string.log_error_login);break;
+                                case "ERROR_WRONG_PASSWORD":stateOfWrong = getString(R.string.log_error_password);break;
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        makeText(MainActivity.this,getString(R.string.log_error) + " " + stateOfWrong, Toast.LENGTH_SHORT).show();
+                    }
+                    initNavigationOnLogin();
+                }
+            });
         }
-        initNavigationOnLogin();
     }
 
     public void initToolbar(){
@@ -233,11 +280,9 @@ public class MainActivity extends FragmentActivity {
                         break;
                     }
                     case R.id.actionLogOutItem:{
-                        isLogin = false;
-                        resumeCount = 0;
-                        initNavigationOnLogin();
-                        reloadPage();
+                        mAuth.signOut();
                         doPreferences(true);
+                        (MainActivity.this).recreate();
                         break;
                     }
                     case R.id.actionBookmarks:{
@@ -245,7 +290,7 @@ public class MainActivity extends FragmentActivity {
                         for (Object name : user.getUser_bookmarksList()) {
                             booksID = booksID + name + " ";
                         }
-                        Toast.makeText(MainActivity.this, booksID, Toast.LENGTH_SHORT).show();
+                        makeText(MainActivity.this, booksID, Toast.LENGTH_SHORT).show();
                         break;
                     }
                     case R.id.actionNewsItem:{
@@ -270,7 +315,7 @@ public class MainActivity extends FragmentActivity {
         TextView fieldUserName = (TextView)hView.findViewById(R.id.menu_nickname);
         TextView fieldUserMail = (TextView)hView.findViewById(R.id.menu_email);
         RelativeLayout headerImage = (RelativeLayout) hView.findViewById(R.id.navigation_header);
-        if(isLogin){
+        if(mAuth.getCurrentUser() != null){
             MenuItem LogOutButton = navigationView.getMenu().findItem(R.id.actionLogOutItem);   LogOutButton.setVisible(true);
             MenuItem BookmarksButton = navigationView.getMenu().findItem(R.id.actionBookmarks); BookmarksButton.setVisible(true);
             MenuItem LogInButton = navigationView.getMenu().findItem(R.id.actionLogInItem);     LogInButton.setVisible(false);
@@ -325,7 +370,6 @@ public class MainActivity extends FragmentActivity {
             // Пере-получаем статю с сервера и устанавливаем значения для fullStateFragment
             // Перезагружаем содержимое fullState
         }
-        resumeCount++;
     }
     public void search(String request){
         if(request.length() > 0) {
@@ -354,7 +398,7 @@ public class MainActivity extends FragmentActivity {
             startActivity(intent);
         } else {
             CharSequence text = getString(R.string.error_text);
-            Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT);
+            Toast toast = makeText(getApplicationContext(), text, Toast.LENGTH_SHORT);
             toast.show();
         }
     }
@@ -395,12 +439,10 @@ public class MainActivity extends FragmentActivity {
     public int getCurrentLanguage() {return currentLanguage;}
     public void setCurrentLanguage(int currentLanguage) {this.currentLanguage = currentLanguage;}
 
-    public boolean getIsLogin(){return isLogin;}
-    public void setIsLogin(boolean value){isLogin = value;}
-    public String getLogin(){return Login;}
-    public void setLogin(String value){Login = value;}
-    public String getPassword(){return Password;}
-    public void setPassword(String value){Password = value;}
+    public String getLocalEmail(){return localEmail;}
+    public void setLocalEmail(String value){localEmail = value;}
+    public String getLocalPassword(){return localPassword;}
+    public void setLocalPassword(String value){localPassword = value;}
     public boolean getSavePassword(){return savePassword;}
     public void setSavePassword(boolean values){savePassword = values;}
 }

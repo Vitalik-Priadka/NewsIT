@@ -1,17 +1,15 @@
 package com.priadka.newsit_project;
 
 import com.priadka.newsit_project.DTO.NewsDTO;
-import com.priadka.newsit_project.DTO.UserDTO;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class myServer {
-    private static UserDTO user = null;
+public class myServer{
     private static List<NewsDTO> data = null;
 
     // Временная заглушка для статей
-    public static void createMockListNews() {
+    private static void createMockListNews() {
         data = new ArrayList<>();
         data.add(new NewsDTO(101 ,1, "Title#1 Статья о Роботах","Текс статьи №1","13:57 22.10.17", 50, 26));
         data.add(new NewsDTO(102 ,2, "Title#2 Статья о Взрывах","Текс статьи №2","12:12 14.07.17", 124, 45));
@@ -25,12 +23,5 @@ public class myServer {
         data.add(new NewsDTO(110 ,10, "Title#10 Статья о Машинах","Текс статьи №10","19:13 23.09.17", 999, 228));
     }
 
-    // Временна заглушка информации пользователя
-    public static void initMockUser() {
-        ArrayList<Integer> listBookmark = new ArrayList<Integer>();
-        listBookmark.add(102); listBookmark.add(105);
-        user = new UserDTO("Vitalik","vitalik.pryadka@gmail.com", "12345", 3 , listBookmark);
-    }
-    public static UserDTO getUser(){if(user == null)initMockUser(); return user;}
     public static List<NewsDTO> getNews(){if(data == null)createMockListNews(); return data;}
 }

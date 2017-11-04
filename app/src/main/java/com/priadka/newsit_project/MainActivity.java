@@ -1,5 +1,6 @@
 package com.priadka.newsit_project;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,6 +17,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,6 +35,12 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.ValueEventListener;
 import com.priadka.newsit_project.DTO.UserDTO;
 import com.priadka.newsit_project.fragment.FullStateFragment;
 import com.priadka.newsit_project.fragment.LoginFragment;
@@ -40,12 +48,20 @@ import com.priadka.newsit_project.fragment.NewsFragment;
 import com.priadka.newsit_project.fragment.SettingFragment;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
+import java.util.Map;
 
 import static android.widget.Toast.makeText;
 import static com.priadka.newsit_project.Constant.APP_PREFERENCES;
 import static com.priadka.newsit_project.Constant.DEFAULT_AVATAR;
 import static com.priadka.newsit_project.Constant.DEFAULT_THEME;
+import static com.priadka.newsit_project.Constant.F_BOOKMARK;
+import static com.priadka.newsit_project.Constant.F_EMAIL;
+import static com.priadka.newsit_project.Constant.F_IMAGE;
+import static com.priadka.newsit_project.Constant.F_LOGIN;
+import static com.priadka.newsit_project.Constant.F_USER;
 
 public class MainActivity extends FragmentActivity {
 
@@ -55,10 +71,13 @@ public class MainActivity extends FragmentActivity {
     private SharedPreferences mSettings;    private SettingFragment settingFragment;
     private static long back_pressed;       private NewsFragment newsFragment;
     private UserDTO user;                   private FullStateFragment fullStateFragment;
+    private View hView;
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private DatabaseReference myRefUsers;
     private FirebaseUser userFire;
+    private ProgressDialog progressDialog;
 
     private boolean savePassword, wantLogin;
     private String localEmail, localPassword;
@@ -92,7 +111,6 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
-        user = myServer.getUser();
         doPreferences(false);
         getTheme(currentTheme);
         getLanguage(currentLanguage);
@@ -104,23 +122,22 @@ public class MainActivity extends FragmentActivity {
         settingFragment = new SettingFragment();
         newsFragment = new NewsFragment();
         fullStateFragment = new FullStateFragment();
-        FragmentDo(newsFragment);
+        progressDialog = new ProgressDialog(this);
 
         mAuth = FirebaseAuth.getInstance();
+        myRefUsers = FirebaseDatabase.getInstance().getReference().child(F_USER);
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
+                userFire = firebaseAuth.getCurrentUser();
+                if (userFire != null) {
                     wantLogin = true;
-                    FragmentDo(newsFragment);
-
                 } else {
                     wantLogin = false;
-                    FragmentDo(newsFragment);
+                    Toast.makeText(MainActivity.this,"Без логина!", Toast.LENGTH_SHORT).show();
+                    initNavigationOnLogin();
                 }
-                Toast.makeText(MainActivity.this,"onAuthStateChanged!", Toast.LENGTH_SHORT).show();
-                initNavigationOnLogin();
+                reloadPage();
             }};
     }
     @Override
@@ -131,6 +148,7 @@ public class MainActivity extends FragmentActivity {
             initNavigationView();
             KeyboardAction();
             reloadPage();
+            mAuth.addAuthStateListener(mAuthListener);
         }
     }
     @Override
@@ -142,9 +160,8 @@ public class MainActivity extends FragmentActivity {
     protected void onResume() {
         super.onResume();
         doPreferences(false);
-        if (wantLogin) loginUser(localPassword);
-        initNavigationOnLogin();
         recreateCount++;
+        if(wantLogin)loginUser(localPassword);
     }
 
     public Resources.Theme getTheme(int currentTheme) {
@@ -208,36 +225,53 @@ public class MainActivity extends FragmentActivity {
         }
     }
     public void loginUser(String password){
-        userFire = mAuth.getCurrentUser();
-        if (userFire != null){
-            //Toast.makeText(MainActivity.this,"Уже в сети!", Toast.LENGTH_SHORT).show();
-            initNavigationOnLogin();
-        }
-        else{
-            mAuth.signInWithEmailAndPassword(localEmail, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()){
-
-                    }
-                    else{
-                        String stateOfWrong = "";
-                        try {
-                            throw task.getException();
-                        } catch(FirebaseAuthException e) {
-                            switch (e.getErrorCode()){
-                                case "ERROR_USER_NOT_FOUND":stateOfWrong = getString(R.string.log_error_login);break;
-                                case "ERROR_WRONG_PASSWORD":stateOfWrong = getString(R.string.log_error_password);break;
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        makeText(MainActivity.this,getString(R.string.log_error) + " " + stateOfWrong, Toast.LENGTH_SHORT).show();
-                    }
-                    initNavigationOnLogin();
+        progressDialog.setMessage(getString(R.string.log_waiting));
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        mAuth.signInWithEmailAndPassword(localEmail, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()){
+                    getUserData();
                 }
-            });
-        }
+                else{
+                    if (progressDialog.isShowing())progressDialog.dismiss();
+                    String stateOfWrong = getString(R.string.log_error_connection);
+                    try {
+                        throw task.getException();
+                    } catch(FirebaseAuthException e) {
+                        switch (e.getErrorCode()){
+                            case "ERROR_USER_NOT_FOUND":stateOfWrong = getString(R.string.log_error_login);break;
+                            case "ERROR_WRONG_PASSWORD":stateOfWrong = getString(R.string.log_error_password);break;
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    makeText(MainActivity.this,getString(R.string.log_error) + " " + stateOfWrong, Toast.LENGTH_SHORT).show();
+                }}});
+    }
+    private void getUserData(){
+        myRefUsers.child(userFire.getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                GenericTypeIndicator<Map<String,String>> data = new GenericTypeIndicator<Map<String,String>>(){};
+                Map <String, String> map = dataSnapshot.getValue(data);
+                String name = map.get(F_LOGIN);
+                String email = map.get(F_EMAIL);
+                String imageNumber = map.get(F_IMAGE);
+                String bookmark = map.get(F_BOOKMARK);
+                ArrayList<String> listString = new ArrayList<>(Arrays.asList(bookmark.split(" ")));
+                ArrayList<Integer> listBookmark = getIntegerArray(listString);
+                user = new UserDTO(name,email,Integer.valueOf(imageNumber), listBookmark);
+                initNavigationOnLogin();
+                if (progressDialog.isShowing())progressDialog.dismiss();
+                if(recreateCount == 1)Toast.makeText(MainActivity.this,getString(R.string.log_success) + " " + user.getUser_login() + "!", Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("Error", databaseError.toString());
+            }
+        });
     }
 
     public void initToolbar(){
@@ -270,6 +304,7 @@ public class MainActivity extends FragmentActivity {
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView = (NavigationView) findViewById(R.id.navigation);
+        hView =  navigationView.getHeaderView(0);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -281,8 +316,7 @@ public class MainActivity extends FragmentActivity {
                     }
                     case R.id.actionLogOutItem:{
                         mAuth.signOut();
-                        doPreferences(true);
-                        (MainActivity.this).recreate();
+                        recreateCount = 0;
                         break;
                     }
                     case R.id.actionBookmarks:{
@@ -310,22 +344,23 @@ public class MainActivity extends FragmentActivity {
         });
     }
     public void initNavigationOnLogin() {
-        View hView =  navigationView.getHeaderView(0);
         ImageView avatarImage  = (ImageView)hView.findViewById(R.id.menu_avatar);
         TextView fieldUserName = (TextView)hView.findViewById(R.id.menu_nickname);
         TextView fieldUserMail = (TextView)hView.findViewById(R.id.menu_email);
         RelativeLayout headerImage = (RelativeLayout) hView.findViewById(R.id.navigation_header);
-        if(mAuth.getCurrentUser() != null){
+        if(userFire != null){
             MenuItem LogOutButton = navigationView.getMenu().findItem(R.id.actionLogOutItem);   LogOutButton.setVisible(true);
             MenuItem BookmarksButton = navigationView.getMenu().findItem(R.id.actionBookmarks); BookmarksButton.setVisible(true);
             MenuItem LogInButton = navigationView.getMenu().findItem(R.id.actionLogInItem);     LogInButton.setVisible(false);
             this.invalidateOptionsMenu();
 
             // Чтение профиля и установка
-            fieldUserName.setText(user.getUser_login());
-            fieldUserMail.setText(user.getUser_email());
-            String currentAvatarS = "avatar_" + user.getUser_image();
-            avatarImage.setImageResource(getResId(currentAvatarS, R.drawable.class));
+            if (user.getUser_login() != null && user.getUser_email() != null){
+                fieldUserName.setText(user.getUser_login());
+                fieldUserMail.setText(user.getUser_email());
+                String currentAvatarS = "avatar_" + user.getUser_image();
+                avatarImage.setImageResource(getResId(currentAvatarS, R.drawable.class));
+            }
             headerImage.setVisibility(View.VISIBLE);
         }
         else {
@@ -344,6 +379,7 @@ public class MainActivity extends FragmentActivity {
         else user.setUser_image(user.getUser_image() + 1);
         String currentAvatarS = "avatar_" + user.getUser_image();
         avatarImage.setImageResource(getResId(currentAvatarS, R.drawable.class));
+        recreateCount++;
     }
     public static int getResId(String resName, Class<?> c) {
         try {
@@ -362,14 +398,11 @@ public class MainActivity extends FragmentActivity {
         rotate.setInterpolator(new LinearInterpolator());
         drawable.icon.startAnimation(rotate); */
 
-        if (newsFragment.isVisible()){
-            // Пере-получаем статьи с сервера
-            // Перезагружаем содержимое recycleView
-        }
-        if (fullStateFragment.isVisible()){
-            // Пере-получаем статю с сервера и устанавливаем значения для fullStateFragment
-            // Перезагружаем содержимое fullState
-        }
+        // если нет
+        // Показ надписи сервер не доступен
+
+        //Если связь есть
+        FragmentDo(newsFragment);
     }
     public void search(String request){
         if(request.length() > 0) {
@@ -432,8 +465,20 @@ public class MainActivity extends FragmentActivity {
             }
         });
     }
+    private ArrayList<Integer> getIntegerArray(ArrayList<String> stringArray) {
+        ArrayList<Integer> result = new ArrayList<Integer>();
+        for(String stringValue : stringArray) {
+            try {
+                result.add(Integer.parseInt(stringValue));
+            } catch(NumberFormatException nfe) {
+                Log.w("NumberFormat", "Parsing failed! " + stringValue + " can not be an integer");}
+        }
+        return result;
+    }
 
     // Getter and Setter
+    public UserDTO getUser() {return user;}
+
     public int getCurrentTheme(){return currentTheme;}
     public void setCurrentTheme(int value){currentTheme = value;}
     public int getCurrentLanguage() {return currentLanguage;}

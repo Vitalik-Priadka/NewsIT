@@ -1,7 +1,5 @@
 package com.priadka.newsit_project.fragment;
 
-import android.app.ProgressDialog;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,10 +12,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.priadka.newsit_project.Constant;
 import com.priadka.newsit_project.MainActivity;
 import com.priadka.newsit_project.R;
@@ -76,45 +71,13 @@ public class LoginFragment extends Fragment {
             passwordField.setText("");
         }
         else {((MainActivity)getActivity()).setSavePassword(true);}
-        if(((MainActivity)getActivity()).getLocalEmail().length() >= 5){
-            ((MainActivity)getActivity()).setLocalPassword(password);
+        if(((MainActivity)getActivity()).getLocalEmail().length() >= 5 && password.length() > 0 ){
+            ((MainActivity)getActivity()).setLocalPassword(passwordField.getText().toString());
 
             //TypedValue typedValue = new  TypedValue();
             //getContext().getTheme().resolveAttribute(R.attr.colorPrimaryDark, typedValue, true);
             //final  int color = typedValue.data;
-            new MyAsyncTask().execute();
-        }
-    }
-
-    private class MyAsyncTask extends AsyncTask<Void, Void, Void> {
-        private final ProgressDialog progressDialog = new ProgressDialog(getActivity());
-        @Override
-        protected void onPreExecute() {
-            progressDialog.setMessage(getString(R.string.log_waiting));
-            progressDialog.setCancelable(false);
-            progressDialog.show();
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
             ((MainActivity)getActivity()).loginUser(password);
-            try {
-                Thread.sleep(2500);
-            } catch (InterruptedException e) {
-                return null;
-            }
-            return null;
         }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            if (progressDialog.isShowing())progressDialog.dismiss();
-            FirebaseUser userFire = FirebaseAuth.getInstance().getCurrentUser();
-            if(userFire != null){
-                Toast.makeText(getActivity(),getString(R.string.log_success), Toast.LENGTH_SHORT).show();
-                NewsFragment newsFragment = new NewsFragment();
-                ((MainActivity)getActivity()).FragmentDo(newsFragment);
-            }
-}
     }
 }

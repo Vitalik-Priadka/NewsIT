@@ -19,7 +19,6 @@ import com.priadka.newsit_project.Constant;
 import com.priadka.newsit_project.DTO.UserDTO;
 import com.priadka.newsit_project.MainActivity;
 import com.priadka.newsit_project.R;
-import com.priadka.newsit_project.myServer;
 
 public class FullStateFragment extends Fragment {
     private View view;
@@ -57,7 +56,7 @@ public class FullStateFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        user = myServer.getUser();  mAuth = FirebaseAuth.getInstance();
+        user = ((MainActivity)getActivity()).getUser();  mAuth = FirebaseAuth.getInstance();
         image = (ImageView) getActivity().findViewById(R.id.state_image);
         title = (TextView) getActivity().findViewById(R.id.state_header);
         title = (TextView) getActivity().findViewById(R.id.state_header);
@@ -106,7 +105,8 @@ public class FullStateFragment extends Fragment {
                             isLiked = !isLiked;
                             if (isLiked) {
                                 if (!user.getUser_bookmarksList().contains(state_id)){
-                                    (user.getUser_bookmarksList()).add(state_id);
+                                    user.getUser_bookmarksList().add(state_id);
+                                    user.setUser_bookmarksList(user.getUser_bookmarksList());
                                     state_rating++;
                                 }
                                 starButton.setImageResource(R.drawable.star);
@@ -114,6 +114,7 @@ public class FullStateFragment extends Fragment {
                             if (!isLiked) {
                                 if (user.getUser_bookmarksList().contains(state_id)){
                                     (user.getUser_bookmarksList()).remove((user.getUser_bookmarksList().indexOf(state_id)));
+                                    user.setUser_bookmarksList(user.getUser_bookmarksList());
                                 }
                                 starButton.setImageResource(R.drawable.star_outline);
                             }

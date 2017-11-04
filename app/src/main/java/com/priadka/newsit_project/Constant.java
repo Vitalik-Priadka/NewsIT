@@ -16,5 +16,14 @@ public class Constant {
     public static final int SPLASH_DISPLAY_LENGTH = 1000;
     public static final int DEFAULT_THEME = 2;
     public static final int DEFAULT_AVATAR = 1;
-    public static final int textSize = 16;
+
+    /*          SERVER NODE`S         */
+    public static final String F_USER = "Users";
+    public static final String F_LOGIN = "Login";
+    public static final String F_EMAIL = "Email";
+    public static final String F_IMAGE = "ImageNumber";
+    public static final String F_BOOKMARK = "Bookmark";
+
+
+
 }

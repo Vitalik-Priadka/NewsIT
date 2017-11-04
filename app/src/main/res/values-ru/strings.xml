@@ -65,4 +65,5 @@
     <string name="log_error_password">Не правильный пароль!</string>
     <string name="log_error">Не удалось войти!</string>
     <string name="log_waiting">Происходит вход в аккаунт.. Подождите..</string>
+    <string name="log_error_connection">Проверьте интернет соединение!</string>
 </resources>

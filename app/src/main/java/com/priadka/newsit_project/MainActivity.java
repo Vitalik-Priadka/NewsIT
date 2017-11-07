@@ -14,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
@@ -21,6 +22,9 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -40,9 +44,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.priadka.newsit_project.DTO.NewsDTO;
 import com.priadka.newsit_project.DTO.UserDTO;
 import com.priadka.newsit_project.fragment.FullStateFragment;
+import com.priadka.newsit_project.fragment.HelpFragment;
+import com.priadka.newsit_project.fragment.LoadFragment;
 import com.priadka.newsit_project.fragment.LoginFragment;
 import com.priadka.newsit_project.fragment.NewsFragment;
 import com.priadka.newsit_project.fragment.SettingFragment;
@@ -50,6 +60,7 @@ import com.priadka.newsit_project.fragment.SettingFragment;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -61,25 +72,33 @@ import static com.priadka.newsit_project.Constant.F_BOOKMARK;
 import static com.priadka.newsit_project.Constant.F_EMAIL;
 import static com.priadka.newsit_project.Constant.F_IMAGE;
 import static com.priadka.newsit_project.Constant.F_LOGIN;
+import static com.priadka.newsit_project.Constant.F_STATE;
+import static com.priadka.newsit_project.Constant.F_S_COMMENT;
+import static com.priadka.newsit_project.Constant.F_S_DATE;
+import static com.priadka.newsit_project.Constant.F_S_IMAGE;
+import static com.priadka.newsit_project.Constant.F_S_RATING;
+import static com.priadka.newsit_project.Constant.F_S_TEXT;
+import static com.priadka.newsit_project.Constant.F_S_TITLE;
 import static com.priadka.newsit_project.Constant.F_USER;
 
 public class MainActivity extends FragmentActivity {
 
-    private Toolbar toolbar;                public static FragmentManager manager;
-    private DrawerLayout drawerLayout;      private NavigationView navigationView;
-    private EditText searchField;           private LoginFragment loginFragment;
-    private SharedPreferences mSettings;    private SettingFragment settingFragment;
-    private static long back_pressed;       private NewsFragment newsFragment;
-    private UserDTO user;                   private FullStateFragment fullStateFragment;
-    private View hView;
+    private Toolbar toolbar;                            public static FragmentManager manager;
+    private DrawerLayout drawerLayout;                  private NavigationView navigationView;
+    private EditText searchField;                       private LoginFragment loginFragment;
+    private SharedPreferences mSettings;                private SettingFragment settingFragment;
+    private static long back_pressed;                   private NewsFragment newsFragment;
+    private UserDTO user;                               private FullStateFragment fullStateFragment;
+    private static List<NewsDTO> dataNews;              private HelpFragment helpFragment;
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private DatabaseReference myRefUsers;
+    private StorageReference mStorageRef;
+    private DatabaseReference myRef;
     private FirebaseUser userFire;
     private ProgressDialog progressDialog;
 
-    private boolean savePassword, wantLogin;
+    private boolean savePassword, wantLogin, isConnect;
     private String localEmail, localPassword;
     private int currentTheme,currentLanguage, recreateCount = 0;
 
@@ -122,10 +141,11 @@ public class MainActivity extends FragmentActivity {
         settingFragment = new SettingFragment();
         newsFragment = new NewsFragment();
         fullStateFragment = new FullStateFragment();
+        helpFragment = new HelpFragment();
         progressDialog = new ProgressDialog(this);
 
         mAuth = FirebaseAuth.getInstance();
-        myRefUsers = FirebaseDatabase.getInstance().getReference().child(F_USER);
+        myRef = FirebaseDatabase.getInstance().getReference();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -134,11 +154,28 @@ public class MainActivity extends FragmentActivity {
                     wantLogin = true;
                 } else {
                     wantLogin = false;
-                    Toast.makeText(MainActivity.this,"Без логина!", Toast.LENGTH_SHORT).show();
                     initNavigationOnLogin();
                 }
-                reloadPage();
+                showByConnect();
             }};
+        DatabaseReference presenceRef = FirebaseDatabase.getInstance().getReference("disconnectmessage");
+        presenceRef.onDisconnect().setValue("I disconnected!");
+        DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
+        connectedRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                boolean connected = snapshot.getValue(Boolean.class);
+                if (connected) {
+                    isConnect = true;
+                } else {
+                    isConnect = false;
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError error) {
+                System.err.println("Listener was cancelled");
+            }
+        });
     }
     @Override
     protected void onStart() {
@@ -147,6 +184,7 @@ public class MainActivity extends FragmentActivity {
             initToolbar();
             initNavigationView();
             KeyboardAction();
+            if(wantLogin) loginUser(localPassword);
             reloadPage();
             mAuth.addAuthStateListener(mAuthListener);
         }
@@ -160,8 +198,6 @@ public class MainActivity extends FragmentActivity {
     protected void onResume() {
         super.onResume();
         doPreferences(false);
-        recreateCount++;
-        if(wantLogin)loginUser(localPassword);
     }
 
     public Resources.Theme getTheme(int currentTheme) {
@@ -251,7 +287,7 @@ public class MainActivity extends FragmentActivity {
                 }}});
     }
     private void getUserData(){
-        myRefUsers.child(userFire.getUid()).addValueEventListener(new ValueEventListener() {
+        myRef.child(F_USER).child(userFire.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 GenericTypeIndicator<Map<String,String>> data = new GenericTypeIndicator<Map<String,String>>(){};
@@ -265,11 +301,44 @@ public class MainActivity extends FragmentActivity {
                 user = new UserDTO(name,email,Integer.valueOf(imageNumber), listBookmark);
                 initNavigationOnLogin();
                 if (progressDialog.isShowing())progressDialog.dismiss();
-                if(recreateCount == 1)Toast.makeText(MainActivity.this,getString(R.string.log_success) + " " + user.getUser_login() + "!", Toast.LENGTH_SHORT).show();
+                if(recreateCount <= 1){
+                    Toast.makeText(MainActivity.this,getString(R.string.log_success) + " " + user.getUser_login() + "!", Toast.LENGTH_SHORT).show();
+                    recreateCount++;
+                }
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.d("Error", databaseError.toString());
+            }
+        });
+    }
+    private void getStateData(){
+        dataNews = new ArrayList<>();
+        mStorageRef = FirebaseStorage.getInstance().getReference();
+        Query query = myRef.child(F_STATE);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot state : dataSnapshot.getChildren()) {
+                        GenericTypeIndicator<Map<String,String>> data = new GenericTypeIndicator<Map<String,String>>(){};
+                        Map <String, String> map = state.getValue(data);
+                        String title = map.get(F_S_TITLE);
+                        String text = map.get(F_S_TEXT);
+                        String date = map.get(F_S_DATE);
+                        String rating = map.get(F_S_RATING);
+                        String image = map.get(F_S_IMAGE);
+                        String number_comment = map.get(F_S_COMMENT);
+                        String id = state.getKey().toString();
+
+                        //Toast.makeText(MainActivity.this,image, Toast.LENGTH_SHORT).show();
+                        dataNews.add(new NewsDTO( Integer.valueOf(id), image, title, text, date, Integer.valueOf(rating), Integer.valueOf(number_comment)));
+                    }
+                    FragmentDo(newsFragment);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
             }
         });
     }
@@ -304,7 +373,7 @@ public class MainActivity extends FragmentActivity {
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView = (NavigationView) findViewById(R.id.navigation);
-        hView =  navigationView.getHeaderView(0);
+        View hView =  navigationView.getHeaderView(0);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -316,19 +385,15 @@ public class MainActivity extends FragmentActivity {
                     }
                     case R.id.actionLogOutItem:{
                         mAuth.signOut();
-                        recreateCount = 0;
+                        recreateCount = 1;
                         break;
                     }
                     case R.id.actionBookmarks:{
-                        String booksID = "";
-                        for (Object name : user.getUser_bookmarksList()) {
-                            booksID = booksID + name + " ";
-                        }
-                        makeText(MainActivity.this, booksID, Toast.LENGTH_SHORT).show();
+                        FragmentDo(helpFragment);
                         break;
                     }
                     case R.id.actionNewsItem:{
-                        FragmentDo(newsFragment);
+                        showByConnect();
                         break;
                     }
                     case R.id.actionSettingItem:{
@@ -344,6 +409,7 @@ public class MainActivity extends FragmentActivity {
         });
     }
     public void initNavigationOnLogin() {
+        View hView = navigationView.getHeaderView(0);
         ImageView avatarImage  = (ImageView)hView.findViewById(R.id.menu_avatar);
         TextView fieldUserName = (TextView)hView.findViewById(R.id.menu_nickname);
         TextView fieldUserMail = (TextView)hView.findViewById(R.id.menu_email);
@@ -379,7 +445,6 @@ public class MainActivity extends FragmentActivity {
         else user.setUser_image(user.getUser_image() + 1);
         String currentAvatarS = "avatar_" + user.getUser_image();
         avatarImage.setImageResource(getResId(currentAvatarS, R.drawable.class));
-        recreateCount++;
     }
     public static int getResId(String resName, Class<?> c) {
         try {
@@ -392,18 +457,22 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void reloadPage(){
-        /* ImageView drawable.icon =(ImageView) findViewById(R.id.reload);;
-        RotateAnimation rotate = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        rotate.setDuration(5000);
+        View icon =  toolbar.findViewById(R.id.reload);
+        RotateAnimation rotate = new RotateAnimation(0, 720, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotate.setDuration(500);
         rotate.setInterpolator(new LinearInterpolator());
-        drawable.icon.startAnimation(rotate); */
+        if (icon != null)icon.startAnimation(rotate);
 
-        // если нет
-        // Показ надписи сервер не доступен
-
-        //Если связь есть
-        FragmentDo(newsFragment);
+        if (isConnect){
+            LoadFragment loadFragment = new LoadFragment();
+            FragmentDo(loadFragment);
+            getStateData();
+        }
+        else{
+            FragmentDo(helpFragment);
+        }
     }
+
     public void search(String request){
         if(request.length() > 0) {
             // Выполняем запрос поиска на сервер и вставляем полученные статьи в newsFragment
@@ -425,7 +494,9 @@ public class MainActivity extends FragmentActivity {
         // Отправка на email
         Intent intent = new Intent(Intent.ACTION_SENDTO);
         intent.setData(Uri.parse("mailto: it.news@dev.com"));
-        intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.setting_info_email_header));
+        String userName = "Anonymous";
+        if(user.getUser_login() != null && userFire != null) userName = user.getUser_login();
+        intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.setting_info_email_header)+ " " + userName);
         intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.setting_info_email_text));
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
@@ -442,7 +513,8 @@ public class MainActivity extends FragmentActivity {
             finishAffinity();
         else {
             getCurrentFocus().clearFocus();
-            FragmentDo(newsFragment);
+            if (drawerLayout != null && drawerLayout.isDrawerOpen(GravityCompat.START)) drawerLayout.closeDrawers();
+            showByConnect();
         }
         back_pressed = System.currentTimeMillis();
     }
@@ -454,6 +526,7 @@ public class MainActivity extends FragmentActivity {
         }
     }
     private  void KeyboardAction() {
+
         searchField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
@@ -475,13 +548,23 @@ public class MainActivity extends FragmentActivity {
         }
         return result;
     }
+    private void showByConnect(){
+        if (isConnect){
+            FragmentDo(newsFragment);
+        }
+        else{
+            FragmentDo(helpFragment);
+        }
+    }
 
     // Getter and Setter
     public UserDTO getUser() {return user;}
+    public List<NewsDTO> getNews(){if(dataNews == null)getStateData(); return dataNews;}
 
     public int getCurrentTheme(){return currentTheme;}
     public void setCurrentTheme(int value){currentTheme = value;}
     public int getCurrentLanguage() {return currentLanguage;}
+    public boolean getIsConnect() {return isConnect;}
     public void setCurrentLanguage(int currentLanguage) {this.currentLanguage = currentLanguage;}
 
     public String getLocalEmail(){return localEmail;}

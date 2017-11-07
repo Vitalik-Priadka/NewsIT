@@ -49,7 +49,7 @@
     </string-array>
     <string name="setting_version">Текущая версия: 0.3 (Beta)</string>
     <string name="setting_info_button">*Написать нам*</string>
-    <string name="setting_info_email_header">Сообщение от пользователя&#8230;</string>
+    <string name="setting_info_email_header">Сообщение от пользователя</string>
     <string name="setting_info_email_text">Здравствуйте тех. поддержка IT-News! Я пишу по поводу &#8230;</string>
     <string name="setting_info">Данное пиложение было создано\n в рамках курсового проекта по дисциплине \"Компьютерные сети\".\n Студентами групы КИ-151:\n Прядка В. В. и Рожнятовская Д. Д.</string>
 

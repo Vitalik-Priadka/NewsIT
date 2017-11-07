@@ -40,7 +40,7 @@ public class LoginFragment extends Fragment {
         ListenerAction();
     }
 
-    private  void ListenerAction() {
+    private void ListenerAction() {
         loginButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override

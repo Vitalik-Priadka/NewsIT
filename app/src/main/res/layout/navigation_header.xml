@@ -6,6 +6,7 @@
     android:layout_height="142dp"
     android:background="?attr/colorPrimary">
         <ImageView
+            android:id="@+id/navigation_header_background"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="@string/navigation_header_description"
@@ -33,7 +34,7 @@
                     android:layout_marginStart="15dp"
                     android:layout_marginTop="50dp"
                     android:layout_toEndOf="@+id/menu_avatar"
-                    style="@style/TextStyleBig"/>
+                    android:textSize="20sp"/>
                 <TextView
                     android:id="@+id/menu_email"
                     android:layout_width="wrap_content"

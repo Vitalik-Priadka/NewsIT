@@ -33,7 +33,9 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
         final NewsDTO item = data.get(position);
         holder.id = item.getId();
         holder.title.setText(item.getTitle() + "\nID:" + item.getId());
-        holder.image.setImageResource( MainActivity.getResId("avatar_" + item.getImage(), R.drawable.class) );
+        //MainActivity mainActivity = new MainActivity();
+        //Picasso.with(mainActivity).load(item.getImage()).into(holder.image);
+        //holder.image.setImageResource( MainActivity.getResId("avatar_" + item.getImage(), R.drawable.class) );
         holder.date.setText(item.getDate());
         holder.rating.setText(String.format(item.getRating().toString()) );
         holder.num_comment.setText(String.format(item.getNumberComment().toString()) );
@@ -45,7 +47,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
                 bundle.putInt("state_id", item.getId());
                 bundle.putString("state_title", item.getTitle());
                 bundle.putString("state_text", item.getText());
-                bundle.putInt("state_image", item.getImage());
+                bundle.putInt("state_image", 2);
                 bundle.putString("state_date", item.getDate());
                 bundle.putInt("state_rating", item.getRating());
 

@@ -13,8 +13,8 @@ import android.view.ViewGroup;
 
 import com.priadka.newsit_project.Adapter.NewsListAdapter;
 import com.priadka.newsit_project.Constant;
+import com.priadka.newsit_project.MainActivity;
 import com.priadka.newsit_project.R;
-import com.priadka.newsit_project.myServer;
 
 public class NewsFragment extends Fragment {
     private View view;
@@ -25,7 +25,8 @@ public class NewsFragment extends Fragment {
         view = inflater.inflate(Constant.NEWS, container, false);
         RecyclerView rv = (RecyclerView) view.findViewById(R.id.recycleViewNews);
         rv.setLayoutManager( new LinearLayoutManager(context));
-        rv.setAdapter(new NewsListAdapter(myServer.getNews()));
+        MainActivity mainActivity = new MainActivity();
+        rv.setAdapter(new NewsListAdapter(mainActivity.getNews()));
         return view;
     }
 

@@ -7,9 +7,9 @@ public class NewsDTO {
     private String date;
     private Integer rating;
     private Integer number_comment;
-    private int image;
+    private String image;
 
-    public NewsDTO(int id, int image, String title, String text, String date, Integer rating , Integer number_comment){
+    public NewsDTO(int id, String image, String title, String text, String date, Integer rating , Integer number_comment){
         this.id = id;
         this.image = image;
         this.title = title;
@@ -22,8 +22,8 @@ public class NewsDTO {
     public int getId() {return id;}
     public void setId(int id) {this.id = id;}
 
-    public int getImage() {return image;}
-    public void setImage(int image) {this.image = image;}
+    public String getImage() {return image;}
+    public void setImage(String image) {this.image = image;}
 
     public String getTitle() {return title;}
     public void setTitle(String title) {this.title = title;}

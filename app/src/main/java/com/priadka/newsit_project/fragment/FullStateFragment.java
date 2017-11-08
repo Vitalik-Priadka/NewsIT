@@ -2,6 +2,7 @@ package com.priadka.newsit_project.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,11 +15,25 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.priadka.newsit_project.Constant;
 import com.priadka.newsit_project.DTO.UserDTO;
 import com.priadka.newsit_project.MainActivity;
 import com.priadka.newsit_project.R;
+
+import static com.priadka.newsit_project.Constant.F_STATE;
+import static com.priadka.newsit_project.Constant.F_S_IMAGE_DATABASE;
+import static com.priadka.newsit_project.Constant.F_S_RATING;
+import static com.priadka.newsit_project.R.id.state_image;
 
 public class FullStateFragment extends Fragment {
     private View view;
@@ -29,9 +44,11 @@ public class FullStateFragment extends Fragment {
     private LinearLayout commentBlock;
     private UserDTO user;
     private FirebaseAuth mAuth;
+    private StorageReference mStorageRef;
+    private DatabaseReference myRefState;
 
     private String state_title, state_text, state_date;
-    private int state_id, state_image,state_rating ;
+    private int state_id, state_rating ;
     private boolean isLiked = false;
 
     @Override
@@ -41,12 +58,10 @@ public class FullStateFragment extends Fragment {
         if (bundle != null) {
             state_id = bundle.getInt("state_id",0);
             if(state_id == 0){
-                NewsFragment newsFragment = new NewsFragment();
-                ((MainActivity)getActivity()).FragmentDo(newsFragment);
+                ((MainActivity)getActivity()).reloadPage();
             }
             state_title = bundle.getString("state_title");
             state_text = bundle.getString("state_text");
-            state_image = bundle.getInt("state_image",1);
             state_date = bundle.getString("state_date");
             state_rating = bundle.getInt("state_rating",0);
         }
@@ -57,8 +72,7 @@ public class FullStateFragment extends Fragment {
     public void onStart() {
         super.onStart();
         user = ((MainActivity)getActivity()).getUser();  mAuth = FirebaseAuth.getInstance();
-        image = (ImageView) getActivity().findViewById(R.id.state_image);
-        title = (TextView) getActivity().findViewById(R.id.state_header);
+        image = (ImageView) getActivity().findViewById(state_image);
         title = (TextView) getActivity().findViewById(R.id.state_header);
         text = (TextView) getActivity().findViewById(R.id.state_text);
         date = (TextView) getActivity().findViewById(R.id.state_date);
@@ -67,8 +81,11 @@ public class FullStateFragment extends Fragment {
         commentBlock = (LinearLayout) getActivity().findViewById(R.id.commentBlock);
 
         title.setText(state_title);
-        text.setText(state_text+ " " + getString(R.string.test_text));
-        image.setImageResource( MainActivity.getResId("avatar_" + state_image, R.drawable.class) );
+        text.setText(state_text);
+        if(image.getScaleType() != ImageView.ScaleType.CENTER_CROP)image.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        String imageName = String.valueOf(state_id) + ".jpg";
+        mStorageRef = FirebaseStorage.getInstance().getReference().child(F_S_IMAGE_DATABASE).child(imageName);
+        Glide.with(getContext()).using(new FirebaseImageLoader()).load(mStorageRef).into(image);
         date.setText(state_date);
         rating.setText(String.valueOf(state_rating));
 
@@ -84,6 +101,7 @@ public class FullStateFragment extends Fragment {
             commentBlock.setVisibility(View.GONE);
             starButton.setImageResource(R.drawable.star);
         }
+        myRefState = FirebaseDatabase.getInstance().getReference().child(F_STATE).child(String.valueOf(state_id));
     }
 
     private void enterComment(){
@@ -92,8 +110,8 @@ public class FullStateFragment extends Fragment {
             Toast.makeText(getActivity(), "Отправка коммента", Toast.LENGTH_SHORT).show();
             commentField.setText(null);
             ((MainActivity)getActivity()).hideKeyboard();
-            commentField.clearFocus();
         }
+        commentField.clearFocus();
     }
 
     private void ListenerAction() {
@@ -107,7 +125,19 @@ public class FullStateFragment extends Fragment {
                                 if (!user.getUser_bookmarksList().contains(state_id)){
                                     user.getUser_bookmarksList().add(state_id);
                                     user.setUser_bookmarksList(user.getUser_bookmarksList());
-                                    state_rating++;
+                                    myRefState.child(F_S_RATING).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            String value = (String) dataSnapshot.getValue();
+                                            int a = Integer.valueOf(value);a++;
+                                            dataSnapshot.getRef().setValue(String.valueOf(a));
+                                            rating.setText(String.valueOf(a));
+                                        }
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+                                            Log.d("Error", databaseError.toString());
+                                        }
+                                    });
                                 }
                                 starButton.setImageResource(R.drawable.star);
                             }
@@ -115,6 +145,19 @@ public class FullStateFragment extends Fragment {
                                 if (user.getUser_bookmarksList().contains(state_id)){
                                     (user.getUser_bookmarksList()).remove((user.getUser_bookmarksList().indexOf(state_id)));
                                     user.setUser_bookmarksList(user.getUser_bookmarksList());
+                                    myRefState.child(F_S_RATING).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            String value = (String) dataSnapshot.getValue();
+                                            int a = Integer.valueOf(value);a--;
+                                            dataSnapshot.getRef().setValue(String.valueOf(a));
+                                            rating.setText(String.valueOf(a));
+                                        }
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+                                            Log.d("Error", databaseError.toString());
+                                        }
+                                    });
                                 }
                                 starButton.setImageResource(R.drawable.star_outline);
                             }

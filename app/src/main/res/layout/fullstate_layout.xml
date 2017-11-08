@@ -5,47 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/colorMainBackground">
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="140dp">
-        <ImageView
-            android:id="@+id/state_image"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="?attr/colorPrimaryDark"
-            android:contentDescription="@string/state_image_description"
-            android:src="?attr/imageDefaultImage" />
-        <ImageButton
-            android:id="@+id/state_star_like"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_margin="5dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:contentDescription="@string/state_star_description"
-            android:background="@null"
-            android:src="@drawable/star_outline"/>
-        <TextView
-            android:id="@+id/state_rating"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_marginTop="8dp"
-            android:layout_toStartOf="@+id/state_star_like"
-            style="@style/TextStyleBig"
-            android:textColor="?attr/colorText"
-            android:text="@string/test_rate"/>
-        <TextView
-            android:id="@+id/state_date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentBottom="true"
-            android:paddingStart="10dp"
-            android:paddingEnd="100dp"
-            style="@style/TextStyleMedium"
-            android:textColor="?attr/colorText"
-            android:text="@string/test_date"/>
-    </RelativeLayout>
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -60,15 +19,57 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="4dp"
             android:layout_marginRight="4dp"
+            android:paddingTop="4dp"
             android:paddingBottom="4dp"
             android:orientation="vertical">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="160dp">
+                <ImageView
+                    android:id="@+id/state_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?attr/colorPrimaryDark"
+                    android:contentDescription="@string/state_image_description"
+                    android:src="?attr/imageDefaultImage" />
+                <ImageButton
+                    android:id="@+id/state_star_like"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_margin="5dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:contentDescription="@string/state_star_description"
+                    android:background="@null"
+                    android:src="@drawable/star_outline"/>
+                <TextView
+                    android:id="@+id/state_rating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_toStartOf="@+id/state_star_like"
+                    style="@style/TextStyleBig"
+                    android:textColor="?attr/colorText"
+                    android:text="@string/test_rate"/>
+                <TextView
+                    android:id="@+id/state_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentBottom="true"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="100dp"
+                    style="@style/TextStyleMedium"
+                    android:textColor="?attr/colorText"
+                    android:text="@string/test_date"/>
+            </RelativeLayout>
             <TextView
                 android:id="@+id/state_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/test_header"
                 android:textColor="?attr/colorText"
-                android:textSize="24sp" />
+                android:textSize="24sp"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -133,7 +134,6 @@
                 android:paddingBottom="3dp"
                 android:visibility="gone"/>
 
-            <include layout="@layout/comment_layout"/>
             <include layout="@layout/comment_layout"/>
         </LinearLayout>
     </ScrollView>

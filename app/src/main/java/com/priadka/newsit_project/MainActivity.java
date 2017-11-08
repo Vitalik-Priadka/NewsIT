@@ -46,8 +46,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.priadka.newsit_project.DTO.NewsDTO;
 import com.priadka.newsit_project.DTO.UserDTO;
 import com.priadka.newsit_project.fragment.FullStateFragment;
@@ -60,6 +58,7 @@ import com.priadka.newsit_project.fragment.SettingFragment;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -75,7 +74,6 @@ import static com.priadka.newsit_project.Constant.F_LOGIN;
 import static com.priadka.newsit_project.Constant.F_STATE;
 import static com.priadka.newsit_project.Constant.F_S_COMMENT;
 import static com.priadka.newsit_project.Constant.F_S_DATE;
-import static com.priadka.newsit_project.Constant.F_S_IMAGE;
 import static com.priadka.newsit_project.Constant.F_S_RATING;
 import static com.priadka.newsit_project.Constant.F_S_TEXT;
 import static com.priadka.newsit_project.Constant.F_S_TITLE;
@@ -93,12 +91,10 @@ public class MainActivity extends FragmentActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private StorageReference mStorageRef;
-    private DatabaseReference myRef;
     private FirebaseUser userFire;
     private ProgressDialog progressDialog;
 
-    private boolean savePassword, wantLogin, isConnect;
+    private boolean savePassword, wantLogin, isConnect, isReload = false;
     private String localEmail, localPassword;
     private int currentTheme,currentLanguage, recreateCount = 0;
 
@@ -145,7 +141,6 @@ public class MainActivity extends FragmentActivity {
         progressDialog = new ProgressDialog(this);
 
         mAuth = FirebaseAuth.getInstance();
-        myRef = FirebaseDatabase.getInstance().getReference();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -158,8 +153,6 @@ public class MainActivity extends FragmentActivity {
                 }
                 showByConnect();
             }};
-        DatabaseReference presenceRef = FirebaseDatabase.getInstance().getReference("disconnectmessage");
-        presenceRef.onDisconnect().setValue("I disconnected!");
         DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
         connectedRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -185,8 +178,8 @@ public class MainActivity extends FragmentActivity {
             initNavigationView();
             KeyboardAction();
             if(wantLogin) loginUser(localPassword);
-            reloadPage();
             mAuth.addAuthStateListener(mAuthListener);
+            reloadPage();
         }
     }
     @Override
@@ -264,6 +257,7 @@ public class MainActivity extends FragmentActivity {
         progressDialog.setMessage(getString(R.string.log_waiting));
         progressDialog.setCancelable(false);
         progressDialog.show();
+
         mAuth.signInWithEmailAndPassword(localEmail, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -287,7 +281,8 @@ public class MainActivity extends FragmentActivity {
                 }}});
     }
     private void getUserData(){
-        myRef.child(F_USER).child(userFire.getUid()).addValueEventListener(new ValueEventListener() {
+        DatabaseReference myRefUser = FirebaseDatabase.getInstance().getReference().child(F_USER);
+        myRefUser.child(userFire.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 GenericTypeIndicator<Map<String,String>> data = new GenericTypeIndicator<Map<String,String>>(){};
@@ -301,7 +296,7 @@ public class MainActivity extends FragmentActivity {
                 user = new UserDTO(name,email,Integer.valueOf(imageNumber), listBookmark);
                 initNavigationOnLogin();
                 if (progressDialog.isShowing())progressDialog.dismiss();
-                if(recreateCount <= 1){
+                if(recreateCount < 1){
                     Toast.makeText(MainActivity.this,getString(R.string.log_success) + " " + user.getUser_login() + "!", Toast.LENGTH_SHORT).show();
                     recreateCount++;
                 }
@@ -314,8 +309,8 @@ public class MainActivity extends FragmentActivity {
     }
     private void getStateData(){
         dataNews = new ArrayList<>();
-        mStorageRef = FirebaseStorage.getInstance().getReference();
-        Query query = myRef.child(F_STATE);
+        DatabaseReference myRefState = FirebaseDatabase.getInstance().getReference().child(F_STATE);
+        Query query = myRefState.orderByKey().limitToLast(10);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -327,13 +322,15 @@ public class MainActivity extends FragmentActivity {
                         String text = map.get(F_S_TEXT);
                         String date = map.get(F_S_DATE);
                         String rating = map.get(F_S_RATING);
-                        String image = map.get(F_S_IMAGE);
                         String number_comment = map.get(F_S_COMMENT);
                         String id = state.getKey().toString();
-
-                        //Toast.makeText(MainActivity.this,image, Toast.LENGTH_SHORT).show();
-                        dataNews.add(new NewsDTO( Integer.valueOf(id), image, title, text, date, Integer.valueOf(rating), Integer.valueOf(number_comment)));
+                        if (title != null && text != null && date != null && rating != null && number_comment != null && id != null){
+                            dataNews.add(new NewsDTO( Integer.valueOf(id), "2", title, text, date, Integer.valueOf(rating), Integer.valueOf(number_comment)));
+                        }
                     }
+                    isReload = false;
+                    if(dataNews == null) getStateData();
+                    Collections.reverse(dataNews);
                     FragmentDo(newsFragment);
                 }
             }
@@ -457,28 +454,31 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void reloadPage(){
-        View icon =  toolbar.findViewById(R.id.reload);
-        RotateAnimation rotate = new RotateAnimation(0, 720, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        rotate.setDuration(500);
-        rotate.setInterpolator(new LinearInterpolator());
-        if (icon != null)icon.startAnimation(rotate);
+        if (!isReload){
+            isReload = true;
+            View icon =  toolbar.findViewById(R.id.reload);
+            RotateAnimation rotate = new RotateAnimation(0, 720, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+            rotate.setDuration(500);
+            rotate.setInterpolator(new LinearInterpolator());
+            if (icon != null)icon.startAnimation(rotate);
 
-        if (isConnect){
-            LoadFragment loadFragment = new LoadFragment();
-            FragmentDo(loadFragment);
-            getStateData();
-        }
-        else{
-            FragmentDo(helpFragment);
+            if (isConnect){
+                LoadFragment loadFragment = new LoadFragment();
+                FragmentDo(loadFragment);
+                getStateData();
+            }
+            else{
+                FragmentDo(helpFragment);
+                isReload = false;
+            }
         }
     }
-
     public void search(String request){
         if(request.length() > 0) {
             // Выполняем запрос поиска на сервер и вставляем полученные статьи в newsFragment
             searchField.setText(null);
-            searchField.clearFocus();
         }
+        searchField.clearFocus();
     }
     public void FragmentDo(Fragment thisFragment){
         FragmentTransaction transaction;

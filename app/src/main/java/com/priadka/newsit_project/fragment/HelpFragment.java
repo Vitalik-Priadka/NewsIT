@@ -7,13 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.priadka.newsit_project.Constant;
 import com.priadka.newsit_project.MainActivity;
 import com.priadka.newsit_project.R;
-
-import static android.widget.Toast.makeText;
 
 public class HelpFragment extends Fragment {
 
@@ -36,12 +33,6 @@ public class HelpFragment extends Fragment {
         Boolean isConnect = ((MainActivity)getActivity()).getIsConnect();
         if (isConnect){
             stateServer.setVisibility(View.GONE);
-            String booksID = "";
-            for (Object name : ((MainActivity)getActivity()).getUser().getUser_bookmarksList()) {
-                booksID = booksID + name + " ";
-            }
-            if (booksID.length() > 2)makeText(getActivity(), booksID, Toast.LENGTH_SHORT).show();
-
             if (((MainActivity)getActivity()).getUser().getUser_bookmarksList().isEmpty()){
                 stateBookmark.setVisibility(View.VISIBLE);
             }

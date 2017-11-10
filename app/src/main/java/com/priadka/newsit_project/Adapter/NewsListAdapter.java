@@ -42,13 +42,11 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
     @Override
     public void onBindViewHolder(final NewsViewHolder holder, int position) {
         final NewsDTO item = data.get(position);
-        String imageName = String.valueOf(item.getId()) + ".jpg";
-        StorageReference mStorageRef = FirebaseStorage.getInstance().getReference().child(F_S_IMAGE_DATABASE).child(imageName);
+        StorageReference mStorageRef = FirebaseStorage.getInstance().getReference().child(F_S_IMAGE_DATABASE).child(item.getImage());
         mStorageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
-                String imageName = String.valueOf(item.getId()) + ".jpg";
-                StorageReference mStorageRef = FirebaseStorage.getInstance().getReference().child(F_S_IMAGE_DATABASE).child(imageName);
+                StorageReference mStorageRef = FirebaseStorage.getInstance().getReference().child(F_S_IMAGE_DATABASE).child(item.getImage());
                 Glide.with(mainContext).using(new FirebaseImageLoader()).load(mStorageRef).into(holder.image);
             }
         });
@@ -67,6 +65,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
                 bundle.putString("state_text", item.getText());
                 bundle.putString("state_date", item.getDate());
                 bundle.putInt("state_rating", item.getRating());
+                bundle.putString("state_image", item.getImage());
 
                 FragmentTransaction transaction;
                 transaction = MainActivity.manager.beginTransaction();

@@ -74,6 +74,7 @@ import static com.priadka.newsit_project.Constant.F_LOGIN;
 import static com.priadka.newsit_project.Constant.F_STATE;
 import static com.priadka.newsit_project.Constant.F_S_COMMENT;
 import static com.priadka.newsit_project.Constant.F_S_DATE;
+import static com.priadka.newsit_project.Constant.F_S_IMAGE;
 import static com.priadka.newsit_project.Constant.F_S_RATING;
 import static com.priadka.newsit_project.Constant.F_S_TEXT;
 import static com.priadka.newsit_project.Constant.F_S_TITLE;
@@ -151,7 +152,10 @@ public class MainActivity extends FragmentActivity {
                     wantLogin = false;
                     initNavigationOnLogin();
                 }
-                showByConnect();
+                if (recreateCount == 0){
+                    reloadPage();
+                }
+                else showByConnect();
             }};
         DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
         connectedRef.addValueEventListener(new ValueEventListener() {
@@ -177,9 +181,11 @@ public class MainActivity extends FragmentActivity {
             initToolbar();
             initNavigationView();
             KeyboardAction();
-            if(wantLogin) loginUser(localPassword);
             mAuth.addAuthStateListener(mAuthListener);
-            reloadPage();
+            if(wantLogin){
+                loginUser(localPassword);
+            }
+            //else reloadPage();
         }
     }
     @Override
@@ -297,6 +303,7 @@ public class MainActivity extends FragmentActivity {
                 initNavigationOnLogin();
                 if (progressDialog.isShowing())progressDialog.dismiss();
                 if(recreateCount < 1){
+                    //reloadPage();
                     Toast.makeText(MainActivity.this,getString(R.string.log_success) + " " + user.getUser_login() + "!", Toast.LENGTH_SHORT).show();
                     recreateCount++;
                 }
@@ -322,22 +329,53 @@ public class MainActivity extends FragmentActivity {
                         String text = map.get(F_S_TEXT);
                         String date = map.get(F_S_DATE);
                         String rating = map.get(F_S_RATING);
+                        String image = map.get(F_S_IMAGE);
                         String number_comment = map.get(F_S_COMMENT);
                         String id = state.getKey().toString();
-                        if (title != null && text != null && date != null && rating != null && number_comment != null && id != null){
-                            dataNews.add(new NewsDTO( Integer.valueOf(id), "2", title, text, date, Integer.valueOf(rating), Integer.valueOf(number_comment)));
+                        if (title != null && text != null && date != null && rating != null && image != null && number_comment != null && id != null){
+                            dataNews.add(new NewsDTO( Integer.valueOf(id), image, title, text, date, Integer.valueOf(rating), Integer.valueOf(number_comment)));
                         }
+                        FragmentDo(newsFragment);
                     }
                     isReload = false;
-                    if(dataNews == null) getStateData();
                     Collections.reverse(dataNews);
-                    FragmentDo(newsFragment);
-                }
-            }
+                    //Toast.makeText(MainActivity.this,"load News!", Toast.LENGTH_SHORT).show();
+                }}
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+    }
+    private void getStateDataBookmark() {
+        dataNews = new ArrayList<>();
+        DatabaseReference myRefState = FirebaseDatabase.getInstance().getReference().child(F_STATE);
+        Collections.reverse(user.getUser_bookmarksList());
+        for (Object idSearch : user.getUser_bookmarksList()) {
+            Query query = myRefState.child(String.valueOf(idSearch)).orderByKey();
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        GenericTypeIndicator<Map<String,String>> data = new GenericTypeIndicator<Map<String,String>>(){};
+                        Map <String, String> map = dataSnapshot.getValue(data);
+                        String title = map.get(F_S_TITLE);
+                        String text = map.get(F_S_TEXT);
+                        String date = map.get(F_S_DATE);
+                        String rating = map.get(F_S_RATING);
+                        String image = map.get(F_S_IMAGE);
+                        String number_comment = map.get(F_S_COMMENT);
+                        String id = dataSnapshot.getKey().toString();
+                        if (title != null && text != null && date != null && rating != null && image != null && number_comment != null && id != null){
+                            dataNews.add(new NewsDTO( Integer.valueOf(id), image, title, text, date, Integer.valueOf(rating), Integer.valueOf(number_comment)));
+                        }
+                    }
+                    if (!newsFragment.isVisible())FragmentDo(newsFragment);
+                }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }});
+        }
+        Collections.reverse(user.getUser_bookmarksList());
     }
 
     public void initToolbar(){
@@ -386,11 +424,11 @@ public class MainActivity extends FragmentActivity {
                         break;
                     }
                     case R.id.actionBookmarks:{
-                        FragmentDo(helpFragment);
+                        getBookmarks();
                         break;
                     }
                     case R.id.actionNewsItem:{
-                        showByConnect();
+                        reloadPage();
                         break;
                     }
                     case R.id.actionSettingItem:{
@@ -462,6 +500,9 @@ public class MainActivity extends FragmentActivity {
             rotate.setInterpolator(new LinearInterpolator());
             if (icon != null)icon.startAnimation(rotate);
 
+            if (userFire != null && user == null){
+                loginUser(localPassword);
+            }
             if (isConnect){
                 LoadFragment loadFragment = new LoadFragment();
                 FragmentDo(loadFragment);
@@ -473,6 +514,17 @@ public class MainActivity extends FragmentActivity {
             }
         }
     }
+    public void getBookmarks(){
+        if (userFire != null){
+            if (user.getUser_bookmarksList().isEmpty() || !isConnect)FragmentDo(helpFragment);
+            else{
+                LoadFragment loadFragment = new LoadFragment();
+                FragmentDo(loadFragment);
+                getStateDataBookmark();
+            }
+        }
+    }
+
     public void search(String request){
         if(request.length() > 0) {
             // Выполняем запрос поиска на сервер и вставляем полученные статьи в newsFragment
@@ -559,7 +611,7 @@ public class MainActivity extends FragmentActivity {
 
     // Getter and Setter
     public UserDTO getUser() {return user;}
-    public List<NewsDTO> getNews(){if(dataNews == null)getStateData(); return dataNews;}
+    public List<NewsDTO> getNews(){if(dataNews == null)reloadPage(); return dataNews;}
 
     public int getCurrentTheme(){return currentTheme;}
     public void setCurrentTheme(int value){currentTheme = value;}

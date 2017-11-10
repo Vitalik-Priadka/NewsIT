@@ -33,7 +33,6 @@ import com.priadka.newsit_project.R;
 import static com.priadka.newsit_project.Constant.F_STATE;
 import static com.priadka.newsit_project.Constant.F_S_IMAGE_DATABASE;
 import static com.priadka.newsit_project.Constant.F_S_RATING;
-import static com.priadka.newsit_project.R.id.state_image;
 
 public class FullStateFragment extends Fragment {
     private View view;
@@ -47,7 +46,7 @@ public class FullStateFragment extends Fragment {
     private StorageReference mStorageRef;
     private DatabaseReference myRefState;
 
-    private String state_title, state_text, state_date;
+    private String state_title, state_text, state_date, state_image;
     private int state_id, state_rating ;
     private boolean isLiked = false;
 
@@ -63,6 +62,7 @@ public class FullStateFragment extends Fragment {
             state_title = bundle.getString("state_title");
             state_text = bundle.getString("state_text");
             state_date = bundle.getString("state_date");
+            state_image = bundle.getString("state_image");
             state_rating = bundle.getInt("state_rating",0);
         }
         return view;
@@ -72,7 +72,7 @@ public class FullStateFragment extends Fragment {
     public void onStart() {
         super.onStart();
         user = ((MainActivity)getActivity()).getUser();  mAuth = FirebaseAuth.getInstance();
-        image = (ImageView) getActivity().findViewById(state_image);
+        image = (ImageView) getActivity().findViewById(R.id.state_image);
         title = (TextView) getActivity().findViewById(R.id.state_header);
         text = (TextView) getActivity().findViewById(R.id.state_text);
         date = (TextView) getActivity().findViewById(R.id.state_date);
@@ -83,13 +83,12 @@ public class FullStateFragment extends Fragment {
         title.setText(state_title);
         text.setText(state_text);
         if(image.getScaleType() != ImageView.ScaleType.CENTER_CROP)image.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        String imageName = String.valueOf(state_id) + ".jpg";
-        mStorageRef = FirebaseStorage.getInstance().getReference().child(F_S_IMAGE_DATABASE).child(imageName);
+        mStorageRef = FirebaseStorage.getInstance().getReference().child(F_S_IMAGE_DATABASE).child(state_image);
         Glide.with(getContext()).using(new FirebaseImageLoader()).load(mStorageRef).into(image);
         date.setText(state_date);
         rating.setText(String.valueOf(state_rating));
 
-        if(mAuth.getCurrentUser() != null){
+        if(mAuth.getCurrentUser() != null && ((MainActivity)getActivity()).getUser() != null){
             commentField = (EditText) getActivity().findViewById(R.id.state_comment_field);
             sendComment = (ImageButton) getActivity().findViewById(R.id.sendComment);
             isLiked = user.getUser_bookmarksList().contains(state_id);

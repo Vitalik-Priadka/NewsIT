@@ -323,23 +323,11 @@ public class MainActivity extends FragmentActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot state : dataSnapshot.getChildren()) {
-                        GenericTypeIndicator<Map<String,String>> data = new GenericTypeIndicator<Map<String,String>>(){};
-                        Map <String, String> map = state.getValue(data);
-                        String title = map.get(F_S_TITLE);
-                        String text = map.get(F_S_TEXT);
-                        String date = map.get(F_S_DATE);
-                        String rating = map.get(F_S_RATING);
-                        String image = map.get(F_S_IMAGE);
-                        String number_comment = map.get(F_S_COMMENT);
-                        String id = state.getKey().toString();
-                        if (title != null && text != null && date != null && rating != null && image != null && number_comment != null && id != null){
-                            dataNews.add(new NewsDTO( Integer.valueOf(id), image, title, text, date, Integer.valueOf(rating), Integer.valueOf(number_comment)));
-                        }
+                        getState(state);
                         FragmentDo(newsFragment);
                     }
                     isReload = false;
                     Collections.reverse(dataNews);
-                    //Toast.makeText(MainActivity.this,"load News!", Toast.LENGTH_SHORT).show();
                 }}
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -356,18 +344,7 @@ public class MainActivity extends FragmentActivity {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
-                        GenericTypeIndicator<Map<String,String>> data = new GenericTypeIndicator<Map<String,String>>(){};
-                        Map <String, String> map = dataSnapshot.getValue(data);
-                        String title = map.get(F_S_TITLE);
-                        String text = map.get(F_S_TEXT);
-                        String date = map.get(F_S_DATE);
-                        String rating = map.get(F_S_RATING);
-                        String image = map.get(F_S_IMAGE);
-                        String number_comment = map.get(F_S_COMMENT);
-                        String id = dataSnapshot.getKey().toString();
-                        if (title != null && text != null && date != null && rating != null && image != null && number_comment != null && id != null){
-                            dataNews.add(new NewsDTO( Integer.valueOf(id), image, title, text, date, Integer.valueOf(rating), Integer.valueOf(number_comment)));
-                        }
+                        getState(dataSnapshot);
                     }
                     if (!newsFragment.isVisible())FragmentDo(newsFragment);
                 }
@@ -376,6 +353,50 @@ public class MainActivity extends FragmentActivity {
             }});
         }
         Collections.reverse(user.getUser_bookmarksList());
+    }
+    private void getStateDataSearch(final String request){
+        dataNews = new ArrayList<>();
+        DatabaseReference myRefState = FirebaseDatabase.getInstance().getReference().child(F_STATE);
+        Query query = myRefState.orderByKey();
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    int itemFound = 0;
+                    String requestL = request.toLowerCase(), requestW = request.toUpperCase();
+                    for (DataSnapshot state : dataSnapshot.getChildren()) {
+                        String titleStringL = state.child(F_S_TITLE).getValue().toString().toLowerCase();
+                        String titleStringW = state.child(F_S_TITLE).getValue().toString().toUpperCase();
+                        ArrayList<String> titleTextL = new ArrayList<>(Arrays.asList(titleStringL.split(" ")));
+                        ArrayList<String> titleTextW = new ArrayList<>(Arrays.asList(titleStringW.split(" ")));
+                        if (titleTextL.contains(requestL) || titleTextW.contains(requestW)) {
+                            getState(state);
+                            itemFound++;
+                            FragmentDo(newsFragment);
+                        }
+                    }
+                    if(itemFound == 0){
+                        Toast.makeText(MainActivity.this,"Ничего не найдено!", Toast.LENGTH_SHORT).show();
+                        reloadPage();
+                    }
+                }}
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }});
+    }
+    private void getState(DataSnapshot state){
+        GenericTypeIndicator<Map<String, String>> data = new GenericTypeIndicator<Map<String, String>>() {};
+        Map<String, String> map = state.getValue(data);
+        String title = map.get(F_S_TITLE);
+        String text = map.get(F_S_TEXT);
+        String date = map.get(F_S_DATE);
+        String rating = map.get(F_S_RATING);
+        String image = map.get(F_S_IMAGE);
+        String number_comment = map.get(F_S_COMMENT);
+        String id = state.getKey().toString();
+        if (title != null && text != null && date != null && rating != null && image != null && number_comment != null && id != null) {
+            dataNews.add(new NewsDTO(Integer.valueOf(id), image, title, text, date, Integer.valueOf(rating), Integer.valueOf(number_comment)));
+        }
     }
 
     public void initToolbar(){
@@ -494,15 +515,18 @@ public class MainActivity extends FragmentActivity {
     public void reloadPage(){
         if (!isReload){
             isReload = true;
-            View icon =  toolbar.findViewById(R.id.reload);
-            RotateAnimation rotate = new RotateAnimation(0, 720, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-            rotate.setDuration(500);
-            rotate.setInterpolator(new LinearInterpolator());
-            if (icon != null)icon.startAnimation(rotate);
 
-            if (userFire != null && user == null){
-                loginUser(localPassword);
+            if (toolbar != null){
+                View icon =  toolbar.findViewById(R.id.reload);
+                RotateAnimation rotate = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                rotate.setDuration(1000);
+                rotate.setInterpolator(new LinearInterpolator());
+                icon.startAnimation(rotate);
             }
+
+            //if (userFire != null && user == null){
+            //    loginUser(localPassword);
+            //}
             if (isConnect){
                 LoadFragment loadFragment = new LoadFragment();
                 FragmentDo(loadFragment);
@@ -527,7 +551,9 @@ public class MainActivity extends FragmentActivity {
 
     public void search(String request){
         if(request.length() > 0) {
-            // Выполняем запрос поиска на сервер и вставляем полученные статьи в newsFragment
+            LoadFragment loadFragment = new LoadFragment();
+            FragmentDo(loadFragment);
+            getStateDataSearch(request);
             searchField.setText(null);
         }
         searchField.clearFocus();
@@ -611,7 +637,7 @@ public class MainActivity extends FragmentActivity {
 
     // Getter and Setter
     public UserDTO getUser() {return user;}
-    public List<NewsDTO> getNews(){if(dataNews == null)reloadPage(); return dataNews;}
+    public List<NewsDTO> getNews(){return dataNews;}
 
     public int getCurrentTheme(){return currentTheme;}
     public void setCurrentTheme(int value){currentTheme = value;}

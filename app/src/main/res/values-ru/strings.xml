@@ -3,6 +3,7 @@
     <string name="app_name" translatable="false">IT News</string>
     <string name="app_tittle" translatable="false"></string>
     <string name="search_hint">Поиск&#8230;</string>
+    <string name="search_none">Ничего не найдено!</string>
     <string name="logo_hint">*Изображение It-News*</string>
     <string name="search_title">Поиск</string>
     <string name="reload_title">Перезагрузка</string>

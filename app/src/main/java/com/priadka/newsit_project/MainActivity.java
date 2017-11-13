@@ -48,7 +48,6 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.priadka.newsit_project.DTO.NewsDTO;
 import com.priadka.newsit_project.DTO.UserDTO;
-import com.priadka.newsit_project.fragment.FullStateFragment;
 import com.priadka.newsit_project.fragment.HelpFragment;
 import com.priadka.newsit_project.fragment.LoadFragment;
 import com.priadka.newsit_project.fragment.LoginFragment;
@@ -87,8 +86,8 @@ public class MainActivity extends FragmentActivity {
     private EditText searchField;                       private LoginFragment loginFragment;
     private SharedPreferences mSettings;                private SettingFragment settingFragment;
     private static long back_pressed;                   private NewsFragment newsFragment;
-    private UserDTO user;                               private FullStateFragment fullStateFragment;
-    private static List<NewsDTO> dataNews;              private HelpFragment helpFragment;
+    private UserDTO user;                               private HelpFragment helpFragment;
+    private static List<NewsDTO> dataNews;
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -137,11 +136,22 @@ public class MainActivity extends FragmentActivity {
         loginFragment = new LoginFragment();
         settingFragment = new SettingFragment();
         newsFragment = new NewsFragment();
-        fullStateFragment = new FullStateFragment();
         helpFragment = new HelpFragment();
         progressDialog = new ProgressDialog(this);
 
         mAuth = FirebaseAuth.getInstance();
+        DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
+        connectedRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                isConnect = snapshot.getValue(Boolean.class);
+            }
+            @Override
+            public void onCancelled(DatabaseError error) {
+                System.err.println("Listener was cancelled");
+            }
+        });
+
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -157,22 +167,6 @@ public class MainActivity extends FragmentActivity {
                 }
                 else showByConnect();
             }};
-        DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
-        connectedRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                boolean connected = snapshot.getValue(Boolean.class);
-                if (connected) {
-                    isConnect = true;
-                } else {
-                    isConnect = false;
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError error) {
-                System.err.println("Listener was cancelled");
-            }
-        });
     }
     @Override
     protected void onStart() {
@@ -185,7 +179,6 @@ public class MainActivity extends FragmentActivity {
             if(wantLogin){
                 loginUser(localPassword);
             }
-            //else reloadPage();
         }
     }
     @Override
@@ -376,7 +369,7 @@ public class MainActivity extends FragmentActivity {
                         }
                     }
                     if(itemFound == 0){
-                        Toast.makeText(MainActivity.this,"Ничего не найдено!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this,getString(R.string.search_none), Toast.LENGTH_SHORT).show();
                         reloadPage();
                     }
                 }}
@@ -393,8 +386,8 @@ public class MainActivity extends FragmentActivity {
         String rating = map.get(F_S_RATING);
         String image = map.get(F_S_IMAGE);
         String number_comment = map.get(F_S_COMMENT);
-        String id = state.getKey().toString();
-        if (title != null && text != null && date != null && rating != null && image != null && number_comment != null && id != null) {
+        String id = state.getKey();
+        if (title != null && text != null && date != null && rating != null && image != null && number_comment != null) {
             dataNews.add(new NewsDTO(Integer.valueOf(id), image, title, text, date, Integer.valueOf(rating), Integer.valueOf(number_comment)));
         }
     }
@@ -429,7 +422,6 @@ public class MainActivity extends FragmentActivity {
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView = (NavigationView) findViewById(R.id.navigation);
-        View hView =  navigationView.getHeaderView(0);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -617,7 +609,7 @@ public class MainActivity extends FragmentActivity {
         });
     }
     private ArrayList<Integer> getIntegerArray(ArrayList<String> stringArray) {
-        ArrayList<Integer> result = new ArrayList<Integer>();
+        ArrayList<Integer> result = new ArrayList<>();
         for(String stringValue : stringArray) {
             try {
                 result.add(Integer.parseInt(stringValue));

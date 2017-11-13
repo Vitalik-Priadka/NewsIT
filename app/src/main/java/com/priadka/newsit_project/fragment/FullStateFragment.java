@@ -1,5 +1,6 @@
 package com.priadka.newsit_project.fragment;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -35,15 +37,12 @@ import static com.priadka.newsit_project.Constant.F_S_IMAGE_DATABASE;
 import static com.priadka.newsit_project.Constant.F_S_RATING;
 
 public class FullStateFragment extends Fragment {
-    private View view;
-    private ImageView image;
     private ImageButton starButton, sendComment;
-    private TextView title, text, date, rating;
+    private TextView rating;
     private EditText commentField;
-    private LinearLayout commentBlock;
+
     private UserDTO user;
     private FirebaseAuth mAuth;
-    private StorageReference mStorageRef;
     private DatabaseReference myRefState;
 
     private String state_title, state_text, state_date, state_image;
@@ -52,7 +51,7 @@ public class FullStateFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState){
-        view = inflater.inflate(Constant.FULL_STATE, container, false);
+        View view = inflater.inflate(Constant.FULL_STATE, container, false);
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             state_id = bundle.getInt("state_id",0);
@@ -72,18 +71,24 @@ public class FullStateFragment extends Fragment {
     public void onStart() {
         super.onStart();
         user = ((MainActivity)getActivity()).getUser();  mAuth = FirebaseAuth.getInstance();
-        image = (ImageView) getActivity().findViewById(R.id.state_image);
-        title = (TextView) getActivity().findViewById(R.id.state_header);
-        text = (TextView) getActivity().findViewById(R.id.state_text);
-        date = (TextView) getActivity().findViewById(R.id.state_date);
+        ImageView image = (ImageView) getActivity().findViewById(R.id.state_image);
+        TextView title = (TextView) getActivity().findViewById(R.id.state_header);
+        WebView text = (WebView) getActivity().findViewById(R.id.state_text);
+        TextView date = (TextView) getActivity().findViewById(R.id.state_date);
         rating = (TextView) getActivity().findViewById(R.id.state_rating);
         starButton  = (ImageButton) getActivity().findViewById(R.id.state_star_like);
-        commentBlock = (LinearLayout) getActivity().findViewById(R.id.commentBlock);
+        LinearLayout commentBlock = (LinearLayout) getActivity().findViewById(R.id.commentBlock);
 
         title.setText(state_title);
-        text.setText(state_text);
+        text.setBackgroundColor(Color.TRANSPARENT);
+        String color;
+        if(((MainActivity)getActivity()).getCurrentTheme() == 0){
+            color = "color: #000;";
+        }
+        else color = "color: #fff;";
+        text.loadData("<p style=\"text-align: justify; white-space: pre-line; "+ color +" font-size: 15px; font-family: serif;\">"+ state_text + "</p>", "text/html", "UTF-8");
         if(image.getScaleType() != ImageView.ScaleType.CENTER_CROP)image.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        mStorageRef = FirebaseStorage.getInstance().getReference().child(F_S_IMAGE_DATABASE).child(state_image);
+        StorageReference mStorageRef = FirebaseStorage.getInstance().getReference().child(F_S_IMAGE_DATABASE).child(state_image);
         Glide.with(getContext()).using(new FirebaseImageLoader()).load(mStorageRef).into(image);
         date.setText(state_date);
         rating.setText(String.valueOf(state_rating));

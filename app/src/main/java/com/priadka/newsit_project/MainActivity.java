@@ -52,6 +52,7 @@ import com.priadka.newsit_project.fragment.HelpFragment;
 import com.priadka.newsit_project.fragment.LoadFragment;
 import com.priadka.newsit_project.fragment.LoginFragment;
 import com.priadka.newsit_project.fragment.NewsFragment;
+import com.priadka.newsit_project.fragment.RegisterFragment;
 import com.priadka.newsit_project.fragment.SettingFragment;
 
 import java.lang.reflect.Field;
@@ -253,31 +254,33 @@ public class MainActivity extends FragmentActivity {
         }
     }
     public void loginUser(String password){
-        progressDialog.setMessage(getString(R.string.log_waiting));
-        progressDialog.setCancelable(false);
-        progressDialog.show();
-
-        mAuth.signInWithEmailAndPassword(localEmail, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()){
-                    getUserData();
-                }
-                else{
-                    if (progressDialog.isShowing())progressDialog.dismiss();
-                    String stateOfWrong = getString(R.string.log_error_connection);
-                    try {
-                        throw task.getException();
-                    } catch(FirebaseAuthException e) {
-                        switch (e.getErrorCode()){
-                            case "ERROR_USER_NOT_FOUND":stateOfWrong = getString(R.string.log_error_login);break;
-                            case "ERROR_WRONG_PASSWORD":stateOfWrong = getString(R.string.log_error_password);break;
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
+        if(!localEmail.isEmpty() && !password.isEmpty()){
+            progressDialog.setMessage(getString(R.string.log_waiting));
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+            mAuth.signInWithEmailAndPassword(localEmail, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (task.isSuccessful()){
+                        getUserData();
                     }
-                    makeText(MainActivity.this,getString(R.string.log_error) + " " + stateOfWrong, Toast.LENGTH_SHORT).show();
-                }}});
+                    else{
+                        if (progressDialog.isShowing())progressDialog.dismiss();
+                        String stateOfWrong = getString(R.string.log_error_connection);
+                        try {
+                            throw task.getException();
+                        } catch(FirebaseAuthException e) {
+                            switch (e.getErrorCode()){
+                                case "ERROR_INVALID_EMAIL":stateOfWrong = getString(R.string.reg_error_invalid_email);break;
+                                case "ERROR_USER_NOT_FOUND":stateOfWrong = getString(R.string.log_error_login);break;
+                                case "ERROR_WRONG_PASSWORD":stateOfWrong = getString(R.string.log_error_password);break;
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        makeText(MainActivity.this,getString(R.string.log_error) + " " + stateOfWrong, Toast.LENGTH_SHORT).show();
+                    }}});
+        }
     }
     private void getUserData(){
         DatabaseReference myRefUser = FirebaseDatabase.getInstance().getReference().child(F_USER);
@@ -431,6 +434,11 @@ public class MainActivity extends FragmentActivity {
                         FragmentDo(loginFragment);
                         break;
                     }
+                    case R.id.actionRegisterItem:{
+                        RegisterFragment registerFragment = new RegisterFragment();
+                        FragmentDo(registerFragment);
+                        break;
+                    }
                     case R.id.actionLogOutItem:{
                         mAuth.signOut();
                         recreateCount = 1;
@@ -462,10 +470,17 @@ public class MainActivity extends FragmentActivity {
         TextView fieldUserName = (TextView)hView.findViewById(R.id.menu_nickname);
         TextView fieldUserMail = (TextView)hView.findViewById(R.id.menu_email);
         RelativeLayout headerImage = (RelativeLayout) hView.findViewById(R.id.navigation_header);
+
+        MenuItem LogInButton = navigationView.getMenu().findItem(R.id.actionLogInItem);
+        MenuItem LogOutButton = navigationView.getMenu().findItem(R.id.actionLogOutItem);
+        MenuItem RegisterButton = navigationView.getMenu().findItem(R.id.actionRegisterItem);
+        MenuItem BookmarksButton = navigationView.getMenu().findItem(R.id.actionBookmarks);
+
         if(userFire != null){
-            MenuItem LogOutButton = navigationView.getMenu().findItem(R.id.actionLogOutItem);   LogOutButton.setVisible(true);
-            MenuItem BookmarksButton = navigationView.getMenu().findItem(R.id.actionBookmarks); BookmarksButton.setVisible(true);
-            MenuItem LogInButton = navigationView.getMenu().findItem(R.id.actionLogInItem);     LogInButton.setVisible(false);
+            LogOutButton.setVisible(true);
+            RegisterButton.setVisible(false);
+            BookmarksButton.setVisible(true);
+            LogInButton.setVisible(false);
             this.invalidateOptionsMenu();
 
             // Чтение профиля и установка
@@ -478,9 +493,10 @@ public class MainActivity extends FragmentActivity {
             headerImage.setVisibility(View.VISIBLE);
         }
         else {
-            MenuItem LogOutButton = navigationView.getMenu().findItem(R.id.actionLogOutItem);   LogOutButton.setVisible(false);
-            MenuItem BookmarksButton = navigationView.getMenu().findItem(R.id.actionBookmarks); BookmarksButton.setVisible(false);
-            MenuItem LogInButton = navigationView.getMenu().findItem(R.id.actionLogInItem);     LogInButton.setVisible(true);
+            LogOutButton.setVisible(false);
+            RegisterButton.setVisible(true);
+            BookmarksButton.setVisible(false);
+            LogInButton.setVisible(true);
             this.invalidateOptionsMenu();
             headerImage.setVisibility(View.INVISIBLE);
         }
@@ -596,7 +612,6 @@ public class MainActivity extends FragmentActivity {
         }
     }
     private  void KeyboardAction() {
-
         searchField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {

@@ -6,6 +6,7 @@ public class Constant {
     public static  final int NEWS = R.layout.news_layout;
     public static  final int FULL_STATE = R.layout.fullstate_layout;
     public static  final int LOG = R.layout.log_layout;
+    public static  final int REG = R.layout.register_layout;
     public static  final int LAYOUT = R.layout.activity_main;
     public static  final int HELP = R.layout.help_message;
     public static  final int LOAD = R.layout.load_layout;

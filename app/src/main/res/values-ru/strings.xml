@@ -57,7 +57,7 @@
     <!--   Блок текста для Логина     -->
     <string name="log_info">Вход в аккаунт</string>
     <string name="log_image_description">*Таинственный знак*</string>
-    <string name="log_login">Ваш Логин</string>
+    <string name="log_login">Ваш Email</string>
     <string name="log_password">Ваш Пароль</string>
     <string name="log_check">Сохранить ваш пароль?</string>
     <string name="log_button">Войти</string>
@@ -67,4 +67,17 @@
     <string name="log_error">Не удалось войти!</string>
     <string name="log_waiting">Происходит вход в аккаунт.. Подождите..</string>
     <string name="log_error_connection">Проверьте интернет соединение!</string>
+    <string name="menu_item_register">Регистрация</string>
+    <string name="reg_button">Зарегистрироваться</string>
+    <string name="reg_email_error">Email - минимум 8 симв.</string>
+    <string name="reg_error">Ошибка регистрации!</string>
+    <string name="reg_error_email">Email адрес занят!</string>
+    <string name="reg_error_invalid_email">Не правильный email адрес!</string>
+    <string name="reg_info">Регистрация аккаунта</string>
+    <string name="reg_login">Ваш Логин</string>
+    <string name="reg_login_error">Логин - минимум 5 симв.</string>
+    <string name="reg_password">Подтвердите пароль</string>
+    <string name="reg_password_error_1">Пароль - минимум 8 симв.</string>
+    <string name="reg_password_error_2">Пароли не совпадают!</string>
+    <string name="reg_waiting">Происходит регистрация аккаунта.. Подожтите..</string>
 </resources>

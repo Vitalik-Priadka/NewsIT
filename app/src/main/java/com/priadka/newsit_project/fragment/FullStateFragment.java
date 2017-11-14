@@ -47,7 +47,7 @@ public class FullStateFragment extends Fragment {
 
     private String state_title, state_text, state_date, state_image;
     private int state_id, state_rating ;
-    private boolean isLiked = false;
+    private boolean isLiked = false, isTime = true;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState){
@@ -123,9 +123,11 @@ public class FullStateFragment extends Fragment {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (mAuth.getCurrentUser() != null){
+                        if (mAuth.getCurrentUser() != null && isTime){
+                            isTime = false;
                             isLiked = !isLiked;
                             if (isLiked) {
+                                isTime = false;
                                 if (!user.getUser_bookmarksList().contains(state_id)){
                                     user.getUser_bookmarksList().add(state_id);
                                     user.setUser_bookmarksList(user.getUser_bookmarksList());
@@ -136,6 +138,7 @@ public class FullStateFragment extends Fragment {
                                             int a = Integer.valueOf(value);a++;
                                             dataSnapshot.getRef().setValue(String.valueOf(a));
                                             rating.setText(String.valueOf(a));
+                                            isTime = true;
                                         }
                                         @Override
                                         public void onCancelled(DatabaseError databaseError) {
@@ -156,6 +159,7 @@ public class FullStateFragment extends Fragment {
                                             int a = Integer.valueOf(value);a--;
                                             dataSnapshot.getRef().setValue(String.valueOf(a));
                                             rating.setText(String.valueOf(a));
+                                            isTime = true;
                                         }
                                         @Override
                                         public void onCancelled(DatabaseError databaseError) {

@@ -26,7 +26,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_alignParentTop="true"
-                android:layout_marginTop="60dp"
+                android:layout_marginTop="50dp"
                 android:background="?attr/colorPrimary">
                     <EditText
                         android:id="@+id/login_field"
@@ -37,13 +37,13 @@
                         android:layout_marginTop="80dp"
                         android:hint="@string/log_login"
                         android:fontFamily="sans-serif"
-                        android:drawableLeft="@drawable/user_icon"
+                        android:drawableStart="@drawable/user_icon"
                         android:scrollHorizontally="true"
                         android:scrollbarAlwaysDrawHorizontalTrack="true"
                         android:textColorHighlight="?attr/colorText"
                         android:backgroundTint="?attr/colorText"
                         android:textColorHint="?attr/colorText"
-                        android:inputType="text"/>
+                        android:inputType="textEmailAddress"/>
 
                     <EditText
                         android:id="@+id/password_field"
@@ -54,7 +54,7 @@
                         android:layout_marginTop="5dp"
                         android:hint="@string/log_password"
                         android:fontFamily="sans-serif"
-                        android:drawableLeft="@drawable/lock"
+                        android:drawableStart="@drawable/lock"
                         android:scrollHorizontally="true"
                         android:textColorHighlight="?attr/colorText"
                         android:textColorHint="?attr/colorText"

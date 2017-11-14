@@ -35,7 +35,7 @@ public class LoginFragment extends Fragment {
         loginButton = (Button) getView().findViewById(R.id.button_login);
         saveOrNotBox = (CheckBox) getView().findViewById(R.id.checkBox_save);
         loginField.setText(((MainActivity)getActivity()).getLocalEmail());
-        passwordField.setText(((MainActivity)getActivity()).getLocalPassword());
+        if (((MainActivity)getActivity()).getSavePassword()) passwordField.setText(((MainActivity)getActivity()).getLocalPassword());
         saveOrNotBox.setChecked(((MainActivity)getActivity()).getSavePassword());
         ListenerAction();
     }
@@ -74,9 +74,6 @@ public class LoginFragment extends Fragment {
         if(((MainActivity)getActivity()).getLocalEmail().length() >= 5 && password.length() > 0 ){
             ((MainActivity)getActivity()).setLocalPassword(passwordField.getText().toString());
 
-            //TypedValue typedValue = new  TypedValue();
-            //getContext().getTheme().resolveAttribute(R.attr.colorPrimaryDark, typedValue, true);
-            //final  int color = typedValue.data;
             ((MainActivity)getActivity()).loginUser(password);
         }
     }

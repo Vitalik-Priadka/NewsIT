@@ -1,5 +1,6 @@
 package com.priadka.newsit_project;
 
+// Переменные - константы
 public class Constant {
     public static  final int SPLASH = R.layout.splash_screen;
     public static  final int SETTING = R.layout.setting_layout;
@@ -35,7 +36,4 @@ public class Constant {
     public static final String F_S_COMMENT = "CommentNumber";
     public static final String F_S_TEXT = "Text";
     public static final String F_S_TITLE = "Title";
-
-
-
 }

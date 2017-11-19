@@ -8,7 +8,7 @@ public class NewsDTO {
     private Integer rating;
     private Integer number_comment;
     private String image;
-
+    // Конструктор для статьи
     public NewsDTO(int id, String image, String title, String text, String date, Integer rating , Integer number_comment){
         this.id = id;
         this.image = image;
@@ -18,7 +18,7 @@ public class NewsDTO {
         this.rating = rating;
         this.number_comment = number_comment;
     }
-
+    // Getter and Setter
     public int getId() {return id;}
     public void setId(int id) {this.id = id;}
 

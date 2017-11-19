@@ -53,6 +53,7 @@ public class RegisterFragment extends Fragment {
     }
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        // При создании фрагмента инициализация переменных
         avatarImage  = (ImageView) getView().findViewById(R.id.user_avatar_reg);
         loginField = (EditText)  getView().findViewById(R.id.reg_login);
         emailField = (EditText)  getView().findViewById(R.id.reg_email);
@@ -60,7 +61,7 @@ public class RegisterFragment extends Fragment {
         passwordFieldTwo = (EditText)  getView().findViewById(R.id.reg_password_two);
         registerButton = (Button) getView().findViewById(R.id.button_register);
         progressDialog = new ProgressDialog(getContext());
-
+        // Уст. обработчик событий
         ListenerAction();
     }
 
@@ -90,6 +91,7 @@ public class RegisterFragment extends Fragment {
             }
         });
     }
+    // Смена аватара
     public void setImageAvatar(){
         ImageView avatarImage  = (ImageView) getView().findViewById(R.id.user_avatar_reg);
         if(numberImage < 0 || numberImage >= 12){
@@ -99,25 +101,29 @@ public class RegisterFragment extends Fragment {
         String currentAvatarS = "avatar_" + numberImage;
         avatarImage.setImageResource(getResId(currentAvatarS, R.drawable.class));
     }
+    // Запросна регистрацию
     private void registerUser() {
         progressDialog.setMessage(getString(R.string.reg_waiting));
         progressDialog.setCancelable(false);
         progressDialog.show();
         final String login = loginField.getText().toString(), password = passwordField.getText().toString(),
                 email = emailField.getText().toString(), passwordTwo = passwordFieldTwo.getText().toString();
+        // Различные проверки email, login, password
         if (login.length() >= 5){
             if(email.length() >= 8){
                 if(password.length() >= 8){
                     if (password.equals(passwordTwo)){
+                        // Регистрация пользователя
                         mAuth = FirebaseAuth.getInstance();
                         mAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener((Activity) getContext(), new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
+                                    // Отправка данных на сервер
                                     addUserDatabase(login, email, password, String.valueOf(numberImage));
                                     if (progressDialog.isShowing())progressDialog.dismiss();
-                                    //makeText(getContext(),"Register successful!", Toast.LENGTH_SHORT).show();
                                 } else {
+                                    // Поиск причины неудачи
                                     String stateOfWrong = getString(R.string.log_error_connection);
                                     try {
                                         throw task.getException();
@@ -144,6 +150,7 @@ public class RegisterFragment extends Fragment {
         if (progressDialog.isShowing())progressDialog.dismiss();
     }
 
+    // Общий шаблон добавления пользователя в БД
     private void addUserDatabase(String login, String email, String password, String image) {
         FirebaseUser userFire = mAuth.getCurrentUser();
         DatabaseReference myRefUsers = FirebaseDatabase.getInstance().getReference().child(F_USER);
@@ -152,6 +159,7 @@ public class RegisterFragment extends Fragment {
         user.child(F_EMAIL).setValue(email);
         user.child(F_BOOKMARK).setValue("");
         user.child(F_IMAGE).setValue(image);
+        // Изменение локальных переменных для взода в новый акк и сам вход
         ((MainActivity)getActivity()).setLocalEmail(email);
         ((MainActivity)getActivity()).setLocalPassword(password);
         ((MainActivity)getActivity()).setSavePassword(true);

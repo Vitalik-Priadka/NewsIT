@@ -11,7 +11,7 @@ public class SplashScreen extends Activity {
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(Constant.SPLASH);
-
+        // Обработчик с задержкой
         new Handler().postDelayed(new Runnable(){
             @Override
             public void run() {

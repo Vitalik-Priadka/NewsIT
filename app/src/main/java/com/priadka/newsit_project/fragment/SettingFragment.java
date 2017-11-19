@@ -24,12 +24,14 @@ public class SettingFragment extends Fragment {
     }
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        // При создании фрагмента инициализация переменных и установка
         spinnerLanguage = (Spinner)  getView().findViewById(R.id.spinner_language);
         spinnerTheme = (Spinner)  getView().findViewById(R.id.spinner_theme);
         int Theme = ((MainActivity)getActivity()).getCurrentTheme();
         int Language = ((MainActivity)getActivity()).getCurrentLanguage();
         spinnerTheme.setSelection(Theme,false);
         spinnerLanguage.setSelection(Language,false);
+        // 2 Обработчика событий при нажатии на Spinner-ы
         initSpinnerLanguage(); initSpinnerTheme();
     }
 
@@ -42,10 +44,8 @@ public class SettingFragment extends Fragment {
                 ((MainActivity)getActivity()).doPreferences(true);
                 getActivity().recreate();
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
             }
         });
     }
@@ -60,7 +60,6 @@ public class SettingFragment extends Fragment {
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
             }
         });
     }

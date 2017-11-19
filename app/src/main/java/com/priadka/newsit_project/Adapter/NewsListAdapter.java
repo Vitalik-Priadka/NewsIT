@@ -41,6 +41,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
 
     @Override
     public void onBindViewHolder(final NewsViewHolder holder, int position) {
+        // Установка данных в заранее созданый шаблон новости
         final NewsDTO item = data.get(position);
         StorageReference mStorageRef = FirebaseStorage.getInstance().getReference().child(F_S_IMAGE_DATABASE).child(item.getImage());
         mStorageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -55,7 +56,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
         holder.date.setText(item.getDate());
         holder.rating.setText(String.format(item.getRating().toString()) );
         holder.num_comment.setText(String.format(item.getNumberComment().toString()) );
-
+        // Обработчик нажатия на контретную новость
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,24 +67,24 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
                 bundle.putString("state_date", item.getDate());
                 bundle.putInt("state_rating", item.getRating());
                 bundle.putString("state_image", item.getImage());
-
+                // Сохраняем данную информацию и передаем ее в FullStateFragment
                 FragmentTransaction transaction;
                 transaction = MainActivity.manager.beginTransaction();
                 FullStateFragment fullStateFragment = new FullStateFragment();
                 fullStateFragment.setArguments(bundle);
+                // Анимация перехода
                 transaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                 transaction.replace(R.id.container, fullStateFragment);
                 transaction.addToBackStack(null);
                 transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                // Приминяем транзакцию - переход на FullStateFragment
                 transaction.commit();
             }
         });
     }
 
     @Override
-    public int getItemCount() {
-        return data.size();
-    }
+    public int getItemCount() {return data.size();}
 
     public static class NewsViewHolder extends RecyclerView.ViewHolder{
         CardView cardView;
@@ -93,6 +94,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
 
         public NewsViewHolder(View itemView) {
             super(itemView);
+            // Инициализация переменных
             cardView = (CardView) itemView.findViewById(R.id.cardViewNews);
             title = (TextView) itemView.findViewById(R.id.small_state_header);
             image = (ImageView) itemView.findViewById(R.id.small_state_image);

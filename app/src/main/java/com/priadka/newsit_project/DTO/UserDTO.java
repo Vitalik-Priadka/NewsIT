@@ -21,18 +21,19 @@ public class UserDTO{
     private Integer user_image;
     private ArrayList<Integer> user_bookmarksList;
 
+    // Конструктор для Пользователя
     public UserDTO(String user_login, String user_email, Integer user_image, ArrayList<Integer> user_bookmarksList){
         this.user_login = user_login;
         this.user_email = user_email;
         this.user_image = user_image;
         this.user_bookmarksList = user_bookmarksList;
     }
-
+    // Getter and Setter
     public String getUser_login() {return user_login;}
     public String getUser_email() {return user_email;}
     public int getUser_image() {return user_image;}
     public ArrayList getUser_bookmarksList() {return user_bookmarksList;}
-
+    // При изменении изображения пользователя, списка закладок локально - отправка в БД
     public void setUser_image(int user_image) {
         this.user_image = user_image;
         mAuth = FirebaseAuth.getInstance();

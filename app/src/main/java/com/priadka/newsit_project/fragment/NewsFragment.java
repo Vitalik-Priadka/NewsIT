@@ -22,6 +22,7 @@ public class NewsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState){
+        // Показ NEWS и загрузка статей в RecyclerView
         view = inflater.inflate(Constant.NEWS, container, false);
         RecyclerView rv = (RecyclerView) view.findViewById(R.id.recycleViewNews);
         rv.setLayoutManager( new LinearLayoutManager(context));
@@ -33,6 +34,7 @@ public class NewsFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+        // Сохранение положения scrollViewNews при скрытии слоя
         NestedScrollView scrollViewNews = (NestedScrollView) getActivity().findViewById(R.id.scrollViewNews);
         int y = scrollViewNews.getScrollY();
         scrollViewNews.smoothScrollTo(0, y);

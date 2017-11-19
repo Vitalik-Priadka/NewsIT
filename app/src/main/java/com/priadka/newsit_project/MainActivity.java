@@ -88,7 +88,7 @@ public class MainActivity extends FragmentActivity {
     private SharedPreferences mSettings;                private SettingFragment settingFragment;
     private static long back_pressed;                   private NewsFragment newsFragment;
     private UserDTO user;                               private HelpFragment helpFragment;
-    private static List<NewsDTO> dataNews;
+    private List<NewsDTO> dataNews;
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -100,46 +100,47 @@ public class MainActivity extends FragmentActivity {
     private int currentTheme,currentLanguage, recreateCount = 0;
 
     /*TODO TaskList:
-        - REST API используя retrofit (парсин данных);
         + Фрагмент для статьи;
         + Динамическая подгрузка фрагментов (статей);
         + Просморт фрагмента статьи;
         + Изменение темы и языка (без статей);
-        - Реализовать алгоритм поиска (желательно по частичному совпадению);
-        - Реализовать алгоритм обновления (по дате добавления);
+        + Реализовать алгоритм поиска (желательно по частичному совпадению);
+        + Реализовать алгоритм обновления (по дате добавления);
         - Комментирование статей;
-        - Добавление в "Закладки"
+        + Добавление в "Закладки"
         + Работа с кешом (сохранение темы, языка, логина, пароля);
         + Логин пользователя;
-        - Установка соединения с сервером
+        + Установка соединения с сервером
 
         Запросы на сервер:
-        - Логин: отправка (логин, пароль), жду ответа если все норм получаю данные пользователя
-        - Запросы для изменения (автарки позольвателя и ArrayList "закладок")
+        + Логин: отправка (логин, пароль), жду ответа если все норм получаю данные пользователя
+        + Запросы для изменения (автарки позольвателя и ArrayList "закладок")
 
-        - Получение всех новостей (при обновлении newsFragment)
+        + Получение всех новостей (при обновлении newsFragment)
         - Получение данных одной новости по id (для обновления конктретной статьи)
         - Коментарий: Отправка на сервер (id статьи , имя пользователя, текст коммента)
-        - Получение всех новостей которые сожержат "ключ" поиска
-        - Получение всех новостей которые находяться ArrayList пользователя (массив id)
+        + Получение всех новостей которые сожержат "ключ" поиска
+        + Получение всех новостей которые находяться ArrayList пользователя (массив id)
      */
 
-    @Override
+    @Override   //Данный метод вызывается при создании контента
     protected void onCreate(Bundle savedInstanceState) {
+        //Получаем настройки с файла
         mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
         doPreferences(false);
+        // Уст. тему и язык
         getTheme(currentTheme);
         getLanguage(currentLanguage);
         super.onCreate(savedInstanceState);
-        setContentView(Constant.LAYOUT);
-
+        setContentView(Constant.LAYOUT); // главный LAYOUT
+        // Инициализация
         manager = getSupportFragmentManager();
         loginFragment = new LoginFragment();
         settingFragment = new SettingFragment();
         newsFragment = new NewsFragment();
         helpFragment = new HelpFragment();
         progressDialog = new ProgressDialog(this);
-
+        // Обработчик текущего состояния подключения
         mAuth = FirebaseAuth.getInstance();
         DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
         connectedRef.addValueEventListener(new ValueEventListener() {
@@ -152,7 +153,7 @@ public class MainActivity extends FragmentActivity {
                 System.err.println("Listener was cancelled");
             }
         });
-
+        // Обработчик текущего состояния пользователя
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -163,6 +164,7 @@ public class MainActivity extends FragmentActivity {
                     wantLogin = false;
                     initNavigationOnLogin();
                 }
+                // Только при первом запуске - перезагрузка
                 if (recreateCount == 0){
                     reloadPage();
                 }
@@ -172,6 +174,7 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        // Только при первом запуске
         if (recreateCount == 0){
             initToolbar();
             initNavigationView();
@@ -185,14 +188,17 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        // При сворачивании - сохранять настройки
         doPreferences(true);
     }
     @Override
     protected void onResume() {
         super.onResume();
+        // При возобновлении - читать настройки
         doPreferences(false);
     }
 
+    // Установка темы приложения - после чего необходима перезагрузка
     public Resources.Theme getTheme(int currentTheme) {
         Resources.Theme theme = super.getTheme();
             if (currentTheme < 3 && currentTheme >= 0){
@@ -210,6 +216,7 @@ public class MainActivity extends FragmentActivity {
             }
         return theme;
     }
+    // Установка языка приложения - после чего необходима перезагрузка
     public void getLanguage(int currentLanguage){
         String languageToLoad; Locale locale;
         Configuration configuration = new Configuration();
@@ -232,7 +239,7 @@ public class MainActivity extends FragmentActivity {
                 break;
         }
     }
-
+    // Управление переменными (чтение или запись в файл)
     public void doPreferences(boolean save){
         SharedPreferences.Editor editor = mSettings.edit();
         if (save) {
@@ -253,8 +260,10 @@ public class MainActivity extends FragmentActivity {
             localPassword = mSettings.getString("Value_Password", "");
         }
     }
+    // Логин пользователя с исп. сохр. email
     public void loginUser(String password){
         if(!localEmail.isEmpty() && !password.isEmpty()){
+            // Началась процедура входа - показ диалога
             progressDialog.setMessage(getString(R.string.log_waiting));
             progressDialog.setCancelable(false);
             progressDialog.show();
@@ -262,9 +271,11 @@ public class MainActivity extends FragmentActivity {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()){
+                        // Если успешно вошли - получение данных
                         getUserData();
                     }
                     else{
+                        // Попытка определить причину неудачи
                         if (progressDialog.isShowing())progressDialog.dismiss();
                         String stateOfWrong = getString(R.string.log_error_connection);
                         try {
@@ -282,6 +293,7 @@ public class MainActivity extends FragmentActivity {
                     }}});
         }
     }
+    // Получение данных пользователя - установка обработчика изменений данных
     private void getUserData(){
         DatabaseReference myRefUser = FirebaseDatabase.getInstance().getReference().child(F_USER);
         myRefUser.child(userFire.getUid()).addValueEventListener(new ValueEventListener() {
@@ -299,7 +311,6 @@ public class MainActivity extends FragmentActivity {
                 initNavigationOnLogin();
                 if (progressDialog.isShowing())progressDialog.dismiss();
                 if(recreateCount < 1){
-                    //reloadPage();
                     Toast.makeText(MainActivity.this,getString(R.string.log_success) + " " + user.getUser_login() + "!", Toast.LENGTH_SHORT).show();
                     recreateCount++;
                 }
@@ -310,6 +321,7 @@ public class MainActivity extends FragmentActivity {
             }
         });
     }
+    // Получение данных статей - установка обработчика изменений данных
     private void getStateData(){
         dataNews = new ArrayList<>();
         DatabaseReference myRefState = FirebaseDatabase.getInstance().getReference().child(F_STATE);
@@ -330,10 +342,12 @@ public class MainActivity extends FragmentActivity {
             }
         });
     }
+    // Получение данных статей которые находятся у пользователя в избранном - установка обработчика изменений данных
     private void getStateDataBookmark() {
         dataNews = new ArrayList<>();
         DatabaseReference myRefState = FirebaseDatabase.getInstance().getReference().child(F_STATE);
         Collections.reverse(user.getUser_bookmarksList());
+        // Отправка запросов на получение контретной статьи
         for (Object idSearch : user.getUser_bookmarksList()) {
             Query query = myRefState.child(String.valueOf(idSearch)).orderByKey();
             query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -350,6 +364,7 @@ public class MainActivity extends FragmentActivity {
         }
         Collections.reverse(user.getUser_bookmarksList());
     }
+    // Получение данных статей (всех) и выборка из них только "нужных" - установка обработчика изменений данных
     private void getStateDataSearch(final String request){
         dataNews = new ArrayList<>();
         DatabaseReference myRefState = FirebaseDatabase.getInstance().getReference().child(F_STATE);
@@ -380,6 +395,7 @@ public class MainActivity extends FragmentActivity {
             public void onCancelled(DatabaseError databaseError) {
             }});
     }
+    // Выбор из пакета данных определенных полей (их значений)
     private void getState(DataSnapshot state){
         GenericTypeIndicator<Map<String, String>> data = new GenericTypeIndicator<Map<String, String>>() {};
         Map<String, String> map = state.getValue(data);
@@ -390,11 +406,13 @@ public class MainActivity extends FragmentActivity {
         String image = map.get(F_S_IMAGE);
         String number_comment = map.get(F_S_COMMENT);
         String id = state.getKey();
+        // Добавление данной статьи в список новостей
         if (title != null && text != null && date != null && rating != null && image != null && number_comment != null) {
             dataNews.add(new NewsDTO(Integer.valueOf(id), image, title, text, date, Integer.valueOf(rating), Integer.valueOf(number_comment)));
         }
     }
 
+    // Инициализация Toolbar - установка обработчиков нажатий
     public void initToolbar(){
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         searchField = (EditText) findViewById(R.id.search_text);
@@ -411,14 +429,14 @@ public class MainActivity extends FragmentActivity {
                     case R.id.reload:{
                         hideKeyboard();
                         reloadPage();
-                        break;
-                    }
+                        break;}
                 }
                 return false;
             }
         });
         toolbar.inflateMenu(R.menu.menu);
     }
+    // Инициализация бокового NavigationView - установка обработчиков нажатий
     public void initNavigationView() {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout , toolbar, R.string.view_navigation_open, R.string.view_navigation_close);
@@ -464,6 +482,7 @@ public class MainActivity extends FragmentActivity {
             }
         });
     }
+    // Метод изменения вида NavigationView в зависимости от состояния пользователя
     public void initNavigationOnLogin() {
         View hView = navigationView.getHeaderView(0);
         ImageView avatarImage  = (ImageView)hView.findViewById(R.id.menu_avatar);
@@ -501,6 +520,7 @@ public class MainActivity extends FragmentActivity {
             headerImage.setVisibility(View.INVISIBLE);
         }
     }
+    // Изменение аватарки пользователя
     public void setImageAvatarNext(View view){
         ImageView avatarImage  = (ImageView) findViewById(R.id.menu_avatar);
         if(user.getUser_image() < 0 || user.getUser_image() >= 12){
@@ -510,6 +530,7 @@ public class MainActivity extends FragmentActivity {
         String currentAvatarS = "avatar_" + user.getUser_image();
         avatarImage.setImageResource(getResId(currentAvatarS, R.drawable.class));
     }
+    // Вспомогательная ф-ция поиска id ресурса по имени
     public static int getResId(String resName, Class<?> c) {
         try {
             Field idField = c.getDeclaredField(resName);
@@ -520,10 +541,12 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
+    // Спец: Запрос на перезагрузку страницы
     public void reloadPage(){
+        // Проверка - не перезагружается уже страница?
         if (!isReload){
             isReload = true;
-
+            // Установка анимации иконки
             if (toolbar != null){
                 View icon =  toolbar.findViewById(R.id.reload);
                 RotateAnimation rotate = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
@@ -531,10 +554,7 @@ public class MainActivity extends FragmentActivity {
                 rotate.setInterpolator(new LinearInterpolator());
                 icon.startAnimation(rotate);
             }
-
-            //if (userFire != null && user == null){
-            //    loginUser(localPassword);
-            //}
+            // В зависимости от подключения начало загрузки или показ сообщения
             if (isConnect){
                 LoadFragment loadFragment = new LoadFragment();
                 FragmentDo(loadFragment);
@@ -546,17 +566,19 @@ public class MainActivity extends FragmentActivity {
             }
         }
     }
+    // Спец: Запрос на получение "закладок"
     public void getBookmarks(){
         if (userFire != null){
             if (user.getUser_bookmarksList().isEmpty() || !isConnect)FragmentDo(helpFragment);
             else{
+                // Показываем loadFragment пока не загрузим первую статью
                 LoadFragment loadFragment = new LoadFragment();
                 FragmentDo(loadFragment);
                 getStateDataBookmark();
             }
         }
     }
-
+    // Спец: Запрос на поиск ключа
     public void search(String request){
         if(request.length() > 0) {
             LoadFragment loadFragment = new LoadFragment();
@@ -566,6 +588,8 @@ public class MainActivity extends FragmentActivity {
         }
         searchField.clearFocus();
     }
+
+    // Метод переключения фрагментов
     public void FragmentDo(Fragment thisFragment){
         FragmentTransaction transaction;
         if (thisFragment != null && !thisFragment.isVisible()) {
@@ -576,6 +600,7 @@ public class MainActivity extends FragmentActivity {
             transaction.commit();
         }
     }
+    // Метод отправки интента сторонним приложениям email
     public void submitToEmail(View view) {
         // Отправка на email
         Intent intent = new Intent(Intent.ACTION_SENDTO);
@@ -593,7 +618,7 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
-    @Override
+    @Override   // Обработчик события при нажатии на "назад"
     public void onBackPressed() {
         if (back_pressed + 1200 > System.currentTimeMillis())
             finishAffinity();
@@ -604,6 +629,7 @@ public class MainActivity extends FragmentActivity {
         }
         back_pressed = System.currentTimeMillis();
     }
+    // Вспомогательная ф-ция скрытия клавиатуры
     public void hideKeyboard() {
         View view = this.getCurrentFocus();
         if (view != null) {
@@ -611,6 +637,7 @@ public class MainActivity extends FragmentActivity {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
+    // Обработчик события при нажатии на кнопку поиска (клавиатуры)
     private  void KeyboardAction() {
         searchField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -623,6 +650,7 @@ public class MainActivity extends FragmentActivity {
             }
         });
     }
+    // Вспомогательная ф-ция преобразования String массива в Integer
     private ArrayList<Integer> getIntegerArray(ArrayList<String> stringArray) {
         ArrayList<Integer> result = new ArrayList<>();
         for(String stringValue : stringArray) {
@@ -633,8 +661,9 @@ public class MainActivity extends FragmentActivity {
         }
         return result;
     }
+    // Вспомогательная ф-ция ... я не знаю как объяснить..
     private void showByConnect(){
-        if (isConnect){
+        if (isConnect && dataNews != null){
             FragmentDo(newsFragment);
         }
         else{

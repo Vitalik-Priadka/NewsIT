@@ -52,6 +52,7 @@ public class FullStateFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState){
         View view = inflater.inflate(Constant.FULL_STATE, container, false);
+        // Получаем информацию от CardView (который был нажат)
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             state_id = bundle.getInt("state_id",0);
@@ -70,6 +71,7 @@ public class FullStateFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        // Инициализация переменных
         user = ((MainActivity)getActivity()).getUser();  mAuth = FirebaseAuth.getInstance();
         ImageView image = (ImageView) getActivity().findViewById(R.id.state_image);
         TextView title = (TextView) getActivity().findViewById(R.id.state_header);
@@ -79,6 +81,7 @@ public class FullStateFragment extends Fragment {
         starButton  = (ImageButton) getActivity().findViewById(R.id.state_star_like);
         LinearLayout commentBlock = (LinearLayout) getActivity().findViewById(R.id.commentBlock);
 
+        // Установка значений полученых переменных
         title.setText(state_title);
         text.setBackgroundColor(Color.TRANSPARENT);
         String color;
@@ -86,6 +89,7 @@ public class FullStateFragment extends Fragment {
             color = "color: #000;";
         }
         else color = "color: #fff;";
+        // Веб поле для текста - ведь тут есть выравнивание по ширине
         text.loadData("<p style=\"text-align: justify; white-space: pre-line; "+ color +" font-size: 15px; font-family: serif;\">"+ state_text + "</p>", "text/html", "UTF-8");
         if(image.getScaleType() != ImageView.ScaleType.CENTER_CROP)image.setScaleType(ImageView.ScaleType.CENTER_CROP);
         StorageReference mStorageRef = FirebaseStorage.getInstance().getReference().child(F_S_IMAGE_DATABASE).child(state_image);
@@ -93,24 +97,28 @@ public class FullStateFragment extends Fragment {
         date.setText(state_date);
         rating.setText(String.valueOf(state_rating));
 
+        // Смотрим на состояние пользователя
         if(mAuth.getCurrentUser() != null && ((MainActivity)getActivity()).getUser() != null){
+            // Он активен - вкл. поле для комментирования и изменение закладки
             commentField = (EditText) getActivity().findViewById(R.id.state_comment_field);
             sendComment = (ImageButton) getActivity().findViewById(R.id.sendComment);
             isLiked = user.getUser_bookmarksList().contains(state_id);
             commentBlock.setVisibility(View.VISIBLE);
+            // Обработчик нажатий на добавл/удал. из закладок и отправку коментарием
             ListenerAction();
             if (isLiked)starButton.setImageResource(R.drawable.star);
         }
         else{
+            // Он не активен - выкл. действия на странице
             commentBlock.setVisibility(View.GONE);
             starButton.setImageResource(R.drawable.star);
         }
         myRefState = FirebaseDatabase.getInstance().getReference().child(F_STATE).child(String.valueOf(state_id));
     }
-
+    // Отправка коментария
     private void enterComment(){
         if (commentField.getText().length() > 0) {
-            // Отправка на сервер (id статьи , имя пользователя, текст коммента)
+            // Отправка на сервер (id статьи , имя пользователя, текст коммента, дата)
             Toast.makeText(getActivity(), "Отправка коммента", Toast.LENGTH_SHORT).show();
             commentField.setText(null);
             ((MainActivity)getActivity()).hideKeyboard();
@@ -126,11 +134,13 @@ public class FullStateFragment extends Fragment {
                         if (mAuth.getCurrentUser() != null && isTime){
                             isTime = false;
                             isLiked = !isLiked;
+                            // Изменение состояния и уст. переменной для задержки
                             if (isLiked) {
-                                isTime = false;
                                 if (!user.getUser_bookmarksList().contains(state_id)){
+                                    // Добавляем данную статью в избранное если ее еще там нет
                                     user.getUser_bookmarksList().add(state_id);
                                     user.setUser_bookmarksList(user.getUser_bookmarksList());
+                                    // Изменияем рейтинг статьи ++
                                     myRefState.child(F_S_RATING).addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -150,8 +160,10 @@ public class FullStateFragment extends Fragment {
                             }
                             if (!isLiked) {
                                 if (user.getUser_bookmarksList().contains(state_id)){
+                                    // Удаляем данную статью из избранного если она там есть
                                     (user.getUser_bookmarksList()).remove((user.getUser_bookmarksList().indexOf(state_id)));
                                     user.setUser_bookmarksList(user.getUser_bookmarksList());
+                                    // Изменияем рейтинг статьи --
                                     myRefState.child(F_S_RATING).addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {

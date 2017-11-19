@@ -30,7 +30,7 @@ public class HelpFragment extends Fragment {
     // Показ сообщения stateBookmark/stateServer
     private void showState() {
         Boolean isConnect = ((MainActivity)getActivity()).getIsConnect();
-        if (isConnect){
+        if (isConnect && ((MainActivity)getActivity()).getUser() != null){
             stateServer.setVisibility(View.GONE);
             if (((MainActivity)getActivity()).getUser().getUser_bookmarksList().isEmpty()){
                 stateBookmark.setVisibility(View.VISIBLE);

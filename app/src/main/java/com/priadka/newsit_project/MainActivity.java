@@ -88,7 +88,7 @@ public class MainActivity extends FragmentActivity {
     private SharedPreferences mSettings;                private SettingFragment settingFragment;
     private static long back_pressed;                   private NewsFragment newsFragment;
     private UserDTO user;                               private HelpFragment helpFragment;
-    private List<NewsDTO> dataNews;
+    private static List<NewsDTO> dataNews;
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -581,9 +581,11 @@ public class MainActivity extends FragmentActivity {
     // Спец: Запрос на поиск ключа
     public void search(String request){
         if(request.length() > 0) {
-            LoadFragment loadFragment = new LoadFragment();
-            FragmentDo(loadFragment);
-            getStateDataSearch(request);
+            if (isConnect){
+                LoadFragment loadFragment = new LoadFragment();
+                FragmentDo(loadFragment);
+                getStateDataSearch(request);
+            }
             searchField.setText(null);
         }
         searchField.clearFocus();

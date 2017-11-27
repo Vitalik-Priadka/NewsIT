@@ -97,7 +97,7 @@ public class MainActivity extends FragmentActivity {
 
     private boolean savePassword, wantLogin, isConnect, isReload = false;
     private String localEmail, localPassword;
-    private int currentTheme,currentLanguage, recreateCount = 0;
+    private int currentTheme,currentLanguage, recreateCount, loginCount;
 
     /*TODO TaskList:
         + Фрагмент для статьи;
@@ -140,6 +140,7 @@ public class MainActivity extends FragmentActivity {
         newsFragment = new NewsFragment();
         helpFragment = new HelpFragment();
         progressDialog = new ProgressDialog(this);
+        recreateCount = 0; loginCount = 0;
         // Обработчик текущего состояния подключения
         mAuth = FirebaseAuth.getInstance();
         DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
@@ -183,6 +184,7 @@ public class MainActivity extends FragmentActivity {
             if(wantLogin){
                 loginUser(localPassword);
             }
+            recreateCount++;
         }
     }
     @Override
@@ -310,9 +312,9 @@ public class MainActivity extends FragmentActivity {
                 user = new UserDTO(name,email,Integer.valueOf(imageNumber), listBookmark);
                 initNavigationOnLogin();
                 if (progressDialog.isShowing())progressDialog.dismiss();
-                if(recreateCount < 1){
+                if(loginCount == 0){
                     Toast.makeText(MainActivity.this,getString(R.string.log_success) + " " + user.getUser_login() + "!", Toast.LENGTH_SHORT).show();
-                    recreateCount++;
+                    loginCount++;
                 }
             }
             @Override
@@ -325,7 +327,7 @@ public class MainActivity extends FragmentActivity {
     private void getStateData(){
         dataNews = new ArrayList<>();
         DatabaseReference myRefState = FirebaseDatabase.getInstance().getReference().child(F_STATE);
-        Query query = myRefState.orderByKey().limitToLast(10);
+        Query query = myRefState.orderByKey().limitToLast(20);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -459,7 +461,7 @@ public class MainActivity extends FragmentActivity {
                     }
                     case R.id.actionLogOutItem:{
                         mAuth.signOut();
-                        recreateCount = 1;
+                        loginCount = 0;
                         break;
                     }
                     case R.id.actionBookmarks:{

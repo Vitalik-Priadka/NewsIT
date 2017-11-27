@@ -52,7 +52,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
             }
         });
         holder.id = item.getId();
-        holder.title.setText(item.getTitle() + "\nID:" + item.getId());
+        holder.title.setText(item.getTitle() + " (ID: " + item.getId() + ")");
         holder.date.setText(item.getDate());
         holder.rating.setText(String.format(item.getRating().toString()) );
         holder.num_comment.setText(String.format(item.getNumberComment().toString()) );

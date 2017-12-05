@@ -36,7 +36,7 @@ import static com.priadka.newsit_project.Constant.F_IMAGE;
 import static com.priadka.newsit_project.Constant.F_LOGIN;
 import static com.priadka.newsit_project.Constant.F_USER;
 import static com.priadka.newsit_project.MainActivity.getResId;
-
+// Класс "с логикой" фрагмента регистрации
 public class RegisterFragment extends Fragment {
 
     private EditText loginField, emailField, passwordField, passwordFieldTwo;

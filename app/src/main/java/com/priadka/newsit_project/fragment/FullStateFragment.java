@@ -35,7 +35,7 @@ import com.priadka.newsit_project.R;
 import static com.priadka.newsit_project.Constant.F_STATE;
 import static com.priadka.newsit_project.Constant.F_S_IMAGE_DATABASE;
 import static com.priadka.newsit_project.Constant.F_S_RATING;
-
+// Класс "с логикой" фрагмента полной статьи
 public class FullStateFragment extends Fragment {
     private ImageButton starButton, sendComment;
     private TextView rating;

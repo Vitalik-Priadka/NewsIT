@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import static com.priadka.newsit_project.Constant.F_BOOKMARK;
 import static com.priadka.newsit_project.Constant.F_IMAGE;
 import static com.priadka.newsit_project.Constant.F_USER;
-
+// Шаблон информации о пользователе
 public class UserDTO{
     private FirebaseAuth mAuth;
     private DatabaseReference myRefUsers;

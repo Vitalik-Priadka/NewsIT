@@ -16,6 +16,7 @@ import com.priadka.newsit_project.Constant;
 import com.priadka.newsit_project.MainActivity;
 import com.priadka.newsit_project.R;
 
+//Класс "с логикой" фрагмента новостей (главная страница)
 public class NewsFragment extends Fragment {
     private View view;
     protected Context context;

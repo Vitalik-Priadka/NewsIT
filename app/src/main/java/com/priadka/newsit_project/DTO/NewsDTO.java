@@ -1,5 +1,5 @@
 package com.priadka.newsit_project.DTO;
-
+// Шаблон информации о новости
 public class NewsDTO {
     private int id;
     private String title;

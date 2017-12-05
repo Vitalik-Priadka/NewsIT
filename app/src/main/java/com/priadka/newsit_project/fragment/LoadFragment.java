@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.priadka.newsit_project.Constant;
-
+// Отображает "процес загрузки"
 public class LoadFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstaneState) {

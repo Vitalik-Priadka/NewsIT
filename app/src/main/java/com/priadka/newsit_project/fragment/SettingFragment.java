@@ -14,6 +14,7 @@ import com.priadka.newsit_project.Constant;
 import com.priadka.newsit_project.MainActivity;
 import com.priadka.newsit_project.R;
 
+// Класс "с логикой" фрагмента настроек
 public class SettingFragment extends Fragment {
     private Spinner spinnerLanguage;
     private Spinner spinnerTheme;

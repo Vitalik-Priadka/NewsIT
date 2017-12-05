@@ -11,7 +11,8 @@ import android.widget.TextView;
 import com.priadka.newsit_project.Constant;
 import com.priadka.newsit_project.MainActivity;
 import com.priadka.newsit_project.R;
-
+// Класс для отображения информации пользователю
+// состояния сети или "закладок"
 public class HelpFragment extends Fragment {
     private TextView stateServer;
     private TextView stateBookmark;

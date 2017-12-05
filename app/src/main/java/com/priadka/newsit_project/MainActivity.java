@@ -8,6 +8,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -79,7 +80,7 @@ import static com.priadka.newsit_project.Constant.F_S_RATING;
 import static com.priadka.newsit_project.Constant.F_S_TEXT;
 import static com.priadka.newsit_project.Constant.F_S_TITLE;
 import static com.priadka.newsit_project.Constant.F_USER;
-
+// Главный класс
 public class MainActivity extends FragmentActivity {
 
     private Toolbar toolbar;                            public static FragmentManager manager;
@@ -165,11 +166,7 @@ public class MainActivity extends FragmentActivity {
                     wantLogin = false;
                     initNavigationOnLogin();
                 }
-                // Только при первом запуске - перезагрузка
-                if (recreateCount == 0){
-                    reloadPage();
-                }
-                else showByConnect();
+                showByConnect();
             }};
     }
     @Override
@@ -180,10 +177,19 @@ public class MainActivity extends FragmentActivity {
             initToolbar();
             initNavigationView();
             KeyboardAction();
+            FragmentDo(new LoadFragment());
             mAuth.addAuthStateListener(mAuthListener);
             if(wantLogin){
                 loginUser(localPassword);
             }
+            new Handler().postDelayed(new Runnable(){
+                @Override
+                public void run() {
+                    if (dataNews != null){
+                        return;
+                    }
+                    else reloadPage();
+                }}, Constant.SPLASH_DISPLAY_LENGTH);
             recreateCount++;
         }
     }
@@ -552,7 +558,7 @@ public class MainActivity extends FragmentActivity {
             if (toolbar != null){
                 View icon =  toolbar.findViewById(R.id.reload);
                 RotateAnimation rotate = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-                rotate.setDuration(1000);
+                rotate.setDuration(750);
                 rotate.setInterpolator(new LinearInterpolator());
                 icon.startAnimation(rotate);
             }
@@ -667,10 +673,13 @@ public class MainActivity extends FragmentActivity {
     }
     // Вспомогательная ф-ция ... я не знаю как объяснить..
     private void showByConnect(){
-        if (isConnect && dataNews != null){
-            FragmentDo(newsFragment);
+        if (isConnect){
+            if (dataNews != null){
+                FragmentDo(newsFragment);
+            }
+            else reloadPage();
         }
-        else{
+        else {
             FragmentDo(helpFragment);
         }
     }

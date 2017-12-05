@@ -19,7 +19,7 @@ import com.priadka.newsit_project.MainActivity;
 import com.priadka.newsit_project.R;
 
 import static android.widget.Toast.makeText;
-
+// Класс "с логикой" фрагмента логина
 public class LoginFragment extends Fragment {
 
     private EditText passwordField, loginField;

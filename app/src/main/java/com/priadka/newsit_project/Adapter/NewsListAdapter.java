@@ -26,6 +26,7 @@ import java.util.List;
 
 import static com.priadka.newsit_project.Constant.F_S_IMAGE_DATABASE;
 
+// Класс выполняющий "подгрузку" данных из списка новостей в CardView
 public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsViewHolder>{
     private List<NewsDTO> data;
     private Context mainContext;
@@ -47,8 +48,10 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
         mStorageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
-                StorageReference mStorageRef = FirebaseStorage.getInstance().getReference().child(F_S_IMAGE_DATABASE).child(item.getImage());
-                Glide.with(mainContext).using(new FirebaseImageLoader()).load(mStorageRef).into(holder.image);
+                if (holder.image != null){
+                    StorageReference mStorageRef = FirebaseStorage.getInstance().getReference().child(F_S_IMAGE_DATABASE).child(item.getImage());
+                    Glide.with(mainContext).using(new FirebaseImageLoader()).load(mStorageRef).into(holder.image);
+                }
             }
         });
         holder.id = item.getId();

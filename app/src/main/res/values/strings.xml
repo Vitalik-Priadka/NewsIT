@@ -33,7 +33,8 @@
     <string name="test_rate" translatable="false">128</string>
     <string name="test_number_comments" translatable="false">5</string>
 
-    <string name="state_comment">Текст комментария&#8230;</string>
+    <string name="state_comment">Текст комментария &#8230;</string>
+    <string name="state_comment_null">Комментариев нет &#8230;</string>
     <string name="test_user_name" translatable="false">Langipard</string>
     <string name="test_user_comment" translatable="false">Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. nascetur ridiculus mus.</string>
 

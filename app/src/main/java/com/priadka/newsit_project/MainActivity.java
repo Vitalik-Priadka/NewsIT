@@ -405,14 +405,14 @@ public class MainActivity extends FragmentActivity {
     }
     // Выбор из пакета данных определенных полей (их значений)
     private void getState(DataSnapshot state){
-        GenericTypeIndicator<Map<String, String>> data = new GenericTypeIndicator<Map<String, String>>() {};
-        Map<String, String> map = state.getValue(data);
-        String title = map.get(F_S_TITLE);
-        String text = map.get(F_S_TEXT);
-        String date = map.get(F_S_DATE);
-        String rating = map.get(F_S_RATING);
-        String image = map.get(F_S_IMAGE);
-        String number_comment = map.get(F_S_COMMENT);
+        GenericTypeIndicator<Map<String, Object>> data = new GenericTypeIndicator<Map<String, Object>>() {};
+        Map<String, Object> map = state.getValue(data);
+        String title = String.valueOf(map.get(F_S_TITLE));
+        String text = String.valueOf(map.get(F_S_TEXT));
+        String date = String.valueOf(map.get(F_S_DATE));
+        String rating = String.valueOf(map.get(F_S_RATING));
+        String image = String.valueOf(map.get(F_S_IMAGE));
+        String number_comment = String.valueOf(map.get(F_S_COMMENT));
         String id = state.getKey();
         // Добавление данной статьи в список новостей
         if (title != null && text != null && date != null && rating != null && image != null && number_comment != null) {

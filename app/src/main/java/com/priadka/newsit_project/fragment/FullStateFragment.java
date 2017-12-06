@@ -1,8 +1,11 @@
 package com.priadka.newsit_project.fragment;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -24,24 +27,42 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.priadka.newsit_project.Adapter.CommentListAdapter;
 import com.priadka.newsit_project.Constant;
+import com.priadka.newsit_project.DTO.CommentDTO;
 import com.priadka.newsit_project.DTO.UserDTO;
 import com.priadka.newsit_project.MainActivity;
 import com.priadka.newsit_project.R;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import static com.priadka.newsit_project.Constant.F_STATE;
+import static com.priadka.newsit_project.Constant.F_STATE_COMMENTS;
+import static com.priadka.newsit_project.Constant.F_STATE_COMMENT_AUTHOR;
+import static com.priadka.newsit_project.Constant.F_STATE_COMMENT_DATE;
+import static com.priadka.newsit_project.Constant.F_STATE_COMMENT_IMAGE;
+import static com.priadka.newsit_project.Constant.F_STATE_COMMENT_TEXT;
 import static com.priadka.newsit_project.Constant.F_S_IMAGE_DATABASE;
 import static com.priadka.newsit_project.Constant.F_S_RATING;
+
 // Класс "с логикой" фрагмента полной статьи
 public class FullStateFragment extends Fragment {
     private ImageButton starButton, sendComment;
     private TextView rating;
     private EditText commentField;
+    protected Context context;
 
     private UserDTO user;
+    private List<CommentDTO> dataComment;
     private FirebaseAuth mAuth;
     private DatabaseReference myRefState;
 
@@ -64,7 +85,11 @@ public class FullStateFragment extends Fragment {
             state_date = bundle.getString("state_date");
             state_image = bundle.getString("state_image");
             state_rating = bundle.getInt("state_rating",0);
+            state_rating = bundle.getInt("state_number_comment",0);
         }
+        RecyclerView rv = (RecyclerView) view.findViewById(R.id.recycleViewComment);
+        rv.setLayoutManager( new LinearLayoutManager(context));
+        rv.setAdapter(new CommentListAdapter(CommentList()));
         return view;
     }
 
@@ -115,13 +140,57 @@ public class FullStateFragment extends Fragment {
         }
         myRefState = FirebaseDatabase.getInstance().getReference().child(F_STATE).child(String.valueOf(state_id));
     }
+
+    private List<CommentDTO> CommentList() {
+        dataComment = new ArrayList<>();
+        DatabaseReference myRefComment = FirebaseDatabase.getInstance().getReference().child(F_STATE).child(String.valueOf(state_id)).child(F_STATE_COMMENTS);
+        Query query = myRefComment.orderByValue();
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                RecyclerView viewR = (RecyclerView) getActivity().findViewById(R.id.recycleViewComment);
+                TextView empty = (TextView) getActivity().findViewById(R.id.comment_null);
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot comment : dataSnapshot.getChildren()) {
+                        String id = String.valueOf(comment.getKey());
+                        Integer image = Integer.valueOf(String.valueOf(comment.child(F_STATE_COMMENT_IMAGE).getValue()));
+                        String date = String.valueOf(comment.child(F_STATE_COMMENT_DATE).getValue());
+                        String author = String.valueOf(comment.child(F_STATE_COMMENT_AUTHOR).getValue());
+                        String text = String.valueOf(comment.child(F_STATE_COMMENT_TEXT).getValue());
+                        SimpleDateFormat sfd = new SimpleDateFormat("HH:mm  dd.MM.yy");
+                        String time = sfd.format(new Date(Long.valueOf(date)));
+                        dataComment.add(new CommentDTO(id, image, time, author, text));
+                    }
+                    if (viewR != null && empty != null){
+                        viewR.setVisibility(View.VISIBLE);
+                        empty.setVisibility(View.GONE);}
+                    Collections.reverse(dataComment);
+                }
+                else {
+                    if (viewR != null && empty != null){
+                        empty.setVisibility(View.VISIBLE);
+                        viewR.setVisibility(View.GONE);}
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+        return  dataComment;
+    }
+
     // Отправка коментария
     private void enterComment(){
         if (commentField.getText().length() > 0) {
             // Отправка на сервер (id статьи , имя пользователя, текст коммента, дата)
-            Toast.makeText(getActivity(), "Отправка коммента", Toast.LENGTH_SHORT).show();
-            commentField.setText(null);
+            Toast.makeText(getActivity(), "Отправка комментария!", Toast.LENGTH_SHORT).show();
             ((MainActivity)getActivity()).hideKeyboard();
+            DatabaseReference myRefComment = FirebaseDatabase.getInstance().getReference().child(F_STATE).child(String.valueOf(state_id)).child(F_STATE_COMMENTS).child(String.valueOf(mAuth.getCurrentUser().getUid()));
+            myRefComment.child(F_STATE_COMMENT_AUTHOR).setValue(user.getUser_login());
+            myRefComment.child(F_STATE_COMMENT_DATE).setValue(ServerValue.TIMESTAMP);
+            myRefComment.child(F_STATE_COMMENT_IMAGE).setValue(String.valueOf(user.getUser_image()));
+            myRefComment.child(F_STATE_COMMENT_TEXT).setValue(String.valueOf(commentField.getText()));
+            commentField.setText(null);
         }
         commentField.clearFocus();
     }

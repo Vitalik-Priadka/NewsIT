@@ -39,7 +39,4 @@ public class NewsDTO {
 
     public String getDate() {return date;}
     public void setDate(String date) {this.date = date;}
-
-    public Integer getNumber_comment() {return number_comment;}
-    public void setNumber_comment(Integer number_comment) {this.number_comment = number_comment;}
 }

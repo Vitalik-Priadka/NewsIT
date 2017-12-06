@@ -17,8 +17,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="6dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="6dp"
             android:paddingTop="4dp"
             android:paddingBottom="4dp"
             android:orientation="vertical">
@@ -73,7 +73,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="3dp"
+                android:layout_marginStart="3dp"
                 android:orientation="horizontal"
                 android:paddingBottom="3dp">
                 <View
@@ -103,9 +103,11 @@
                 <EditText
                     android:id="@+id/state_comment_field"
                     style="@style/TextStyleBig"
-                    android:layout_width="300dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_weight="9"
                     android:layout_gravity="center"
+                    android:layout_marginStart="10dp"
                     android:fontFamily="sans-serif"
                     android:hint="@string/state_comment"
                     android:inputType="text"
@@ -117,6 +119,7 @@
                     android:id="@+id/sendComment"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:layout_margin="5dp"
                     android:background="@null"
                     android:contentDescription="@string/state_comment_description"
@@ -126,14 +129,18 @@
                 android:id="@+id/recycleViewComment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"
-                android:layout_marginStart="3dp"
-                android:layout_marginEnd="6dp"
-                android:paddingTop="4dp"
-                android:paddingBottom="3dp"
                 android:visibility="gone"/>
-
-            <include layout="@layout/comment_layout"/>
+            <TextView
+                android:id="@+id/comment_null"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="?attr/colorText"
+                android:background="?attr/colorMainBackgroundState"
+                style="@style/TextStyleMedium"
+                android:text="@string/state_comment_null"
+                android:layout_marginEnd="7dp"
+                android:layout_marginStart="3dp" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

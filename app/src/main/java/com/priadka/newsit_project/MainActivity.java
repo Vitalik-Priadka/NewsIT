@@ -73,7 +73,7 @@ import static com.priadka.newsit_project.Constant.F_EMAIL;
 import static com.priadka.newsit_project.Constant.F_IMAGE;
 import static com.priadka.newsit_project.Constant.F_LOGIN;
 import static com.priadka.newsit_project.Constant.F_STATE;
-import static com.priadka.newsit_project.Constant.F_S_COMMENT;
+import static com.priadka.newsit_project.Constant.F_STATE_COMMENTS;
 import static com.priadka.newsit_project.Constant.F_S_DATE;
 import static com.priadka.newsit_project.Constant.F_S_IMAGE;
 import static com.priadka.newsit_project.Constant.F_S_RATING;
@@ -412,11 +412,12 @@ public class MainActivity extends FragmentActivity {
         String date = String.valueOf(map.get(F_S_DATE));
         String rating = String.valueOf(map.get(F_S_RATING));
         String image = String.valueOf(map.get(F_S_IMAGE));
-        String number_comment = String.valueOf(map.get(F_S_COMMENT));
+        String number_child = String.valueOf(state.child(F_STATE_COMMENTS).getChildrenCount());
         String id = state.getKey();
+
         // Добавление данной статьи в список новостей
-        if (title != null && text != null && date != null && rating != null && image != null && number_comment != null) {
-            dataNews.add(new NewsDTO(Integer.valueOf(id), image, title, text, date, Integer.valueOf(rating), Integer.valueOf(number_comment)));
+        if (title != null && text != null && date != null && rating != null && image != null && number_child != null) {
+            dataNews.add(new NewsDTO(Integer.valueOf(id), image, title, text, date, Integer.valueOf(rating), Integer.valueOf(number_child)));
         }
     }
 
@@ -483,7 +484,7 @@ public class MainActivity extends FragmentActivity {
                         break;
                     }
                     case R.id.actionExitItem: {
-                        finishAffinity();
+                        exitApp();
                         break;}
                 }
                 return true;
@@ -630,8 +631,9 @@ public class MainActivity extends FragmentActivity {
 
     @Override   // Обработчик события при нажатии на "назад"
     public void onBackPressed() {
-        if (back_pressed + 1200 > System.currentTimeMillis())
-            finishAffinity();
+        if (back_pressed + 1200 > System.currentTimeMillis()) {
+            exitApp();
+        }
         else {
             getCurrentFocus().clearFocus();
             if (drawerLayout != null && drawerLayout.isDrawerOpen(GravityCompat.START)) drawerLayout.closeDrawers();
@@ -681,6 +683,14 @@ public class MainActivity extends FragmentActivity {
         }
         else {
             FragmentDo(helpFragment);
+        }
+    }
+    private void exitApp(){
+        try {
+            Thread.sleep(400);
+            finishAffinity();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 

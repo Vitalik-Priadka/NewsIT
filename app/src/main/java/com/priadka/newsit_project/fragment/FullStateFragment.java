@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,8 +26,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -65,10 +66,11 @@ public class FullStateFragment extends Fragment {
     private List<CommentDTO> dataComment;
     private FirebaseAuth mAuth;
     private DatabaseReference myRefState;
+    private RecyclerView rv;
 
     private String state_title, state_text, state_date, state_image;
-    private int state_id, state_rating ;
-    private boolean isLiked = false, isTime = true;
+    private int state_id, state_rating, state_comment;
+    private boolean isLiked = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState){
@@ -85,9 +87,8 @@ public class FullStateFragment extends Fragment {
             state_date = bundle.getString("state_date");
             state_image = bundle.getString("state_image");
             state_rating = bundle.getInt("state_rating",0);
-            state_rating = bundle.getInt("state_number_comment",0);
         }
-        RecyclerView rv = (RecyclerView) view.findViewById(R.id.recycleViewComment);
+        rv = (RecyclerView) view.findViewById(R.id.recycleViewComment);
         rv.setLayoutManager( new LinearLayoutManager(context));
         rv.setAdapter(new CommentListAdapter(CommentList()));
         return view;
@@ -102,11 +103,14 @@ public class FullStateFragment extends Fragment {
         TextView title = (TextView) getActivity().findViewById(R.id.state_header);
         WebView text = (WebView) getActivity().findViewById(R.id.state_text);
         TextView date = (TextView) getActivity().findViewById(R.id.state_date);
+        LinearLayout rating_block = (LinearLayout) getActivity().findViewById(R.id.rating_block);
         rating = (TextView) getActivity().findViewById(R.id.state_rating);
         starButton  = (ImageButton) getActivity().findViewById(R.id.state_star_like);
         LinearLayout commentBlock = (LinearLayout) getActivity().findViewById(R.id.commentBlock);
 
         // Установка значений полученых переменных
+        rating_block.getBackground().mutate().setAlpha(150);
+        date.getBackground().mutate().setAlpha(150);
         title.setText(state_title);
         text.setBackgroundColor(Color.TRANSPARENT);
         String color;
@@ -123,7 +127,7 @@ public class FullStateFragment extends Fragment {
         rating.setText(String.valueOf(state_rating));
 
         // Смотрим на состояние пользователя
-        if(mAuth.getCurrentUser() != null && ((MainActivity)getActivity()).getUser() != null){
+        if(mAuth.getCurrentUser() != null && user != null){
             // Он активен - вкл. поле для комментирования и изменение закладки
             commentField = (EditText) getActivity().findViewById(R.id.state_comment_field);
             sendComment = (ImageButton) getActivity().findViewById(R.id.sendComment);
@@ -148,9 +152,10 @@ public class FullStateFragment extends Fragment {
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                RecyclerView viewR = (RecyclerView) getActivity().findViewById(R.id.recycleViewComment);
+                TextView countComment = (TextView) getActivity().findViewById(R.id.comment_count);
                 TextView empty = (TextView) getActivity().findViewById(R.id.comment_null);
                 if (dataSnapshot.exists()) {
+                    String count =  String.valueOf(dataSnapshot.getChildrenCount());
                     for (DataSnapshot comment : dataSnapshot.getChildren()) {
                         String id = String.valueOf(comment.getKey());
                         Integer image = Integer.valueOf(String.valueOf(comment.child(F_STATE_COMMENT_IMAGE).getValue()));
@@ -161,15 +166,18 @@ public class FullStateFragment extends Fragment {
                         String time = sfd.format(new Date(Long.valueOf(date)));
                         dataComment.add(new CommentDTO(id, image, time, author, text));
                     }
-                    if (viewR != null && empty != null){
-                        viewR.setVisibility(View.VISIBLE);
+                    if (rv != null && empty != null){
+                        countComment.setText(getString(R.string.state_comment_count)+ " (" + count + ") :");
+                        countComment.setVisibility(View.VISIBLE);
+                        rv.setVisibility(View.VISIBLE);
                         empty.setVisibility(View.GONE);}
                     Collections.reverse(dataComment);
                 }
                 else {
-                    if (viewR != null && empty != null){
+                    if (rv != null && empty != null){
                         empty.setVisibility(View.VISIBLE);
-                        viewR.setVisibility(View.GONE);}
+                        countComment.setVisibility(View.GONE);
+                        rv.setVisibility(View.GONE);}
                 }
             }
             @Override
@@ -195,37 +203,53 @@ public class FullStateFragment extends Fragment {
         commentField.clearFocus();
     }
 
+    private void editRating(final boolean like){
+        myRefState.child(F_S_RATING).runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                if (mutableData.getValue() != null){
+                    if (Integer.valueOf(String.valueOf(mutableData.getValue())) < 0) {
+                        mutableData.setValue("0");
+                    } else {
+                        String count = mutableData.getValue(String.class);
+                        if (like){
+                            state_rating = Integer.valueOf(count) + 1;
+                        }
+                        else state_rating = Integer.valueOf(count) - 1;
+                        mutableData.setValue(String.valueOf(state_rating));
+                    }
+                }
+                return Transaction.success(mutableData);
+            }
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean success, DataSnapshot dataSnapshot) {
+                if (success){
+                    rating.setText(String.valueOf(state_rating));
+                    if (like){
+                        starButton.setImageResource(R.drawable.star);
+                    }
+                    else starButton.setImageResource(R.drawable.star_outline);
+                }
+            }
+        });
+    }
+
     private void ListenerAction() {
         starButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (mAuth.getCurrentUser() != null && isTime){
-                            isTime = false;
+                        if (mAuth.getCurrentUser() != null){
                             isLiked = !isLiked;
                             // Изменение состояния и уст. переменной для задержки
                             if (isLiked) {
-                                if (!user.getUser_bookmarksList().contains(state_id)){
+                                if (!user.getUser_bookmarksList().contains(state_id)) {
                                     // Добавляем данную статью в избранное если ее еще там нет
                                     user.getUser_bookmarksList().add(state_id);
                                     user.setUser_bookmarksList(user.getUser_bookmarksList());
                                     // Изменияем рейтинг статьи ++
-                                    myRefState.child(F_S_RATING).addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                            String value = (String) dataSnapshot.getValue();
-                                            int a = Integer.valueOf(value);a++;
-                                            dataSnapshot.getRef().setValue(String.valueOf(a));
-                                            rating.setText(String.valueOf(a));
-                                            isTime = true;
-                                        }
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
-                                            Log.d("Error", databaseError.toString());
-                                        }
-                                    });
+                                    editRating(isLiked);
                                 }
-                                starButton.setImageResource(R.drawable.star);
                             }
                             if (!isLiked) {
                                 if (user.getUser_bookmarksList().contains(state_id)){
@@ -233,22 +257,8 @@ public class FullStateFragment extends Fragment {
                                     (user.getUser_bookmarksList()).remove((user.getUser_bookmarksList().indexOf(state_id)));
                                     user.setUser_bookmarksList(user.getUser_bookmarksList());
                                     // Изменияем рейтинг статьи --
-                                    myRefState.child(F_S_RATING).addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                            String value = (String) dataSnapshot.getValue();
-                                            int a = Integer.valueOf(value);a--;
-                                            dataSnapshot.getRef().setValue(String.valueOf(a));
-                                            rating.setText(String.valueOf(a));
-                                            isTime = true;
-                                        }
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
-                                            Log.d("Error", databaseError.toString());
-                                        }
-                                    });
+                                    editRating(isLiked);
                                 }
-                                starButton.setImageResource(R.drawable.star_outline);
                             }
                         }
                     }}

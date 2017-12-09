@@ -31,15 +31,12 @@ public class Constant {
     public static final String F_S_IMAGE_DATABASE = "Article_Images";
     public static final String F_STATE = "Articles";
     public static final String F_STATE_COMMENTS = "Comments";
-    public static final String F_STATE_COMMENT_IMAGE = "Image";
     public static final String F_STATE_COMMENT_DATE = "Date";
-    public static final String F_STATE_COMMENT_AUTHOR = "Author";
     public static final String F_STATE_COMMENT_TEXT = "Text";
 
     public static final String F_S_DATE = "Date";
     public static final String F_S_IMAGE = "Image";
     public static final String F_S_RATING = "Rating";
-    public static final String F_S_COMMENT = "CommentNumber";
     public static final String F_S_TEXT = "Text";
     public static final String F_S_TITLE = "Title";
 }

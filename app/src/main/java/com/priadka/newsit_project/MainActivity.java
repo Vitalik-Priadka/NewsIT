@@ -57,6 +57,8 @@ import com.priadka.newsit_project.fragment.RegisterFragment;
 import com.priadka.newsit_project.fragment.SettingFragment;
 
 import java.lang.reflect.Field;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -307,15 +309,15 @@ public class MainActivity extends FragmentActivity {
         myRefUser.child(userFire.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                GenericTypeIndicator<Map<String,String>> data = new GenericTypeIndicator<Map<String,String>>(){};
-                Map <String, String> map = dataSnapshot.getValue(data);
-                String name = map.get(F_LOGIN);
-                String email = map.get(F_EMAIL);
-                String imageNumber = map.get(F_IMAGE);
-                String bookmark = map.get(F_BOOKMARK);
+                GenericTypeIndicator<Map<String,Object>> data = new GenericTypeIndicator<Map<String,Object>>(){};
+                Map <String, Object> map = dataSnapshot.getValue(data);
+                String name = String.valueOf(map.get(F_LOGIN));
+                String email = String.valueOf(map.get(F_EMAIL));
+                Integer imageNumber = Integer.valueOf(String.valueOf(map.get(F_IMAGE)));
+                String bookmark = String.valueOf(map.get(F_BOOKMARK));
                 ArrayList<String> listString = new ArrayList<>(Arrays.asList(bookmark.split(" ")));
                 ArrayList<Integer> listBookmark = getIntegerArray(listString);
-                user = new UserDTO(name,email,Integer.valueOf(imageNumber), listBookmark);
+                user = new UserDTO(name,email,imageNumber, listBookmark);
                 initNavigationOnLogin();
                 if (progressDialog.isShowing())progressDialog.dismiss();
                 if(loginCount == 0){
@@ -410,14 +412,15 @@ public class MainActivity extends FragmentActivity {
         String title = String.valueOf(map.get(F_S_TITLE));
         String text = String.valueOf(map.get(F_S_TEXT));
         String date = String.valueOf(map.get(F_S_DATE));
-        String rating = String.valueOf(map.get(F_S_RATING));
+        SimpleDateFormat sfd = new SimpleDateFormat("HH:mm dd.MM.yy");
+        String time = sfd.format(new Date(Long.valueOf(date)));
+        Integer rating = Integer.valueOf(String.valueOf(map.get(F_S_RATING)));
         String image = String.valueOf(map.get(F_S_IMAGE));
-        String number_child = String.valueOf(state.child(F_STATE_COMMENTS).getChildrenCount());
-        String id = state.getKey();
-
+        Integer number_child = Integer.valueOf(String.valueOf(state.child(F_STATE_COMMENTS).getChildrenCount()));
+        Integer id = Integer.valueOf(state.getKey());
         // Добавление данной статьи в список новостей
-        if (title != null && text != null && date != null && rating != null && image != null && number_child != null) {
-            dataNews.add(new NewsDTO(Integer.valueOf(id), image, title, text, date, Integer.valueOf(rating), Integer.valueOf(number_child)));
+        if (title != null && text != null && time != null && rating != null && image != null && number_child != null) {
+            dataNews.add(new NewsDTO(id, image, title, text, time, rating, number_child));
         }
     }
 

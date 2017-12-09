@@ -27,17 +27,18 @@
     <string name="state_image_description">*Главное изображение статьи*</string>
     <string name="state_star_description">*Иконка звезды*</string>
     <string name="state_comment_description">*Иконка комментария*</string>
-    <string name="test_header" translatable="false"><i>Тестовый заголовок! Lorem ipsum dolor adipiscing elit.</i></string>
-    <string name="test_text" translatable="false">Проснувшись однажды утром после беспокойного сна, Грегор Замза обнаружил, что он у себя в постели превратился в страшное насекомое. Лежа на панцирнотвердой спине, он видел, стоило ему приподнять голову.  Над столом, где были разложены распакованные образцы сукон – Замза был коммивояжером, – висел портрет, который он недавно вырезал из иллюстрированного журнала и вставил в красивую золоченую рамку.</string>
-    <string name="test_date" translatable="false">14:23  24.09.17</string>
-    <string name="test_rate" translatable="false">128</string>
-    <string name="test_number_comments" translatable="false">5</string>
+    <string name="test_header" translatable="false"><i>Тестовый заголовок!</i></string>
+    <string name="test_text" translatable="false">Тестовый текст!</string>
+    <string name="test_date" translatable="false">00:00  01.01.17</string>
+    <string name="test_rate" translatable="false">1</string>
+    <string name="test_number_comments" translatable="false">1</string>
 
     <string name="state_comment">Текст комментария &#8230;</string>
     <string name="state_comment_null">Комментариев нет &#8230;</string>
     <string name="state_comment_count">Все комментарии</string>
+    <string name="state_comment_send">Комментарий отправлен!</string>
     <string name="test_user_name" translatable="false">Langipard</string>
-    <string name="test_user_comment" translatable="false">Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. nascetur ridiculus mus.</string>
+    <string name="test_user_comment" translatable="false"> Теst comment!</string>
 
     <!--   Блок текста для Настроек     -->
     <string name="setting_text_language">Язык приложения:</string>
@@ -51,7 +52,7 @@
         <item>Тёмная</item>
         <item>Синяя</item>
     </string-array>
-    <string name="setting_version">Текущая версия: 0.3 (Beta)</string>
+    <string name="setting_version">Текущая версия: 0.8 (Beta)</string>
     <string name="setting_info_button">*Написать нам*</string>
     <string name="setting_info_email_header">Сообщение от пользователя</string>
     <string name="setting_info_email_text">Здравствуйте тех. поддержка IT-News! Я пишу по поводу &#8230;</string>

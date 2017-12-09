@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/colorMainBackground">
-    <ScrollView
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
@@ -21,6 +21,7 @@
             android:layout_marginEnd="6dp"
             android:paddingTop="4dp"
             android:paddingBottom="4dp"
+            android:nestedScrollingEnabled="false"
             android:orientation="vertical">
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -77,6 +78,7 @@
                 android:id="@+id/state_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
                 android:text="@string/test_header"
                 android:textColor="?attr/colorText"
                 android:textSize="24sp"/>
@@ -152,6 +154,7 @@
                 android:id="@+id/recycleViewComment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
                 android:visibility="gone"/>
             <TextView
                 android:id="@+id/comment_null"
@@ -166,5 +169,5 @@
                 android:layout_marginStart="3dp"
                 android:visibility="visible"/>
         </LinearLayout>
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
 </LinearLayout>

@@ -46,14 +46,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static com.priadka.newsit_project.Constant.F_IMAGE;
+import static com.priadka.newsit_project.Constant.F_LOGIN;
 import static com.priadka.newsit_project.Constant.F_STATE;
 import static com.priadka.newsit_project.Constant.F_STATE_COMMENTS;
-import static com.priadka.newsit_project.Constant.F_STATE_COMMENT_AUTHOR;
 import static com.priadka.newsit_project.Constant.F_STATE_COMMENT_DATE;
-import static com.priadka.newsit_project.Constant.F_STATE_COMMENT_IMAGE;
 import static com.priadka.newsit_project.Constant.F_STATE_COMMENT_TEXT;
 import static com.priadka.newsit_project.Constant.F_S_IMAGE_DATABASE;
 import static com.priadka.newsit_project.Constant.F_S_RATING;
+import static com.priadka.newsit_project.Constant.F_USER;
 
 // Класс "с логикой" фрагмента полной статьи
 public class FullStateFragment extends Fragment {
@@ -71,6 +72,8 @@ public class FullStateFragment extends Fragment {
     private String state_title, state_text, state_date, state_image;
     private int state_id, state_rating, state_comment;
     private boolean isLiked = false;
+
+    private String comm_id, comm_image, comm_time, comm_author, comm_text;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState){
@@ -156,15 +159,27 @@ public class FullStateFragment extends Fragment {
                 TextView empty = (TextView) getActivity().findViewById(R.id.comment_null);
                 if (dataSnapshot.exists()) {
                     String count =  String.valueOf(dataSnapshot.getChildrenCount());
-                    for (DataSnapshot comment : dataSnapshot.getChildren()) {
-                        String id = String.valueOf(comment.getKey());
-                        Integer image = Integer.valueOf(String.valueOf(comment.child(F_STATE_COMMENT_IMAGE).getValue()));
-                        String date = String.valueOf(comment.child(F_STATE_COMMENT_DATE).getValue());
-                        String author = String.valueOf(comment.child(F_STATE_COMMENT_AUTHOR).getValue());
-                        String text = String.valueOf(comment.child(F_STATE_COMMENT_TEXT).getValue());
-                        SimpleDateFormat sfd = new SimpleDateFormat("HH:mm  dd.MM.yy");
-                        String time = sfd.format(new Date(Long.valueOf(date)));
-                        dataComment.add(new CommentDTO(id, image, time, author, text));
+                    for (final DataSnapshot comment : dataSnapshot.getChildren()) {
+                        comm_id = String.valueOf(comment.getKey());
+                        Query query = FirebaseDatabase.getInstance().getReference().child(F_USER).child(comm_id);
+                        query.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.exists()) {
+                                    comm_author = String.valueOf(dataSnapshot.child(F_LOGIN).getValue());
+                                    comm_image = String.valueOf(dataSnapshot.child(F_IMAGE).getValue());
+                                    comm_text = String.valueOf(comment.child(F_STATE_COMMENT_TEXT).getValue());
+                                    String date = String.valueOf(comment.child(F_STATE_COMMENT_DATE).getValue());
+                                    SimpleDateFormat sfd = new SimpleDateFormat("HH:mm dd.MM.yy");
+                                    comm_time = sfd.format(new Date(Long.valueOf(date)));
+                                    dataComment.add(new CommentDTO(comm_id, Integer.valueOf(comm_image), comm_time, comm_author, comm_text));
+                                    rv.getAdapter().notifyDataSetChanged();
+                                    rv.invalidate();
+                                }
+                            }
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                            }});
                     }
                     if (rv != null && empty != null){
                         countComment.setText(getString(R.string.state_comment_count)+ " (" + count + ") :");
@@ -191,16 +206,27 @@ public class FullStateFragment extends Fragment {
     private void enterComment(){
         if (commentField.getText().length() > 0) {
             // Отправка на сервер (id статьи , имя пользователя, текст коммента, дата)
-            Toast.makeText(getActivity(), "Отправка комментария!", Toast.LENGTH_SHORT).show();
-            ((MainActivity)getActivity()).hideKeyboard();
             DatabaseReference myRefComment = FirebaseDatabase.getInstance().getReference().child(F_STATE).child(String.valueOf(state_id)).child(F_STATE_COMMENTS).child(String.valueOf(mAuth.getCurrentUser().getUid()));
-            myRefComment.child(F_STATE_COMMENT_AUTHOR).setValue(user.getUser_login());
-            myRefComment.child(F_STATE_COMMENT_DATE).setValue(ServerValue.TIMESTAMP);
-            myRefComment.child(F_STATE_COMMENT_IMAGE).setValue(String.valueOf(user.getUser_image()));
-            myRefComment.child(F_STATE_COMMENT_TEXT).setValue(String.valueOf(commentField.getText()));
-            commentField.setText(null);
+            myRefComment.runTransaction(new Transaction.Handler() {
+                @Override
+                public Transaction.Result doTransaction(MutableData mutableData) {
+                    mutableData.child(F_STATE_COMMENT_DATE).setValue(ServerValue.TIMESTAMP);
+                    mutableData.child(F_STATE_COMMENT_TEXT).setValue(String.valueOf(commentField.getText()));
+                    return Transaction.success(mutableData);
+                }
+                @Override
+                public void onComplete(DatabaseError databaseError, boolean success, DataSnapshot dataSnapshot) {
+                    commentField.clearFocus();
+                    if (success){
+                        commentField.setText(null);
+                        ((MainActivity)getActivity()).hideKeyboard();
+                        Toast.makeText(getActivity(), getString(R.string.state_comment_send), Toast.LENGTH_SHORT).show();
+                        rv.getAdapter().notifyDataSetChanged();
+                        rv.invalidate();
+                    }
+                }
+            });
         }
-        commentField.clearFocus();
     }
 
     private void editRating(final boolean like){
@@ -209,14 +235,14 @@ public class FullStateFragment extends Fragment {
             public Transaction.Result doTransaction(MutableData mutableData) {
                 if (mutableData.getValue() != null){
                     if (Integer.valueOf(String.valueOf(mutableData.getValue())) < 0) {
-                        mutableData.setValue("0");
+                        mutableData.setValue(0);
                     } else {
-                        String count = mutableData.getValue(String.class);
+                        Integer count = mutableData.getValue(Integer.class);
                         if (like){
-                            state_rating = Integer.valueOf(count) + 1;
+                            state_rating = count + 1;
                         }
-                        else state_rating = Integer.valueOf(count) - 1;
-                        mutableData.setValue(String.valueOf(state_rating));
+                        else state_rating = count - 1;
+                        mutableData.setValue(state_rating);
                     }
                 }
                 return Transaction.success(mutableData);

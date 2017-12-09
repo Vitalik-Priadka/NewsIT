@@ -23,8 +23,12 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.priadka.newsit_project.Constant;
 import com.priadka.newsit_project.MainActivity;
 import com.priadka.newsit_project.R;
@@ -36,6 +40,7 @@ import static com.priadka.newsit_project.Constant.F_IMAGE;
 import static com.priadka.newsit_project.Constant.F_LOGIN;
 import static com.priadka.newsit_project.Constant.F_USER;
 import static com.priadka.newsit_project.MainActivity.getResId;
+
 // Класс "с логикой" фрагмента регистрации
 public class RegisterFragment extends Fragment {
 
@@ -151,19 +156,32 @@ public class RegisterFragment extends Fragment {
     }
 
     // Общий шаблон добавления пользователя в БД
-    private void addUserDatabase(String login, String email, String password, String image) {
+    private void addUserDatabase(final String login, final String email, final String password, final String image) {
         FirebaseUser userFire = mAuth.getCurrentUser();
-        DatabaseReference myRefUsers = FirebaseDatabase.getInstance().getReference().child(F_USER);
-        DatabaseReference user = myRefUsers.child(userFire.getUid());
-        user.child(F_LOGIN).setValue(login);
-        user.child(F_EMAIL).setValue(email);
-        user.child(F_BOOKMARK).setValue("");
-        user.child(F_IMAGE).setValue(image);
-        // Изменение локальных переменных для взода в новый акк и сам вход
-        ((MainActivity)getActivity()).setLocalEmail(email);
-        ((MainActivity)getActivity()).setLocalPassword(password);
-        ((MainActivity)getActivity()).setSavePassword(true);
-        ((MainActivity)getActivity()).doPreferences(true);
-        ((MainActivity)getActivity()).loginUser(password);
+        final DatabaseReference user = FirebaseDatabase.getInstance().getReference().child(F_USER).child(userFire.getUid());
+        user.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                mutableData.child(F_LOGIN).setValue(login);
+                mutableData.child(F_EMAIL).setValue(email);
+                mutableData.child(F_BOOKMARK).setValue("");
+                mutableData.child(F_IMAGE).setValue(image);
+                return Transaction.success(mutableData);
+            }
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean success, DataSnapshot dataSnapshot) {
+                if (success){
+                    // Изменение локальных переменных для взода в новый акк и сам вход
+                    ((MainActivity)getActivity()).setLocalEmail(email);
+                    ((MainActivity)getActivity()).setLocalPassword(password);
+                    ((MainActivity)getActivity()).setSavePassword(true);
+                    ((MainActivity)getActivity()).loginUser(password);
+                    ((MainActivity)getActivity()).doPreferences(true);
+                }
+                else makeText(getContext(),"Ошибка регистрации!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
     }
 }

@@ -39,7 +39,7 @@ public class UserDTO{
         mAuth = FirebaseAuth.getInstance();
         userFire = mAuth.getCurrentUser();
         myRefUsers = FirebaseDatabase.getInstance().getReference().child(F_USER).child(userFire.getUid()).child(F_IMAGE);
-        myRefUsers.setValue(String.valueOf(this.user_image));
+        myRefUsers.setValue(this.user_image);
     }
     public void setUser_bookmarksList(ArrayList<Integer> user_bookmarksList) {
         this.user_bookmarksList = user_bookmarksList;

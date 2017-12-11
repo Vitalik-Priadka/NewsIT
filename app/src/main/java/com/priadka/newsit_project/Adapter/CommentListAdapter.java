@@ -15,23 +15,21 @@ import java.util.List;
 
 import static com.priadka.newsit_project.MainActivity.getResId;
 
-// Класс выполняющий "подгрузку" данных из списка новостей в CardView
+// Класс выполняющий "подгрузку" данных из списка коментариев в CardView
 public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.CommentViewHolder>{
     private List<CommentDTO> data;
-    //private Context mainContext;
 
     public CommentListAdapter(List<CommentDTO> data) {this.data = data;}
 
     @Override
     public CommentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        //mainContext = parent.getContext();
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.comment_layout, parent, false);
         return new CommentViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final CommentViewHolder holder, int position) {
-        // Установка данных в заранее созданый шаблон новости
+        // Установка данных в заранее созданый шаблон коментария
         final CommentDTO item = data.get(position);
         holder.image.setImageResource(getResId("avatar_" + item.getCommImage(), R.drawable.class));
         holder.date.setText(item.getCommDate());

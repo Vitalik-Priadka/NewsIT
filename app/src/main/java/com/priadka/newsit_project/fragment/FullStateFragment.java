@@ -151,7 +151,7 @@ public class FullStateFragment extends Fragment {
     private List<CommentDTO> CommentList() {
         dataComment = new ArrayList<>();
         DatabaseReference myRefComment = FirebaseDatabase.getInstance().getReference().child(F_STATE).child(String.valueOf(state_id)).child(F_STATE_COMMENTS);
-        Query query = myRefComment.orderByValue();
+        Query query = myRefComment.orderByChild(F_STATE_COMMENT_DATE);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

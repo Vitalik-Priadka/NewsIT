@@ -181,7 +181,5 @@ public class RegisterFragment extends Fragment {
                 else makeText(getContext(),"Ошибка регистрации!", Toast.LENGTH_SHORT).show();
             }
         });
-
-
     }
 }

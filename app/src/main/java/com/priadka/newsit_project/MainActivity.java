@@ -91,7 +91,7 @@ public class MainActivity extends FragmentActivity {
     private SharedPreferences mSettings;                private SettingFragment settingFragment;
     private static long back_pressed;                   private NewsFragment newsFragment;
     private UserDTO user;                               private HelpFragment helpFragment;
-    private static List<NewsDTO> dataNews;
+    private static List<NewsDTO> dataNews;              private RegisterFragment registerFragment;
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -142,6 +142,7 @@ public class MainActivity extends FragmentActivity {
         settingFragment = new SettingFragment();
         newsFragment = new NewsFragment();
         helpFragment = new HelpFragment();
+        registerFragment = new RegisterFragment();
         progressDialog = new ProgressDialog(this);
         recreateCount = 0; loginCount = 0;
         // Обработчик текущего состояния подключения
@@ -465,7 +466,6 @@ public class MainActivity extends FragmentActivity {
                         break;
                     }
                     case R.id.actionRegisterItem:{
-                        RegisterFragment registerFragment = new RegisterFragment();
                         FragmentDo(registerFragment);
                         break;
                     }

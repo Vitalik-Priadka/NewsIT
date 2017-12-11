@@ -1,6 +1,6 @@
 package com.priadka.newsit_project.DTO;
 
-
+// Шаблон информации о коментарие
 public class CommentDTO {
     private int image;
     private String author, id;
